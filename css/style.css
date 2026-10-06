@@ -1,0 +1,934 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Manrope:wght@400;500;600&display=swap");
+
+/*------------------------------------------------------------
+        Table des matières
+        __________________
+1. HEADER MOBILE
+2. SOUS-MENU "PLUS"
+3. BOUTON CONTACT MOBILE
+4. VERSION DESKTOP
+5. VERSION TABLETTE
+------------------------------------------------------------*/
+
+:root {
+    /* Couleurs */
+    --rouge-rgr: #e43314;
+    --noir: #0b0b0c;
+    --carbone: #141414;
+    --blanc: #f4f1ec;
+    --gris-metal: #a7abb0;
+    --gris-clair: #e3e3e3;
+    --bordure: rgba(244, 241, 236, 0.14);
+
+    /* Typographies */
+    --police-titre: "Barlow Condensed", sans-serif;
+    --police-texte: "Manrope", sans-serif;
+
+    /* Mise en page */
+    --container-width: 1344px;
+
+    /* Transitions */
+    --transition-rapide: 0.2s ease;
+    --transition-normalee: 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+}
+
+body {
+    font-family: "Manrope", sans-serif;
+    background-color: var(--noir);
+    color: var(--blanc);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font: inherit;
+}
+
+/* =========================
+  1. HEADER MOBILE
+========================= */
+
+header {
+    position: relative;
+    z-index: 1000;
+    width: 100%;
+    background-color: var(--noir);
+    border-bottom: 1px solid rgba(244, 241, 236, 0.12);
+}
+
+.nav-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 5rem;
+    padding: 0 1.25rem;
+}
+
+/* Logo */
+
+#logo {
+    position: relative;
+    z-index: 1002;
+    display: flex;
+    align-items: center;
+}
+
+#logo a {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    display: block;
+    width: 2.425rem;
+    height: auto;
+}
+
+/* Navigation */
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+}
+
+/* Bouton burger */
+
+.burger-btn {
+    position: relative;
+    z-index: 1002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    color: var(--blanc);
+    font-size: 1.8rem;
+    line-height: 1;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.burger-btn:hover,
+.burger-btn:focus-visible {
+    color: var(--rouge-rgr);
+}
+
+/* Menu principal fermé par défaut */
+
+.nav-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    height: calc(100vh - 72px);
+    padding: 24px 20px 120px;
+    overflow-y: auto;
+    list-style: none;
+    background-color: var(--noir);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-12px);
+
+    transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease,
+        transform 0.3s ease;
+}
+
+/* Ouverture du menu avec aria-expanded */
+
+.burger-btn[aria-expanded="true"] + .nav-list {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Liens principaux */
+
+.nav-list > li > a,
+.dropbtn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 52px;
+    padding: 14px 0;
+    color: var(--blanc);
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.0625rem;
+    text-align: left;
+    text-transform: uppercase;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(244, 241, 236, 0.12);
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.nav-list > li > a:hover,
+.nav-list > li > a:focus-visible,
+.dropbtn:hover,
+.dropbtn:focus-visible,
+.nav-list .nav-active {
+    color: var(--rouge-rgr);
+    border-color: var(--rouge-rgr);
+    transform: scale(1.02); 
+}
+
+/* =========================
+   2. SOUS-MENU "PLUS"
+========================= */
+
+.dropdown {
+    position: relative;
+}
+
+.arrow {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.65rem;
+    transition: transform 0.3s ease;
+}
+
+.dropbtn[aria-expanded="true"] .arrow {
+    transform: rotate(180deg);
+}
+
+.drop-menu {
+    display: none;
+    width: 100%;
+    padding: 0.375rem 0 0.375rem 1rem;
+    list-style: none;
+    background-color: var(--carbone);
+    border-left: 0.125rem solid var(--rouge-rgr);
+}
+
+.dropbtn[aria-expanded="true"] + .drop-menu {
+    display: block;
+}
+
+.drop-menu a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--gris-metal);
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(244, 241, 236, 0.08);
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.drop-menu a:hover,
+.drop-menu a:focus-visible,
+.drop-menu .nav-active {
+    color: var(--blanc);
+    background-color: rgba(228, 51, 20, 0.15);
+}
+
+/* =========================
+   3. BOUTON CONTACT MOBILE
+========================= */
+
+.contact {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.5rem;
+    left: 1.25rem;
+    z-index: 1002;
+    display: none;
+    padding: 0;
+    background-color: var(--rouge-rgr);
+    border: 1px solid var(--rouge-rgr);
+}
+
+.burger-btn[aria-expanded="true"] ~ .contact {
+    display: block;
+}
+
+.contact a {
+    display: block;
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    color: var(--blanc);
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.contact:hover {
+    background-color: var(--noir);
+}
+
+.contact a:hover {
+    transform: scale(1.2);
+}
+
+/* Accessibilité clavier */
+
+.burger-btn:focus-visible,
+.dropbtn:focus-visible,
+.nav-list a:focus-visible,
+.contact a:focus-visible {
+    outline: 2px solid var(--rouge-rgr);
+    outline-offset: 3px;
+}
+
+/* =========================
+   4. VERSION DESKTOP
+========================= */
+
+@media (min-width: 1024px) {
+    .nav-bar {
+        max-width: 1440px;
+        min-height: 88px;
+        margin: 0 auto;
+        padding: 0.625rem 3rem;
+    }
+
+    .logo-img {
+        width: 5.5rem;
+    }
+
+    .nav-menu {
+        gap: 1.875rem;
+    }
+
+    .burger-btn {
+        display: none;
+    }
+
+    .nav-list {
+        position: static;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1.75rem;
+        width: auto;
+        height: auto;
+        padding: 0;
+        overflow: visible;
+        background-color: transparent;
+
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+    }
+
+    .nav-list > li > a,
+    .dropbtn {
+        min-height: auto;
+        padding: 0.75rem 0;
+        font-size: 1rem;
+        white-space: nowrap;
+        border-bottom: 2px solid transparent;
+    }
+
+    .nav-list > li > a:hover,
+    .nav-list > li > a:focus-visible,
+    .dropbtn:hover,
+    .dropbtn:focus-visible,
+    .nav-list .nav-active {
+        border-color: var(--rouge-rgr);
+    }
+
+    /* Sous-menu desktop */
+
+    .drop-menu {
+        position: absolute;
+        top: calc(100% + 12px);
+        right: 0;
+        display: block;
+        min-width: 11.875rem;
+        padding: 0.5rem;
+        background-color: var(--carbone);
+        border: 1px solid rgba(244, 241, 236, 0.12);
+        border-top: 2px solid var(--rouge-rgr);
+
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-0.5rem);
+
+        transition:
+            opacity 0.2s ease,
+            visibility 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .dropdown:hover .drop-menu,
+    .dropdown:focus-within .drop-menu,
+    .dropbtn[aria-expanded="true"] + .drop-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .drop-menu a {
+        padding: 0.75rem;
+        white-space: nowrap;
+        border-bottom: 0;
+    }
+
+    /* Bouton contact desktop */
+
+    .contact {
+        position: static;
+        display: block;
+        min-width: 9.375rem;
+    }
+
+    .contact a {
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+    }
+
+
+}
+/* =========================
+   5. VERSION TABLETTE
+========================= */
+
+@media (max-width: 1024px) and (min-width: 425px) {
+    .nav-bar {
+        max-width: 1024px;
+        min-height: 88px;
+        margin: 0 auto;
+        padding: 0.625rem 1.5rem;
+    }
+
+    .logo-img {
+        width: 4.5rem;
+    }
+
+    .nav-menu {
+        gap: 1.25rem;
+    }
+
+    .nav-list > li > a,
+    .dropbtn {
+        font-size: 1.125rem;
+    }
+}
+
+/* ==================================================
+   FOOTER — MOBILE FIRST
+================================================== */
+
+.footer {
+    width: 100%;
+    color: var(--blanc);
+    background-color: var(--carbone);
+
+    /* Démarcation rouge avec le contenu principal */
+    
+    border-top: 3px solid var( --rouge-rgr);
+}
+
+/* Séparation sous le logo et la phrase */
+
+.footer__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 24px 20px;
+    
+    border-bottom: 1px solid var(--bordure);
+}
+
+/* Séparation des trois informations */
+
+.footer__section {
+    padding: 28px 20px;
+}
+
+.footer__section:not(:last-child) {
+    border-bottom: 1px solid var(--bordure);
+}
+
+/* Séparation de la partie réseaux sociaux */
+
+.footer__social {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 24px 20px;
+    background-color: #101011;
+
+    border-top: 1px solid var(--bordure);
+    border-bottom: 1px solid var(--bordure);
+}
+
+/* Séparation de la barre légale */
+
+.footer__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px 20px;
+    color: var(--gris-metal);
+    font-size: 0.75rem;
+    background-color: var(--noir);
+}
+
+/* ==============================
+   EN-TÊTE
+============================== */
+
+.footer__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--bordure);
+}
+
+.footer__brand {
+    display: inline-flex;
+    align-items: center;
+}
+
+.footer__logo {
+    display: block;
+    width: 72px;
+    height: auto;
+}
+
+.footer__tagline {
+    color: var(--gris-metal);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+/* ==============================
+   INFORMATIONS PRINCIPALES
+============================== */
+
+.footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.footer__section {
+    padding: 28px 20px;
+    border-bottom: 1px solid var(--bordure);
+}
+
+.footer__title {
+    position: relative;
+    margin-bottom: 22px;
+    padding-bottom: 10px;
+    color: var(--blanc);
+    font-family: var(--police-titre);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.footer__title::after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 36px;
+    height: 3px;
+    content: "";
+    background-color: var(--rouge-rgr);
+}
+
+/* ==============================
+   LISTES ET LIENS
+============================== */
+
+.footer__list {
+    list-style: none;
+}
+
+.footer__item + .footer__item {
+    margin-top: 12px;
+}
+
+.footer__link {
+    display: inline-block;
+    color: var(--gris-metal);
+    font-size: 0.9rem;
+    line-height: 1.6;
+
+    transition:
+        color var(--transition-rapide),
+        transform var(--transition-rapide);
+}
+
+.footer__link:hover,
+.footer__link:focus-visible {
+    color: var(--rouge-rgr);
+    transform: translateX(4px);
+}
+
+.footer__link--important {
+    color: var(--blanc);
+    font-family: var(--police-titre);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+/* ==============================
+   HORAIRES
+============================== */
+
+.footer__hours {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer__hour {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    color: var(--gris-metal);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.footer__day {
+    color: var(--blanc);
+    font-weight: 500;
+}
+
+.footer__time {
+    flex-shrink: 0;
+    text-align: right;
+}
+
+/* ==============================
+   ADRESSE
+============================== */
+
+.footer__address {
+    color: var(--gris-metal);
+    font-size: 0.9rem;
+    font-style: normal;
+    line-height: 1.7;
+}
+
+.footer__address p {
+    max-width: 260px;
+    margin-bottom: 16px;
+}
+
+.footer__map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 4px;
+    color: var(--blanc);
+    border-bottom: 1px solid var(--rouge-rgr);
+
+    transition:
+        gap var(--transition-rapide),
+        color var(--transition-rapide);
+}
+
+.footer__map-link:hover,
+.footer__map-link:focus-visible {
+    gap: 12px;
+    color: var(--rouge-rgr);
+}
+
+/* ==============================
+   RÉSEAUX SOCIAUX
+============================== */
+
+.footer__social {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 24px 20px;
+    background-color: #101011;
+    border-bottom: 1px solid var(--bordure);
+}
+
+.footer__social-title {
+    color: var(--blanc);
+    font-family: var(--police-titre);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.footer__social-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    list-style: none;
+}
+
+.footer__social-item {
+    min-width: 0;
+}
+
+.footer__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 12px;
+    color: var(--blanc);
+    font-family: var(--police-titre);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-align: center;
+    text-transform: uppercase;
+    background-color: var(--carbone);
+    border: 1px solid var(--bordure);
+
+    transition:
+        color var(--transition-rapide),
+        border-color var(--transition-rapide),
+        background-color var(--transition-rapide);
+}
+
+.footer__social-link:hover,
+.footer__social-link:focus-visible {
+    color: var(--rouge-rgr);
+    background-color: var(--noir);
+    border-color: var(--rouge-rgr);
+}
+
+
+.footer__social-icon {
+    width: 30px;
+    height: 30px;
+    fill: currentColor;
+
+    filter: brightness(0) invert(1);
+
+    opacity: 0.85;
+    transition:
+        color var(--transition-rapide),
+        transform var(--transition-rapide);
+}
+
+.footer__social-link:hover .footer__social-icon {
+    color: var(--rouge-rgr);
+    transform: translateY(-2px);
+}
+
+/* ==============================
+   INFORMATIONS LÉGALES
+============================== */
+
+.footer__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px 20px;
+    color: var(--gris-metal);
+    font-size: 0.75rem;
+    background-color: var(--noir);
+}
+
+.footer__legal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.footer__legal-link {
+    color: var(--gris-metal);
+    transition: color var(--transition-rapide);
+}
+
+.footer__legal-link:hover,
+.footer__legal-link:focus-visible {
+    color: var(--rouge-rgr);
+}
+
+/* ==============================
+   ACCESSIBILITÉ
+============================== */
+
+.footer__link:focus-visible,
+.footer__map-link:focus-visible,
+.footer__social-link:focus-visible,
+.footer__legal-link:focus-visible {
+    outline: 2px solid var(--rouge-rgr);
+    outline-offset: 4px;
+}
+
+/* ==================================================
+   TABLETTE
+================================================== */
+
+@media screen and (min-width: 700px) {
+    .footer__header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 26px 40px;
+    }
+
+    .footer__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer__section {
+        padding: 32px 40px;
+    }
+
+    .footer__section:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .footer__social {
+        padding: 24px 40px;
+    }
+
+    .footer__social-list {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .footer__bottom {
+        padding: 22px 40px;
+    }
+
+    .footer__legal {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+}
+
+/* ==================================================
+   DESKTOP
+================================================== */
+
+@media screen and (min-width: 1000px) {
+    .footer__header,
+    .footer__grid,
+    .footer__social,
+    .footer__bottom {
+        padding-right:
+            max(
+                48px,
+                calc((100vw - var(--container-width)) / 2)
+            );
+
+        padding-left:
+            max(
+                48px,
+                calc((100vw - var(--container-width)) / 2)
+            );
+    }
+
+    .footer__header {
+        padding-top: 26px;
+        padding-bottom: 26px;
+    }
+
+    .footer__logo {
+        width: 84px;
+    }
+
+    .footer__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .footer__section {
+        min-height: 230px;
+        padding-top: 36px;
+        padding-bottom: 36px;
+        border-right: 1px solid var(--bordure);
+        border-bottom: 0;
+    }
+
+    .footer__section:first-child {
+        padding-left: 0;
+    }
+
+    .footer__section:not(:first-child) {
+        padding-left: 40px;
+    }
+
+    .footer__section:last-child {
+        grid-column: auto;
+        padding-right: 0;
+        border-right: 0;
+    }
+
+    /* Réseaux sociaux desktop */
+
+    .footer__social {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .footer__social-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .footer__social-link {
+        width: auto;
+        min-width: 120px;
+    }
+
+    /* Barre légale desktop */
+
+    .footer__bottom {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .footer__legal {
+        flex-direction: row;
+        margin-left: auto;
+    }
+}
