@@ -1,11 +1,28 @@
-    <head>
-        <meta charset="utf-8"/>
+<head>
+    <meta charset="utf-8">
 
-        <title><?php echo $activePage ?? 'RGR France'; ?> </title>
-        
-        <meta name="description" content="Centre d'expertise dédié aux véhicules Ford et Lincoln.">
-        
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-                                
-        <link href="/css/style.css" rel="stylesheet" type="text/css">
-    </head>
+    <title><?= htmlspecialchars($activePage ?? 'RGR France', ENT_QUOTES, 'UTF-8') ?></title>
+
+    <meta
+        name="description"
+        content="<?= htmlspecialchars(
+            $metaDescription ?? "Centre d'expertise dédié aux véhicules Ford et Lincoln.",
+            ENT_QUOTES,
+            'UTF-8'
+        ) ?>"
+    >
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Styles communs à toutes les pages -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <!-- Styles propres à la page actuelle -->
+    <?php if (!empty($pageCss)): ?>
+        <link
+            rel="stylesheet"
+            href="<?= htmlspecialchars($pageCss, ENT_QUOTES, 'UTF-8') ?>"
+        >
+    <?php endif; ?>
+    
+</head>

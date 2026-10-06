@@ -1,6 +1,7 @@
 <?php
-$activePage = 'CGV';
-$pageCss = './css/cgv.css';
+$activePage = 'Conditions générales de vente';
+$metaDescription = 'Consultez les conditions générales de vente de RGR France.';
+$pageCss = '/assets/css/pages/cgv.css';
 ?>
 
 <!DOCTYPE html>

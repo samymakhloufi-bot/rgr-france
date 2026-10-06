@@ -1,5 +1,6 @@
-
-
+<?php
+    require_once __DIR__ . '/config/database.test.php';
+?>
 <footer class="footer">
 
     
@@ -11,7 +12,7 @@
             aria-label="Accueil RGR France"
         >
             <img 
-            src='./images/logo-rgr-vector.svg' 
+            src='assets/images/icons/logo-rgr-vector.svg' 
             class="logo-img" alt='RGR France Logo' 
             title='RGR France Logo' 
             >
@@ -26,8 +27,7 @@
 
    
     <div class="footer__grid">
-
-        <!-- Contact -->
+        
         <section class="footer__section">
 
             <h2 class="footer__title">
@@ -204,7 +204,7 @@
                     aria-label="Suivre RGR France sur Facebook"
                 >
                     <img
-                        src="./images/icons/facebook.svg"
+                        src="assets/images/icons/facebook.svg"
                         class="footer__social-icon"
                         alt=""
                     >
@@ -222,7 +222,7 @@
                     aria-label="Suivre RGR France sur Instagram"
                 >
                     <img
-                        src="./images/icons/instagram.svg"
+                        src="assets/images/icons/instagram.svg"
                         class="footer__social-icon"
                         alt=""
                     >
@@ -240,7 +240,7 @@
                     aria-label="Suivre RGR France sur LinkedIn"
                 >
                     <img
-                        src="./images/icons/linkedin.svg"
+                        src="assets/images/icons/linkedin.svg"
                         class="footer__social-icon"
                         alt=""
                     >
@@ -258,7 +258,7 @@
                     aria-label="Suivre RGR France sur YouTube"
                 >
                     <img
-                        src="./images/icons/youtube.svg"
+                        src="assets/images/icons/youtube.svg"
                         class="footer__social-icon"
                         alt=""
                     >

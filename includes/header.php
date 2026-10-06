@@ -4,7 +4,7 @@
             
                 <div id="logo">
                     <a href="./index.php"> 
-                        <img src='./images/logo-rgr-vector.svg' class="logo-img" alt='RGR France Logo' title='RGR France Logo' />
+                        <img src='assets/images/icons/logo-rgr-vector.svg' class="logo-img" alt='RGR France Logo' title='RGR France Logo' />
                     </a>
                 </div>
                 
