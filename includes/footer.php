@@ -1,6 +1,5 @@
-<?php
-    require_once __DIR__ . '/config/database.test.php';
-?>
+
+
 <footer class="footer">
 
     
@@ -27,7 +26,6 @@
 
    
     <div class="footer__grid">
-        
         <section class="footer__section">
 
             <h2 class="footer__title">

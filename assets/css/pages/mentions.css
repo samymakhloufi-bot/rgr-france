@@ -1,0 +1,278 @@
+/* ==================================================
+   PAGE MENTIONS LÉGALES — MOBILE FIRST
+================================================== */
+
+.mentions-page {
+    color: var(--noir);
+    background-color: #faf8f4;
+}
+
+.mentions-hero {
+    padding: 48px 20px 42px;
+    color: var(--blanc);
+    background:
+        linear-gradient(90deg, rgba(11, 11, 12, 0.98), rgba(20, 20, 20, 0.9)),
+        var(--carbone);
+    border-bottom: 3px solid var(--rouge-rgr);
+}
+
+.mentions-hero__content {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+}
+
+.mentions-hero__eyebrow {
+    margin-bottom: 10px;
+    color: var(--rouge-rgr);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.mentions-hero__title {
+    margin-bottom: 12px;
+    font-family: var(--police-titre);
+    font-size: clamp(2.6rem, 10vw, 4.8rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.mentions-hero__introduction {
+    max-width: 680px;
+    color: var(--gris-metal);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.mentions-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+}
+
+.mentions-summary {
+    padding: 18px;
+    background-color: #eeeae3;
+    border-left: 3px solid var(--rouge-rgr);
+}
+
+.mentions-summary__title {
+    font-family: var(--police-titre);
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.mentions-summary__title::marker {
+    color: var(--rouge-rgr);
+}
+
+.mentions-summary__list {
+    display: grid;
+    gap: 10px;
+    margin-top: 18px;
+    list-style: none;
+}
+
+.mentions-summary__list a {
+    display: block;
+    color: #555559;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    transition:
+        color var(--transition-rapide),
+        transform var(--transition-rapide);
+}
+
+.mentions-summary__list a:hover,
+.mentions-summary__list a:focus-visible {
+    color: var(--rouge-rgr);
+    transform: translateX(4px);
+}
+
+.mentions-content {
+    min-width: 0;
+}
+
+.mentions-section {
+    scroll-margin-top: 100px;
+    padding-bottom: 32px;
+}
+
+.mentions-section + .mentions-section {
+    padding-top: 32px;
+    border-top: 1px solid #dedbd5;
+}
+
+.mentions-section__number {
+    margin-bottom: 7px;
+    color: var(--rouge-rgr) !important;
+    font-family: var(--police-titre);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.mentions-section h2 {
+    margin-bottom: 18px;
+    font-family: var(--police-titre);
+    font-size: clamp(1.65rem, 7vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+}
+
+.mentions-section p,
+.mentions-section dd,
+.mentions-card {
+    color: #454549;
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+
+.mentions-section p + p {
+    margin-top: 14px;
+}
+
+.mentions-section a {
+    color: var(--rouge-rgr);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+.mentions-details {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid #dedbd5;
+}
+
+.mentions-details div {
+    display: grid;
+    gap: 4px;
+    padding: 14px 0;
+    border-bottom: 1px solid #dedbd5;
+}
+
+.mentions-details dt {
+    color: #6c6c70;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.mentions-details dd {
+    margin: 0;
+    color: var(--noir);
+    font-weight: 600;
+}
+
+.mentions-card,
+.mentions-highlight {
+    margin-top: 18px;
+    padding: 18px;
+    background-color: #eeeae3;
+    border-left: 3px solid var(--rouge-rgr);
+}
+
+.mentions-card {
+    font-style: normal;
+}
+
+.mentions-highlight {
+    color: #303034;
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.mentions-summary__list a:focus-visible,
+.mentions-section a:focus-visible {
+    outline: 2px solid var(--rouge-rgr);
+    outline-offset: 4px;
+}
+
+@media screen and (min-width: 700px) {
+    .mentions-hero {
+        padding: 64px 40px 56px;
+    }
+
+    .mentions-layout {
+        padding: 48px 40px 80px;
+    }
+
+    .mentions-summary__list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mentions-details div {
+        grid-template-columns: 190px minmax(0, 1fr);
+        gap: 24px;
+        align-items: baseline;
+    }
+}
+
+@media screen and (min-width: 1000px) {
+    .mentions-hero {
+        padding-right: max(48px, calc((100vw - var(--container-width)) / 2));
+        padding-left: max(48px, calc((100vw - var(--container-width)) / 2));
+    }
+
+    .mentions-layout {
+        grid-template-columns: 260px minmax(0, 1fr);
+        gap: 72px;
+        padding: 64px 48px 96px;
+    }
+
+    .mentions-summary {
+        position: sticky;
+        top: 24px;
+        padding: 0 0 0 18px;
+        background-color: transparent;
+    }
+
+    .mentions-summary__title {
+        cursor: default;
+    }
+
+    .mentions-summary__list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+@media print {
+    .mentions-hero {
+        padding: 20px 0;
+        color: #000;
+        background: none;
+        border-bottom: 2px solid #000;
+    }
+
+    .mentions-hero__eyebrow,
+    .mentions-hero__introduction,
+    .mentions-sidebar {
+        display: none;
+    }
+
+    .mentions-layout {
+        display: block;
+        max-width: none;
+        padding: 24px 0;
+    }
+
+    .mentions-section {
+        break-inside: avoid;
+    }
+}
