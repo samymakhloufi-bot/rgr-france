@@ -1,0 +1,7 @@
+.git
+.gitignore
+.env
+vendor
+node_modules
+uploads
+README_DOCKER.md
