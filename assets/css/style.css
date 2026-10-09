@@ -8,6 +8,18 @@
 3. BOUTON CONTACT MOBILE
 4. VERSION DESKTOP
 5. VERSION TABLETTE
+6. FOOTER — MOBILE FIRST
+7. EN-TÊTE
+8. INFORMATIONS PRINCIPALES
+9. LISTES ET LIENS
+10. HORAIRES
+11. ADRESSE
+12. RÉSEAUX SOCIAUX
+13. INFORMATIONS LÉGALES
+14. ACCESSIBILITÉ
+15. TABLETTE
+16. DESKTOP
+
 ------------------------------------------------------------*/
 
 :root {
@@ -26,6 +38,7 @@
 
     /* Mise en page */
     --container-width: 1344px;
+    --header-height: 5rem;
 
     /* Transitions */
     --transition-rapide: 0.2s ease;
@@ -63,11 +76,22 @@ button {
 ========================= */
 
 header {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
     z-index: 1000;
+
+    transition: transform 250ms ease;
+    transform: translateY(0);
+    
     width: 100%;
+    
     background-color: var(--noir);
     border-bottom: 1px solid rgba(244, 241, 236, 0.12);
+}
+
+header.header-hidden {
+    transform: translateY(-100%);
 }
 
 .nav-bar {
@@ -419,6 +443,12 @@ header {
    5. VERSION TABLETTE
 ========================= */
 
+@media (min-width: 760px) {
+    :root {
+        --header-height: 100px;
+    }
+}
+
 @media (max-width: 1024px) and (min-width: 425px) {
     .nav-bar {
         max-width: 1024px;
@@ -442,7 +472,7 @@ header {
 }
 
 /* ==================================================
-   FOOTER — MOBILE FIRST
+   6.FOOTER — MOBILE FIRST
 ================================================== */
 
 .footer {
@@ -503,7 +533,7 @@ header {
 }
 
 /* ==============================
-   EN-TÊTE
+   7. EN-TÊTE
 ============================== */
 
 .footer__header {
@@ -533,7 +563,7 @@ header {
 }
 
 /* ==============================
-   INFORMATIONS PRINCIPALES
+   8. INFORMATIONS PRINCIPALES
 ============================== */
 
 .footer__grid {
@@ -569,7 +599,7 @@ header {
 }
 
 /* ==============================
-   LISTES ET LIENS
+   9. LISTES ET LIENS
 ============================== */
 
 .footer__list {
@@ -606,7 +636,7 @@ header {
 }
 
 /* ==============================
-   HORAIRES
+   10. HORAIRES
 ============================== */
 
 .footer__hours {
@@ -636,7 +666,7 @@ header {
 }
 
 /* ==============================
-   ADRESSE
+   11. ADRESSE
 ============================== */
 
 .footer__address {
@@ -671,7 +701,7 @@ header {
 }
 
 /* ==============================
-   RÉSEAUX SOCIAUX
+   12. RÉSEAUX SOCIAUX
 ============================== */
 
 .footer__social {
@@ -753,7 +783,7 @@ header {
 }
 
 /* ==============================
-   INFORMATIONS LÉGALES
+   13. INFORMATIONS LÉGALES
 ============================== */
 
 .footer__bottom {
@@ -784,7 +814,7 @@ header {
 }
 
 /* ==============================
-   ACCESSIBILITÉ
+   14. ACCESSIBILITÉ
 ============================== */
 
 .footer__link:focus-visible,
@@ -796,7 +826,7 @@ header {
 }
 
 /* ==================================================
-   TABLETTE
+   15. TABLETTE
 ================================================== */
 
 @media screen and (min-width: 700px) {
@@ -839,7 +869,7 @@ header {
 }
 
 /* ==================================================
-   DESKTOP
+   16. DESKTOP
 ================================================== */
 
 @media screen and (min-width: 1000px) {

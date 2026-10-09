@@ -1,0 +1,357 @@
+/* ==================================================
+   PAGE CONTACT — MOBILE FIRST
+================================================== */
+
+.contact-page {
+    color: var(--noir);
+    background-color: var(--blanc);
+}
+
+/* En-tête de la page */
+
+.contact-hero {
+    padding: 48px 20px 42px;
+    color: var(--blanc);
+    background:
+        linear-gradient(
+            105deg,
+            rgba(11, 11, 12, 0.98),
+            rgba(20, 20, 20, 0.9)
+        ),
+        repeating-linear-gradient(
+            135deg,
+            transparent 0 12px,
+            rgba(255, 255, 255, 0.025) 12px 13px
+        ),
+        var(--carbone);
+    border-bottom: 4px solid var(--rouge-rgr);
+}
+
+.contact-hero__content {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+}
+
+.contact-hero__eyebrow {
+    margin-bottom: 10px;
+    color: var(--rouge-rgr);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.contact-hero__title {
+    max-width: 760px;
+    margin-bottom: 18px;
+    font-family: var(--police-titre);
+    font-size: clamp(2.8rem, 12vw, 4.8rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.contact-hero__introduction {
+    max-width: 650px;
+    color: var(--gris-metal);
+    font-size: 0.9rem;
+    line-height: 1.75;
+}
+
+/* Mise en page */
+
+.contact-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 28px 18px 64px;
+}
+
+/* Formulaire — affiché en premier sur mobile */
+
+.contact-form-section {
+    order: -1;
+    padding: 24px 18px;
+    background-color: #fff;
+    border-top: 4px solid var(--rouge-rgr);
+    box-shadow: 0 14px 36px rgba(11, 11, 12, 0.09);
+}
+
+.contact-form-section__title,
+.contact-information__title {
+    margin-bottom: 8px;
+    font-family: var(--police-titre);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.contact-form-section__introduction {
+    margin-bottom: 26px;
+    color: #66666b;
+    font-size: 0.8rem;
+    line-height: 1.65;
+}
+
+.contact-form__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.contact-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.contact-form__field label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.contact-form__field input,
+.contact-form__field textarea {
+    width: 100%;
+    padding: 12px 0;
+    color: var(--noir);
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid #b8b5b0;
+    border-radius: 0;
+    font: inherit;
+    font-size: 1rem;
+    transition: border-color var(--transition-rapide);
+}
+
+.contact-form__field textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.contact-form__field input:focus,
+.contact-form__field textarea:focus {
+    border-bottom-color: var(--rouge-rgr);
+    outline: 0;
+}
+
+.contact-form__field input:focus-visible,
+.contact-form__field textarea:focus-visible,
+.contact-form__consent input:focus-visible,
+.contact-form__submit:focus-visible {
+    outline: 2px solid var(--rouge-rgr);
+    outline-offset: 4px;
+}
+
+.contact-form__consent {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 24px 0;
+    color: #68686d;
+    font-size: 0.75rem;
+    line-height: 1.55;
+}
+
+.contact-form__consent input {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    accent-color: var(--rouge-rgr);
+}
+
+.contact-form__submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 50px;
+    padding: 12px 24px;
+    color: var(--blanc);
+    background-color: var(--rouge-rgr);
+    border: 0;
+    font-family: var(--police-texte);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+        background-color var(--transition-rapide),
+        transform var(--transition-rapide);
+}
+
+.contact-form__submit:hover {
+    background-color: #c8270f;
+}
+
+.contact-form__submit:active {
+    transform: translateY(1px);
+}
+
+/* Informations de contact */
+
+.contact-information__list {
+    font-style: normal;
+}
+
+.contact-information__item {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid #d2cec7;
+}
+
+.contact-information__number {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    color: var(--rouge-rgr);
+    background-color: var(--noir);
+    font-family: var(--police-titre);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.contact-information__item h3 {
+    margin-bottom: 5px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.contact-information__item p,
+.contact-information__item a {
+    color: #5c5c61;
+    font-size: 0.85rem;
+    line-height: 1.65;
+}
+
+.contact-information__item a:hover,
+.contact-information__item a:focus-visible {
+    color: var(--rouge-rgr);
+}
+
+.contact-information__map-link {
+    display: inline-block;
+    margin-top: 7px;
+    color: var(--rouge-rgr) !important;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Horaires */
+
+.contact-hours {
+    margin-top: 24px;
+    padding: 22px 20px;
+    color: var(--blanc);
+    background-color: var(--carbone);
+    border-left: 4px solid var(--rouge-rgr);
+}
+
+.contact-hours h2 {
+    margin-bottom: 14px;
+    font-family: var(--police-titre);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.contact-hours__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(244, 241, 236, 0.1);
+}
+
+.contact-hours__row:last-child {
+    border-bottom: 0;
+}
+
+.contact-hours__row dt,
+.contact-hours__row dd {
+    font-size: 0.75rem;
+}
+
+.contact-hours__row dt {
+    color: var(--gris-metal);
+}
+
+.contact-hours__row dd {
+    color: var(--blanc);
+    font-weight: 600;
+    text-align: right;
+}
+
+/* ==================================================
+   TABLETTE
+================================================== */
+
+@media screen and (min-width: 700px) {
+    .contact-hero {
+        padding: 64px 40px 56px;
+    }
+
+    .contact-layout {
+        padding: 48px 40px 80px;
+    }
+
+    .contact-form-section {
+        padding: 32px;
+    }
+
+    .contact-form__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px 24px;
+    }
+
+    .contact-form__field--full {
+        grid-column: 1 / -1;
+    }
+
+    .contact-form__submit {
+        width: auto;
+    }
+}
+
+/* ==================================================
+   DESKTOP
+================================================== */
+
+@media screen and (min-width: 1000px) {
+    .contact-hero {
+        padding-right:
+            max(48px, calc((100vw - var(--container-width)) / 2));
+        padding-left:
+            max(48px, calc((100vw - var(--container-width)) / 2));
+    }
+
+    .contact-layout {
+        display: grid;
+        grid-template-columns: minmax(270px, 0.72fr) minmax(520px, 1.28fr);
+        gap: 64px;
+        padding: 64px 48px 96px;
+    }
+
+    .contact-form-section {
+        order: initial;
+        padding: 38px;
+    }
+}

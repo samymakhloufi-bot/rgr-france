@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Entity\Service;
+use App\Entity\User;
 use DateTimeImmutable;
 use PDO;
 use RuntimeException;
 
-final class ServiceRepository
+final class UserRepository
 {
     private PDO $pdo;
 
@@ -18,20 +18,20 @@ final class ServiceRepository
         $this->pdo = $pdo;
     }
 
-    private function hydrate(array $data): Service
+    private function hydrate(array $data): User
     {
-        return new Service(
-            name: $data['name'],
-            slug: $data['slug'],
-            regularPrice: (float) $data['regular_price'],
-            description: $data['description'],
-            promotionalPrice: $data['promotional_price'] === null
-                ? null
-                : (float) $data['promotional_price'],
-            imagePath: $data['image_path'],
+        return new User(
+            username: $data['username'],
+            passwordHash: $data['password_hash'],
+            role: $data['role'],
+            firstName: $data['first_name'],
+            lastName: $data['last_name'],
+            email: $data['email'],
             isActive: (bool) $data['is_active'],
-            displayOrder: (int) $data['display_order'],
             id: (int) $data['id'],
+            lastLoginAt: $data['last_login_at'] === null
+                ? null
+                : new DateTimeImmutable($data['last_login_at']),
             createdAt: new DateTimeImmutable($data['created_at']),
             updatedAt: new DateTimeImmutable($data['updated_at'])
         );
@@ -39,26 +39,26 @@ final class ServiceRepository
 
     private function hydrateAll(array $rows): array
     {
-        $services = [];
+        $users = [];
 
         foreach ($rows as $row) {
-            $services[] = $this->hydrate($row);
+            $users[] = $this->hydrate($row);
         }
 
-        return $services;
+        return $users;
     }
 
-    private function getServiceParameters(Service $service): array
+    private function getUserParameters(User $user): array
     {
         return [
-            'name' => $service->getName(),
-            'slug' => $service->getSlug(),
-            'description' => $service->getDescription(),
-            'regular_price' => $service->getRegularPrice(),
-            'promotional_price' => $service->getPromotionalPrice(),
-            'image_path' => $service->getImagePath(),
-            'is_active' => $service->isActive() ? 1 : 0,
-            'display_order' => $service->getDisplayOrder(),
+            'first_name' => $user->getFirstName(),
+            'last_name' => $user->getLastName(),
+            'email' => $user->getEmail(),
+            'username' => $user->getUsername(),
+            'password_hash' => $user->getPasswordHash(),
+            'role' => $user->getRole(),
+            'is_active' => $user->isActive() ? 1 : 0,
+            'last_login_at' => $user->getLastLoginAt()?->format('Y-m-d H:i:s'),
         ];
     }
 
@@ -66,8 +66,8 @@ final class ServiceRepository
     {
         $stmt = $this->pdo->query(
             'SELECT *
-             FROM services
-             ORDER BY display_order ASC, name ASC'
+             FROM users
+             ORDER BY last_name ASC, first_name ASC, username ASC'
         );
 
         return $this->hydrateAll($stmt->fetchAll());
@@ -77,9 +77,9 @@ final class ServiceRepository
     {
         $stmt = $this->pdo->prepare(
             'SELECT *
-             FROM services
+             FROM users
              WHERE is_active = :is_active
-             ORDER BY display_order ASC, name ASC'
+             ORDER BY last_name ASC, first_name ASC, username ASC'
         );
 
         $stmt->execute([
@@ -89,11 +89,11 @@ final class ServiceRepository
         return $this->hydrateAll($stmt->fetchAll());
     }
 
-    public function findById(int $id): ?Service
+    public function findById(int $id): ?User
     {
         $stmt = $this->pdo->prepare(
             'SELECT *
-             FROM services
+             FROM users
              WHERE id = :id
              LIMIT 1'
         );
@@ -107,17 +107,17 @@ final class ServiceRepository
         return $data === false ? null : $this->hydrate($data);
     }
 
-    public function findBySlug(string $slug): ?Service
+    public function findByUsername(string $username): ?User
     {
         $stmt = $this->pdo->prepare(
             'SELECT *
-             FROM services
-             WHERE slug = :slug
+             FROM users
+             WHERE username = :username
              LIMIT 1'
         );
 
         $stmt->execute([
-            'slug' => $slug,
+            'username' => trim($username),
         ]);
 
         $data = $stmt->fetch();
@@ -125,18 +125,18 @@ final class ServiceRepository
         return $data === false ? null : $this->hydrate($data);
     }
 
-    public function findActiveBySlug(string $slug): ?Service
+    public function findActiveByUsername(string $username): ?User
     {
         $stmt = $this->pdo->prepare(
             'SELECT *
-             FROM services
-             WHERE slug = :slug
+             FROM users
+             WHERE username = :username
                AND is_active = :is_active
              LIMIT 1'
         );
 
         $stmt->execute([
-            'slug' => $slug,
+            'username' => trim($username),
             'is_active' => 1,
         ]);
 
@@ -145,90 +145,108 @@ final class ServiceRepository
         return $data === false ? null : $this->hydrate($data);
     }
 
-    public function save(Service $service): Service
-    {
-        if ($service->getId() === null) {
-            return $this->create($service);
-        }
-
-        return $this->update($service);
-    }
-
-    private function create(Service $service): Service
+    public function findByEmail(string $email): ?User
     {
         $stmt = $this->pdo->prepare(
-            'INSERT INTO services (
-                name,
-                slug,
-                description,
-                regular_price,
-                promotional_price,
-                image_path,
+            'SELECT *
+             FROM users
+             WHERE email = :email
+             LIMIT 1'
+        );
+
+        $stmt->execute([
+            'email' => strtolower(trim($email)),
+        ]);
+
+        $data = $stmt->fetch();
+
+        return $data === false ? null : $this->hydrate($data);
+    }
+
+    public function save(User $user): User
+    {
+        if ($user->getId() === null) {
+            return $this->create($user);
+        }
+
+        return $this->update($user);
+    }
+
+    private function create(User $user): User
+    {
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO users (
+                first_name,
+                last_name,
+                email,
+                username,
+                password_hash,
+                role,
                 is_active,
-                display_order
+                last_login_at
             ) VALUES (
-                :name,
-                :slug,
-                :description,
-                :regular_price,
-                :promotional_price,
-                :image_path,
+                :first_name,
+                :last_name,
+                :email,
+                :username,
+                :password_hash,
+                :role,
                 :is_active,
-                :display_order
+                :last_login_at
             )'
         );
 
-        $stmt->execute($this->getServiceParameters($service));
+        $stmt->execute($this->getUserParameters($user));
 
-        $serviceId = (int) $this->pdo->lastInsertId();
-        $createdService = $this->findById($serviceId);
+        $userId = (int) $this->pdo->lastInsertId();
+        $createdUser = $this->findById($userId);
 
-        if ($createdService === null) {
-            throw new RuntimeException('Le service créé est introuvable.');
+        if ($createdUser === null) {
+            throw new RuntimeException('L’utilisateur créé est introuvable.');
         }
 
-        return $createdService;
+        return $createdUser;
     }
 
-    private function update(Service $service): Service
+    private function update(User $user): User
     {
-        $serviceId = $service->getId();
+        $userId = $user->getId();
 
-        if ($serviceId === null) {
-            throw new RuntimeException('Impossible de modifier un service sans identifiant.');
+        if ($userId === null) {
+            throw new RuntimeException('Impossible de modifier un utilisateur sans identifiant.');
         }
 
         $stmt = $this->pdo->prepare(
-            'UPDATE services SET
-                name = :name,
-                slug = :slug,
-                description = :description,
-                regular_price = :regular_price,
-                promotional_price = :promotional_price,
-                image_path = :image_path,
+            'UPDATE users SET
+                first_name = :first_name,
+                last_name = :last_name,
+                email = :email,
+                username = :username,
+                password_hash = :password_hash,
+                role = :role,
                 is_active = :is_active,
-                display_order = :display_order
+                last_login_at = :last_login_at
              WHERE id = :id'
         );
 
-        $parameters = $this->getServiceParameters($service);
-        $parameters['id'] = $serviceId;
+        $parameters = $this->getUserParameters($user);
+        $parameters['id'] = $userId;
 
         $stmt->execute($parameters);
 
-        $updatedService = $this->findById($serviceId);
+        $updatedUser = $this->findById($userId);
 
-        if ($updatedService === null) {
-            throw new RuntimeException('Le service modifié est introuvable.');
+        if ($updatedUser === null) {
+            throw new RuntimeException('L’utilisateur modifié est introuvable.');
         }
 
-        return $updatedService;
+        return $updatedUser;
     }
 
     public function delete(int $id): bool
     {
         $stmt = $this->pdo->prepare(
-            'DELETE FROM services
+            'DELETE FROM users
              WHERE id = :id'
         );
 
