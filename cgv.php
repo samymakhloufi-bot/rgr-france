@@ -6,7 +6,7 @@ $metaDescription = 'Conditions générales applicables aux prestations et ventes
 $pageCss = '/assets/css/pages/legal.css';
 
 
-    require_once __DIR__ . '/config/database.test.php';
+    require_once __DIR__ . '/config/database.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">

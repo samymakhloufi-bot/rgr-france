@@ -9,9 +9,120 @@ CREATE DATABASE IF NOT EXISTS rgr_france
 USE rgr_france;
 
 -- ------------------------------------------------------------
+-- INFORMATIONS RGR FRANCE
+-- ------------------------------------------------------------
+
+CREATE TABLE company_information (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    company_name VARCHAR(150) NOT NULL,
+    legal_form VARCHAR(100) NULL,
+    siren VARCHAR(20) NULL,
+
+    phone VARCHAR(30) NOT NULL,
+    email VARCHAR(190) NOT NULL,
+
+    address_line VARCHAR(255) NOT NULL,
+    postal_code VARCHAR(20) NOT NULL,
+    city VARCHAR(120) NOT NULL,
+    country VARCHAR(100) NOT NULL DEFAULT 'France',
+
+    google_maps_url VARCHAR(500) NULL,
+
+    facebook_url VARCHAR(500) NULL,
+    instagram_url VARCHAR(500) NULL,
+    linkedin_url VARCHAR(500) NULL,
+    youtube_url VARCHAR(500) NULL,
+
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP
+);
+
+INSERT INTO company_information (
+    company_name,
+    legal_form,
+    siren,
+    phone,
+    email,
+    address_line,
+    postal_code,
+    city,
+    country,
+    google_maps_url,
+    facebook_url,
+    instagram_url,
+    linkedin_url,
+    youtube_url
+) VALUES (
+    'RGR France',
+    'SAS',
+    '999227572',
+    '0749848045',
+    'contact@rgrfrance.fr',
+    '19 rue des Fours Banaux',
+    '89690',
+    'Chéroy',
+    'France',
+    'https://www.google.com/maps/search/?api=1&query=19+rue+des+Fours+Banaux+89690+Chéroy',
+    'https://www.facebook.com/RGRofficiel',
+    'https://www.instagram.com/rgr_inst/',
+    'https://www.linkedin.com/in/rgr-france',
+    'https://www.youtube.com/@RGR_officiel'
+);
+-- ------------------------------------------------------------
+-- HEURES D’OUVERTURE
+-- ------------------------------------------------------------
+
+CREATE TABLE opening_hours (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    company_information_id INT UNSIGNED NOT NULL,
+    day_number TINYINT UNSIGNED NOT NULL,
+    day_name VARCHAR(20) NOT NULL,
+
+    morning_open TIME NULL,
+    morning_close TIME NULL,
+    afternoon_open TIME NULL,
+    afternoon_close TIME NULL,
+
+    is_closed BOOLEAN NOT NULL DEFAULT FALSE,
+
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_opening_hours_company
+        FOREIGN KEY (company_information_id)
+        REFERENCES company_information(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT uq_company_day
+        UNIQUE (company_information_id, day_number),
+
+    CONSTRAINT chk_day_number
+        CHECK (day_number BETWEEN 1 AND 7)
+);
+
+INSERT INTO opening_hours (
+    company_information_id,
+    day_number,
+    day_name,
+    morning_open,
+    morning_close,
+    afternoon_open,
+    afternoon_close,
+    is_closed
+) VALUES
+(1, 1, 'Lundi',    '09:00:00', '12:00:00', '14:00:00', '18:00:00', FALSE),
+(1, 2, 'Mardi',    '09:00:00', '12:00:00', '14:00:00', '18:00:00', FALSE),
+(1, 3, 'Mercredi', '09:00:00', '12:00:00', '14:00:00', '18:00:00', FALSE),
+(1, 4, 'Jeudi',    '09:00:00', '12:00:00', '14:00:00', '18:00:00', FALSE),
+(1, 5, 'Vendredi', '09:00:00', '12:00:00', '14:00:00', '18:00:00', FALSE),
+(1, 6, 'Samedi',   NULL,       NULL,       NULL,       NULL,       TRUE),
+(1, 7, 'Dimanche', NULL,       NULL,       NULL,       NULL,       TRUE);
+-- ------------------------------------------------------------
 -- COMPTES INTERNES
--- Une seule table pour les employés et administrateurs.
--- password_hash reçoit le résultat de password_hash() en PHP.
 -- ------------------------------------------------------------
 
 CREATE TABLE users (

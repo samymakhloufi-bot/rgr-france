@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-$host = getenv('DB_HOST') ?: 'localhost';
-$port = getenv('DB_PORT') ?: '3306';
-$database = getenv('DB_NAME') ?: 'rgr_france';
-$username = getenv('DB_USER') ?: 'root';
-$password = getenv('DB_PASSWORD') ?: '';
+$dbHost = (string) (getenv('DB_HOST') ?: 'db');
+$dbPort = (int) (getenv('DB_PORT') ?: 3306);
+$dbName = (string) (getenv('DB_NAME') ?: 'rgr_france');
+$dbUser = (string) (getenv('DB_USER') ?: 'rgr_user');
+$dbPassword = (string) (getenv('DB_PASSWORD') ?: '');
 
 $dsn = sprintf(
-    'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
-    $host,
-    $port,
-    $database
+    'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
+    $dbHost,
+    $dbPort,
+    $dbName
 );
 
 try {
     $pdo = new PDO(
         $dsn,
-        $username,
-        $password,
+        $dbUser,
+        $dbPassword,
         [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -27,14 +27,9 @@ try {
         ]
     );
 } catch (PDOException $exception) {
-    $debugEnabled = filter_var(
-        getenv('APP_DEBUG') ?: false,
-        FILTER_VALIDATE_BOOLEAN
-    );
+    error_log($exception->getMessage());
 
-    if ($debugEnabled) {
-        exit('Connexion à la base impossible : ' . $exception->getMessage());
-    }
-
-    exit('Le site rencontre momentanément un problème technique.');
+    http_response_code(500);
+    exit('Connexion à la base de données impossible.');
 }
+

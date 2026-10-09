@@ -3,19 +3,26 @@
 declare(strict_types=1);
 
 use App\Entity\ContactRequest;
+use App\Repository\CompanyInformationRepository;
 use App\Repository\ContactRequestRepository;
+use App\Repository\OpeningHourRepository;
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+require_once __DIR__ . '/config/app.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/src/Entity/ContactRequest.php';
+require_once __DIR__ . '/src/Entity/CompanyInformation.php';
+require_once __DIR__ . '/src/Entity/OpeningHour.php';
 require_once __DIR__ . '/src/Repository/ContactRequestRepository.php';
+require_once __DIR__ . '/src/Repository/CompanyInformationRepository.php';
+require_once __DIR__ . '/src/Repository/OpeningHourRepository.php';
 
 $activePage = 'Nous contacter';
 $metaDescription = 'Contactez RGR France pour votre projet d’importation, d’homologation, de programmation ou de recherche de véhicule.';
-$pageCss = '/assets/css/pages/contact.css';
+$pageCss = '/assets/css/pages/forms.css';
 
 $_SESSION['contact_csrf_token'] ??= bin2hex(random_bytes(32));
 
@@ -33,11 +40,13 @@ $redirectWithErrors = static function (array $errors, array $old): never {
     $_SESSION['contact_errors'] = $errors;
     $_SESSION['contact_old'] = $old;
 
-    header('Location: /contact.php');
+    header('Location: ' . BASE_URL . '/contact.php');
     exit;
 };
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $errors = [];
+
     $firstName = trim((string) ($_POST['first_name'] ?? ''));
     $lastName = trim((string) ($_POST['last_name'] ?? ''));
     $email = strtolower(trim((string) ($_POST['email'] ?? '')));
@@ -62,11 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'privacy_consent' => $privacyConsent,
     ];
 
-    // Honeypot antispam
     if ($website !== '') {
         $_SESSION['contact_success'] = 'Votre demande a bien été envoyée.';
-
-        header('Location: /contact.php');
+        header('Location: ' . BASE_URL . '/contact.php');
         exit;
     }
 
@@ -149,8 +156,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             privacyConsent: true
         );
 
-        $pdo = getDatabaseConnection();
-
         $contactRequestRepository = new ContactRequestRepository($pdo);
         $contactRequestRepository->save($contactRequest);
 
@@ -161,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $_SESSION['contact_csrf_token'] = bin2hex(random_bytes(32));
 
-        header('Location: /contact.php');
+        header('Location: ' . BASE_URL . '/contact.php');
         exit;
     } catch (Throwable $exception) {
         error_log($exception->getMessage());
@@ -173,230 +178,327 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-?>
+$companyInformation = null;
+$openingHours = [];
 
+try {
+    $companyRepository = new CompanyInformationRepository($pdo);
+    $openingHourRepository = new OpeningHourRepository($pdo);
+
+    $companyInformation = $companyRepository->findMain();
+    $companyId = $companyInformation?->getId();
+
+    if ($companyId !== null) {
+        $openingHours = $openingHourRepository->findByCompany($companyId);
+    }
+} catch (Throwable $exception) {
+    error_log(
+        'Impossible de charger les coordonnées de contact : '
+        . $exception->getMessage()
+    );
+}
+
+$escape = static function (?string $value): string {
+    return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
+};
+
+$formatTime = static function (?string $time): string {
+    return $time === null ? '' : substr($time, 0, 5);
+};
+
+$companyPhone = $companyInformation?->getPhone() ?? '07 49 84 80 45';
+$companyPhoneHref = preg_replace('/[^0-9+]/', '', $companyPhone) ?: '';
+$companyEmail = $companyInformation?->getEmail() ?? 'contact@rgrfrance.fr';
+$companyAddress = $companyInformation?->getAddressLine()
+    ?? '19 rue des Fours Banaux';
+$companyPostalCode = $companyInformation?->getPostalCode() ?? '89690';
+$companyCity = $companyInformation?->getCity() ?? 'Chéroy';
+$companyMapUrl = $companyInformation?->getGoogleMapsUrl()
+    ?? 'https://www.google.com/maps/search/?api=1&query=19+rue+des+Fours+Banaux+89690+Chéroy';
+?>
 <!DOCTYPE html>
 <html lang="fr">
+    <?php include __DIR__ . '/includes/head.php'; ?>
 
-<?php include __DIR__ . '/includes/head.php'; ?>
+    <body>
+        <?php include __DIR__ . '/includes/header.php'; ?>
 
-<body>
-    <?php include __DIR__ . '/includes/header.php'; ?>
+        <main class="contact-page">
+            <header class="contact-hero">
+                <div class="contact-hero__content">
+                    <p class="contact-hero__eyebrow">RGR France · Chéroy</p>
+                    <h1 class="contact-hero__title">Parlons de votre projet</h1>
+                    <p class="contact-hero__introduction">
+                        Importation, homologation, programmation ou recherche d’un
+                        véhicule : décrivez-nous votre besoin et notre équipe vous
+                        répondra rapidement.
+                    </p>
+                </div>
+            </header>
 
-    <main class="contact-page">
-        <header class="contact-hero">
-            <div class="contact-hero__content">
-                <p class="contact-hero__eyebrow">RGR France · Chéroy</p>
+            <div class="contact-layout">
+                <aside class="contact-information" aria-labelledby="contact-information-title">
+                    <h2 class="contact-information__title" id="contact-information-title">
+                        Contact direct
+                    </h2>
 
-                <h1 class="contact-hero__title">
-                    Parlons de votre projet
-                </h1>
-
-                <p class="contact-hero__introduction">
-                    Importation, homologation, programmation ou recherche d’un
-                    véhicule : décrivez-nous votre besoin et notre équipe vous
-                    répondra rapidement.
-                </p>
-            </div>
-        </header>
-
-        <div class="contact-layout">
-            <aside class="contact-information" aria-labelledby="contact-information-title">
-                <h2 class="contact-information__title" id="contact-information-title">
-                    Contact direct
-                </h2>
-
-                <address class="contact-information__list">
-                    <div class="contact-information__item">
-                        <span class="contact-information__number" aria-hidden="true">01</span>
-
-                        <div>
-                            <h3>Téléphone</h3>
-                            <a href="tel:+33749848045">07 49 84 80 45</a>
-                        </div>
-                    </div>
-
-                    <div class="contact-information__item">
-                        <span class="contact-information__number" aria-hidden="true">02</span>
-
-                        <div>
-                            <h3>Adresse e-mail</h3>
-                            <a href="mailto:contact@rgrfrance.fr">
-                                contact@rgrfrance.fr
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="contact-information__item">
-                        <span class="contact-information__number" aria-hidden="true">03</span>
-
-                        <div>
-                            <h3>Le garage</h3>
-                            <p>19 rue des Fours Banaux<br>89690 Chéroy</p>
-
-                            <a
-                                class="contact-information__map-link"
-                                href="https://www.google.com/maps/search/?api=1&query=19+rue+des+Fours+Banaux+89690+Ch%C3%A9roy"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                Voir sur Google Maps
-                            </a>
-                        </div>
-                    </div>
-                </address>
-
-                <section class="contact-hours" aria-labelledby="contact-hours-title">
-                    <h2 id="contact-hours-title">Horaires d’ouverture</h2>
-
-                    <dl class="contact-hours__list">
-                        <div class="contact-hours__row">
-                            <dt>Lundi — Vendredi</dt>
-                            <dd>09:00 — 18:00</dd>
+                    <address class="contact-information__list">
+                        <div class="contact-information__item">
+                            <span class="contact-information__number" aria-hidden="true">01</span>
+                            <div>
+                                <h3>Téléphone</h3>
+                                <a href="tel:<?= $escape($companyPhoneHref) ?>">
+                                    <?= $escape($companyPhone) ?>
+                                </a>
+                            </div>
                         </div>
 
-                        <div class="contact-hours__row">
-                            <dt>Samedi</dt>
-                            <dd>Sur rendez-vous</dd>
+                        <div class="contact-information__item">
+                            <span class="contact-information__number" aria-hidden="true">02</span>
+                            <div>
+                                <h3>Adresse e-mail</h3>
+                                <a href="mailto:<?= $escape($companyEmail) ?>">
+                                    <?= $escape($companyEmail) ?>
+                                </a>
+                            </div>
                         </div>
 
-                        <div class="contact-hours__row">
-                            <dt>Dimanche</dt>
-                            <dd>Fermé</dd>
+                        <div class="contact-information__item">
+                            <span class="contact-information__number" aria-hidden="true">03</span>
+                            <div>
+                                <h3>Le garage</h3>
+                                <p>
+                                    <?= $escape($companyAddress) ?><br>
+                                    <?= $escape($companyPostalCode) ?> <?= $escape($companyCity) ?>
+                                </p>
+                                <a
+                                    class="contact-information__map-link"
+                                    href="<?= $escape($companyMapUrl) ?>"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Voir sur Google Maps
+                                </a>
+                            </div>
                         </div>
-                    </dl>
-                </section>
-            </aside>
+                    </address>
 
-            <section class="contact-form-section" aria-labelledby="contact-form-title">
-                <h2 class="contact-form-section__title" id="contact-form-title">
-                    Votre demande
-                </h2>
+                    <section class="contact-hours" aria-labelledby="contact-hours-title">
+                        <h2 id="contact-hours-title">Horaires d’ouverture</h2>
 
-                <p class="contact-form-section__introduction">
-                    Les champs marqués d’un astérisque sont nécessaires pour
-                    pouvoir vous répondre.
-                </p>
+                        <?php if ($openingHours !== []): ?>
+                            <dl class="contact-hours__list">
+                                <?php foreach ($openingHours as $openingHour): ?>
+                                    <div class="contact-hours__row">
+                                        <dt><?= $escape($openingHour->getDayName()) ?></dt>
+                                        <dd>
+                                            <?php if ($openingHour->isClosed()): ?>
+                                                Fermé
+                                            <?php else: ?>
+                                                <?php if ($openingHour->getMorningOpen() !== null): ?>
+                                                    <?= $escape($formatTime($openingHour->getMorningOpen())) ?>–<?= $escape($formatTime($openingHour->getMorningClose())) ?>
+                                                <?php endif; ?>
+                                                <?php if (
+                                                    $openingHour->getMorningOpen() !== null
+                                                    && $openingHour->getAfternoonOpen() !== null
+                                                ): ?>
+                                                    / 
+                                                <?php endif; ?>
+                                                <?php if ($openingHour->getAfternoonOpen() !== null): ?>
+                                                    <?= $escape($formatTime($openingHour->getAfternoonOpen())) ?>–<?= $escape($formatTime($openingHour->getAfternoonClose())) ?>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+                                        </dd>
+                                    </div>
+                                <?php endforeach; ?>
+                            </dl>
+                        <?php else: ?>
+                            <p>Horaires disponibles prochainement.</p>
+                        <?php endif; ?>
+                    </section>
+                </aside>
 
-                <form class="contact-form" action="/actions/contact.php" method="post">
-                    <div class="contact-form__grid">
-                        <div class="contact-form__field">
-                            <label for="first_name">Prénom *</label>
-                            <input
-                                id="first_name"
-                                name="first_name"
-                                type="text"
-                                autocomplete="given-name"
-                                maxlength="100"
-                                required
-                            >
+                <section class="contact-form-section form-card" aria-labelledby="contact-form-title">
+                    <h2 class="form-card__title" id="contact-form-title">
+                        Votre demande
+                    </h2>
+                    <p class="form-card__introduction">
+                        Les champs marqués d’un astérisque sont nécessaires pour
+                        pouvoir vous répondre.
+                    </p>
+
+                    <?php if (is_string($contactSuccess) && $contactSuccess !== ''): ?>
+                        <div class="form-alert form-alert--success" role="status">
+                            <?= $escape($contactSuccess) ?>
                         </div>
+                    <?php endif; ?>
 
-                        <div class="contact-form__field">
-                            <label for="last_name">Nom *</label>
-                            <input
-                                id="last_name"
-                                name="last_name"
-                                type="text"
-                                autocomplete="family-name"
-                                maxlength="100"
-                                required
-                            >
+                    <?php if ($errors !== []): ?>
+                        <div class="form-alert form-alert--error" role="alert">
+                            <ul class="form-alert__list">
+                                <?php foreach ($errors as $error): ?>
+                                    <li><?= $escape((string) $error) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
                         </div>
+                    <?php endif; ?>
 
-                        <div class="contact-form__field">
-                            <label for="email">Adresse e-mail *</label>
-                            <input
-                                id="email"
-                                name="email"
-                                type="email"
-                                autocomplete="email"
-                                maxlength="190"
-                                required
-                            >
-                        </div>
-
-                        <div class="contact-form__field">
-                            <label for="phone">Téléphone</label>
-                            <input
-                                id="phone"
-                                name="phone"
-                                type="tel"
-                                autocomplete="tel"
-                                maxlength="30"
-                            >
-                        </div>
-
-                        <div class="contact-form__field contact-form__field--full">
-                            <label for="postal_address">Adresse postale</label>
-                            <input
-                                id="postal_address"
-                                name="postal_address"
-                                type="text"
-                                autocomplete="street-address"
-                                maxlength="255"
-                            >
-                        </div>
-
-                        <div class="contact-form__field">
-                            <label for="postal_code">Code postal</label>
-                            <input
-                                id="postal_code"
-                                name="postal_code"
-                                type="text"
-                                autocomplete="postal-code"
-                                inputmode="numeric"
-                                maxlength="20"
-                            >
-                        </div>
-
-                        <div class="contact-form__field">
-                            <label for="city">Ville</label>
-                            <input
-                                id="city"
-                                name="city"
-                                type="text"
-                                autocomplete="address-level2"
-                                maxlength="120"
-                            >
-                        </div>
-
-                        <div class="contact-form__field contact-form__field--full">
-                            <label for="message">Votre message *</label>
-                            <textarea
-                                id="message"
-                                name="message"
-                                rows="6"
-                                maxlength="5000"
-                                required
-                            ></textarea>
-                        </div>
-                    </div>
-
-                    <label class="contact-form__consent" for="privacy_consent">
+                    <form
+                        class="contact-form"
+                        action="<?= $escape(BASE_URL . '/contact.php') ?>"
+                        method="post"
+                    >
                         <input
-                            id="privacy_consent"
-                            name="privacy_consent"
-                            type="checkbox"
-                            value="1"
-                            required
+                            type="hidden"
+                            name="csrf_token"
+                            value="<?= $escape((string) $_SESSION['contact_csrf_token']) ?>"
                         >
 
-                        <span>
-                            J’accepte que mes informations soient utilisées par
-                            RGR France pour traiter ma demande. *
-                        </span>
-                    </label>
+                        <div class="form-honeypot" aria-hidden="true">
+                            <label for="website">Site internet</label>
+                            <input
+                                id="website"
+                                name="website"
+                                type="text"
+                                tabindex="-1"
+                                autocomplete="off"
+                            >
+                        </div>
 
-                    <button class="contact-form__submit" type="submit">
-                        Envoyer ma demande
-                        <span aria-hidden="true">→</span>
-                    </button>
-                </form>
-            </section>
-        </div>
-    </main>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label class="form-field__label" for="first_name">Prénom *</label>
+                                <input
+                                    class="form-field__input"
+                                    id="first_name"
+                                    name="first_name"
+                                    type="text"
+                                    value="<?= $escape((string) ($old['first_name'] ?? '')) ?>"
+                                    autocomplete="given-name"
+                                    maxlength="100"
+                                    required
+                                >
+                            </div>
 
-    <?php include __DIR__ . '/includes/footer.php'; ?>
-</body>
+                            <div class="form-field">
+                                <label class="form-field__label" for="last_name">Nom *</label>
+                                <input
+                                    class="form-field__input"
+                                    id="last_name"
+                                    name="last_name"
+                                    type="text"
+                                    value="<?= $escape((string) ($old['last_name'] ?? '')) ?>"
+                                    autocomplete="family-name"
+                                    maxlength="100"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-field__label" for="email">Adresse e-mail *</label>
+                                <input
+                                    class="form-field__input"
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    value="<?= $escape((string) ($old['email'] ?? '')) ?>"
+                                    autocomplete="email"
+                                    maxlength="190"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-field__label" for="phone">Téléphone</label>
+                                <input
+                                    class="form-field__input"
+                                    id="phone"
+                                    name="phone"
+                                    type="tel"
+                                    value="<?= $escape((string) ($old['phone'] ?? '')) ?>"
+                                    autocomplete="tel"
+                                    maxlength="30"
+                                >
+                            </div>
+
+                            <div class="form-field form-field--full">
+                                <label class="form-field__label" for="postal_address">Adresse postale</label>
+                                <input
+                                    class="form-field__input"
+                                    id="postal_address"
+                                    name="postal_address"
+                                    type="text"
+                                    value="<?= $escape((string) ($old['postal_address'] ?? '')) ?>"
+                                    autocomplete="street-address"
+                                    maxlength="255"
+                                >
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-field__label" for="postal_code">Code postal</label>
+                                <input
+                                    class="form-field__input"
+                                    id="postal_code"
+                                    name="postal_code"
+                                    type="text"
+                                    value="<?= $escape((string) ($old['postal_code'] ?? '')) ?>"
+                                    autocomplete="postal-code"
+                                    inputmode="numeric"
+                                    maxlength="20"
+                                >
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-field__label" for="city">Ville</label>
+                                <input
+                                    class="form-field__input"
+                                    id="city"
+                                    name="city"
+                                    type="text"
+                                    value="<?= $escape((string) ($old['city'] ?? '')) ?>"
+                                    autocomplete="address-level2"
+                                    maxlength="120"
+                                >
+                            </div>
+
+                            <div class="form-field form-field--full">
+                                <label class="form-field__label" for="message">Votre message *</label>
+                                <textarea
+                                    class="form-field__input"
+                                    id="message"
+                                    name="message"
+                                    rows="6"
+                                    maxlength="5000"
+                                    required
+                                ><?= $escape((string) ($old['message'] ?? '')) ?></textarea>
+                            </div>
+                        </div>
+
+                        <label class="form-consent" for="privacy_consent">
+                            <input
+                                class="form-consent__checkbox"
+                                id="privacy_consent"
+                                name="privacy_consent"
+                                type="checkbox"
+                                value="1"
+                                <?= !empty($old['privacy_consent']) ? 'checked' : '' ?>
+                                required
+                            >
+                            <span>
+                                J’accepte que mes informations soient utilisées par
+                                RGR France pour traiter ma demande. *
+                            </span>
+                        </label>
+
+                        <button class="form-submit" type="submit">
+                            Envoyer ma demande
+                            <span aria-hidden="true">→</span>
+                        </button>
+                    </form>
+                </section>
+            </div>
+        </main>
+
+        <?php include __DIR__ . '/includes/footer.php'; ?>
+    </body>
 </html>

@@ -6,7 +6,7 @@ $activePage = 'Homologation';
 $metaDescription = 'RGR France prend en charge l’homologation et la francisation de votre véhicule américain, des dossiers DREAL et UTAC à l’immatriculation.';
 $pageCss = '/assets/css/pages/services.css';
 
-    require_once __DIR__ . '/config/database.test.php';
+    require_once __DIR__ . '/config/database.php';
 ?>
 
 <!DOCTYPE html>

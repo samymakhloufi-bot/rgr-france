@@ -18,7 +18,7 @@
                         <li class="dropdown">
                             <button class="dropbtn" aria-expanded="false" aria-controls="drop-menu">Plus <span class="arrow">▼</span></button>
                             <ul class="drop-menu" id="drop-menu">
-                                <li> <a href="./product.php" class="<?php echo $activePage ==='Nos produits' ? 'nav-active' : '' ;?>" >Nos produits</a></li>
+                                <li> <a href="./nos-produits.php" class="<?php echo $activePage ==='Nos produits' ? 'nav-active' : '' ;?>" >Nos produits</a></li>
                                 <li> <a href="./team.php" class="<?php echo $activePage ==='Notre équipe' ? 'nav-active' : '' ;?>" >Notre équipe</a></li>
                                 <li> <a href="./avis.php" class="<?php echo $activePage ==='Nos avis' ? 'nav-active' : '' ;?>" >Nos avis</a></li>
                             </ul>
