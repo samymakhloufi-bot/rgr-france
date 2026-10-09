@@ -7,7 +7,7 @@ namespace App\Entity;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
-final class Vehicle
+final class Vehicles
 {
     private ?int $id;
     private int $statusId;

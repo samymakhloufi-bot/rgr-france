@@ -256,6 +256,166 @@ CREATE TABLE vehicle_status_history (
     INDEX idx_vehicle_history_vehicle_date (vehicle_id, changed_at)
 ) ENGINE=InnoDB;
 
+-- ============================================================
+-- RGR FRANCE — VÉHICULES DE DÉMONSTRATION
+-- Script réexécutable : les véhicules sont mis à jour grâce à
+-- leur référence interne unique et les images ne sont pas dupliquées.
+-- ============================================================
+
+START TRANSACTION;
+
+INSERT INTO vehicles (
+    status_id,
+    internal_reference,
+    vin,
+    brand,
+    model,
+    trim_level,
+    registration_number,
+    registration_year,
+    mileage_km,
+    fuel_type,
+    transmission,
+    power_hp,
+    exterior_color,
+    price,
+    description,
+    is_published
+) VALUES
+(
+    1,
+    'RGR-F150-RAPTOR-40TH-2018',
+    NULL,
+    'Ford',
+    'F-150 Raptor',
+    '40e Anniversary · Pack 802A · Technology Package',
+    NULL,
+    2018,
+    150000,
+    'Essence',
+    'Automatique',
+    450,
+    'Lightning Blue',
+    65000.00,
+    'Un Raptor particulièrement complet équipé de la sellerie spéciale 40e Anniversary, du Pack 802A, du Technology Package et de jantes Forged de 17 pouces. Son historique Ford américain est documenté et le véhicule est proposé sur commande.',
+    TRUE
+),
+(
+    1,
+    'RGR-MUSTANG-GT-CONVERTIBLE-2021',
+    '1FATP8FF8M5123112',
+    'Ford',
+    'Mustang GT Convertible',
+    'V8 5.0L · Import Floride',
+    NULL,
+    2021,
+    80000,
+    'Essence',
+    NULL,
+    460,
+    'Orange Fury',
+    50000.00,
+    'Mustang GT cabriolet importée de Floride avec historique complet, entretien à jour et documents d’importation et de conformité. Le véhicule dispose notamment de la mémorisation des sièges. Malus et carte grise non compris.',
+    TRUE
+),
+(
+    1,
+    'RGR-F150-XLT-E85-2016',
+    '1FTEW1EF2GKF00425',
+    'Ford',
+    'F-150 XLT',
+    'V8 5.0L FlexFuel E85 · Réservoir 120L',
+    NULL,
+    2016,
+    147000,
+    'FlexFuel E85',
+    'Automatique',
+    385,
+    'Bleu',
+    38500.00,
+    'F-150 XLT V8 FlexFuel provenant du Canada, doté d’un réservoir de 120 litres et d’un historique d’entretien Ford. Il bénéficie de nombreux travaux récents et dispose notamment d’un attelage renforcé, d’un couvre-benne rigide et d’une dashcam.',
+    TRUE
+),
+(
+    1,
+    'RGR-SHELBY-GT350-2016',
+    '1FA6P8JZXG5522672',
+    'Ford',
+    'Mustang Shelby GT350',
+    'V8 5.2L · Exemplaire signé Aaron Shelby',
+    NULL,
+    2016,
+    32000,
+    'Essence',
+    'Manuelle',
+    526,
+    'Blanc',
+    92000.00,
+    'Shelby GT350 importée de Floride et accompagnée d’un historique complet. Cet exemplaire se distingue par une signature d’Aaron Shelby authentifiée par des photos et vidéos, ainsi que par un dossier d’expertise, d’importation et de conformité.',
+    TRUE
+)
+ON DUPLICATE KEY UPDATE
+    status_id = VALUES(status_id),
+    vin = VALUES(vin),
+    brand = VALUES(brand),
+    model = VALUES(model),
+    trim_level = VALUES(trim_level),
+    registration_year = VALUES(registration_year),
+    mileage_km = VALUES(mileage_km),
+    fuel_type = VALUES(fuel_type),
+    transmission = VALUES(transmission),
+    power_hp = VALUES(power_hp),
+    exterior_color = VALUES(exterior_color),
+    price = VALUES(price),
+    description = VALUES(description),
+    is_published = VALUES(is_published);
+
+INSERT INTO vehicle_images (
+    vehicle_id,
+    file_path,
+    alt_text,
+    display_order,
+    is_cover
+)
+SELECT
+    vehicle.id,
+    image_data.file_path,
+    image_data.alt_text,
+    1,
+    TRUE
+FROM (
+    SELECT
+        'RGR-F150-RAPTOR-40TH-2018' AS internal_reference,
+        'https://rgrfrance.fr/wp-content/uploads/2026/07/Copilot_20260717_155318.png' AS file_path,
+        'Ford F-150 Raptor Lightning Blue dans un environnement montagneux' AS alt_text
+    UNION ALL
+    SELECT
+        'RGR-MUSTANG-GT-CONVERTIBLE-2021',
+        'https://rgrfrance.fr/wp-content/uploads/2026/07/Copilot_20260710_133824.png',
+        'Ford Mustang GT Convertible Orange Fury vue de face'
+    UNION ALL
+    SELECT
+        'RGR-F150-XLT-E85-2016',
+        'https://rgrfrance.fr/wp-content/uploads/2026/06/F150-RAYMON.jpg',
+        'Ford F-150 XLT bleu photographié de trois quarts avant'
+    UNION ALL
+    SELECT
+        'RGR-SHELBY-GT350-2016',
+        'https://rgrfrance.fr/wp-content/uploads/2026/06/Shelby-Delicato.jpg',
+        'Ford Mustang Shelby GT350 blanche avec bandes bleues'
+) AS image_data
+INNER JOIN vehicles AS vehicle
+    ON vehicle.internal_reference = image_data.internal_reference
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM vehicle_images AS existing_image
+    WHERE existing_image.vehicle_id = vehicle.id
+      AND existing_image.file_path = image_data.file_path
+);
+
+COMMIT;
+
+
 -- ------------------------------------------------------------
 -- SERVICES
 -- Les 16 prestations du site actuel sont enregistrées ici une

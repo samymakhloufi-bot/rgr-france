@@ -14,7 +14,7 @@
                         <li> <a href="./index.php" class="<?php echo $activePage ==='Accueil' ? 'nav-active' : '' ;?>" >Accueil</a></li>
                         <li> <a href="./importation.php" class="<?php echo $activePage ==='Importation' ? 'nav-active' : '' ;?>">Importation</a></li>
                         <li> <a href="./homologation.php" class="<?php echo $activePage ==='Homologation' ? 'nav-active' : '' ;?>" >Homologation</a></li>
-                        <li> <a href="./vehicules.php" class="<?php echo $activePage ==='Nos véhicules' ? 'nav-active' : '' ;?>" >Nos véhicules</a></li>
+                        <li> <a href="./vehicles.php" class="<?php echo $activePage ==='Nos véhicules' ? 'nav-active' : '' ;?>" >Nos véhicules</a></li>
                         <li class="dropdown">
                             <button class="dropbtn" aria-expanded="false" aria-controls="drop-menu">Plus <span class="arrow">▼</span></button>
                             <ul class="drop-menu" id="drop-menu">
