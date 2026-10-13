@@ -18,6 +18,55 @@ final class VehicleRepository
         $this->pdo = $pdo;
     }
 
+        private function hydrate(array $data): Vehicle
+    {
+        return new Vehicle(
+            internalReference: $data['internal_reference'],
+            brand: $data['brand'],
+            model: $data['model'],
+            statusId: (int) $data['status_id'],
+            vin: $data['vin'],
+            trimLevel: $data['trim_level'],
+            registrationNumber: $data['registration_number'],
+            registrationYear: $data['registration_year'] === null
+                ? null
+                : (int) $data['registration_year'],
+            mileageKm: $data['mileage_km'] === null
+                ? null
+                : (int) $data['mileage_km'],
+            fuelType: $data['fuel_type'],
+            transmission: $data['transmission'],
+            powerHp: $data['power_hp'] === null
+                ? null
+                : (int) $data['power_hp'],
+            exteriorColor: $data['exterior_color'],
+            price: $data['price'] === null
+                ? null
+                : (float) $data['price'],
+            description: $data['description'],
+            isPublished: (bool) $data['is_published'],
+            id: (int) $data['id'],
+            createdAt: !empty($data['created_at'])
+                ? new DateTimeImmutable($data['created_at'])
+                : null,
+            updatedAt: !empty($data['updated_at'])
+                ? new DateTimeImmutable($data['updated_at'])
+                : null
+                    );
+    }
+
+    private function hydrateMany(array $rows): array
+    {
+        $vehicles = [];
+
+        foreach ($rows as $row) {
+            $vehicles[] = $this->hydrate($row);
+        }
+
+        return $vehicles;
+    }
+
+
     public function findAll(): array
     {
         $stmt = $this->pdo->query(
@@ -45,11 +94,24 @@ final class VehicleRepository
         return $this->hydrateMany($stmt->fetchAll());
     }
 
-    /**
-     * Retourne l’image de couverture de chaque véhicule demandé.
-     *
-     * @return array<int, array{file_path: string, alt_text: ?string}>
-     */
+    public function findAllPublishedForSale(): array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT *
+            FROM vehicles
+            WHERE is_published = :is_published
+            AND status_id = :status_id
+            ORDER BY id DESC'
+        );
+
+        $stmt->execute([
+            'is_published' => 1,
+            'status_id' => 1,
+        ]);
+
+        return $this->hydrateMany($stmt->fetchAll());
+    }
+
     public function findCoverImagesByVehicleIds(array $vehicleIds): array
     {
         $vehicleIds = array_values(array_unique(array_filter(
@@ -286,49 +348,5 @@ final class VehicleRepository
             'description' => $vehicle->getDescription(),
             'is_published' => $vehicle->isPublished() ? 1 : 0,
         ];
-    }
-
-    private function hydrate(array $data): Vehicle
-    {
-        return new Vehicle(
-            internalReference: $data['internal_reference'],
-            brand: $data['brand'],
-            model: $data['model'],
-            statusId: (int) $data['status_id'],
-            vin: $data['vin'],
-            trimLevel: $data['trim_level'],
-            registrationNumber: $data['registration_number'],
-            registrationYear: $data['registration_year'] === null
-                ? null
-                : (int) $data['registration_year'],
-            mileageKm: $data['mileage_km'] === null
-                ? null
-                : (int) $data['mileage_km'],
-            fuelType: $data['fuel_type'],
-            transmission: $data['transmission'],
-            powerHp: $data['power_hp'] === null
-                ? null
-                : (int) $data['power_hp'],
-            exteriorColor: $data['exterior_color'],
-            price: $data['price'] === null
-                ? null
-                : (float) $data['price'],
-            description: $data['description'],
-            isPublished: (bool) $data['is_published'],
-            id: (int) $data['id'],
-            createdAt: new DateTimeImmutable($data['created_at']),
-            updatedAt: new DateTimeImmutable($data['updated_at'])
-        );
-    }
-
-    private function hydrateMany(array $rows): array
-    {
-        $vehicles = [];
-
-        foreach ($rows as $row) {
-            $vehicles[] = $this->hydrate($row);
-        }
-
-        return $vehicles;
     }
 }

@@ -95,23 +95,23 @@ $buildFilterUrl = static function (string $filter): string {
                             </p>
                         </div>
 
-                        <nav class="catalog-filters" aria-label="Filtrer les produits">
+                        <nav class="catalog-filter-nav__link-nav" aria-label="Filtrer les produits">
                             <a
-                                class="catalog-filter <?= $availabilityFilter === 'all' ? 'catalog-filter--active' : '' ?>"
+                                class="catalog-filter-nav__link <?= $availabilityFilter === 'all' ? 'catalog-filter-nav__link--active' : '' ?>"
                                 href="<?= $escape($buildFilterUrl('all')) ?>"
                                 <?= $availabilityFilter === 'all' ? 'aria-current="page"' : '' ?>
                             >
                                 Tous
                             </a>
                             <a
-                                class="catalog-filter <?= $availabilityFilter === 'in-stock' ? 'catalog-filter--active' : '' ?>"
+                                class="catalog-filter-nav__link <?= $availabilityFilter === 'in-stock' ? 'catalog-filter-nav__link--active' : '' ?>"
                                 href="<?= $escape($buildFilterUrl('in-stock')) ?>"
                                 <?= $availabilityFilter === 'in-stock' ? 'aria-current="page"' : '' ?>
                             >
                                 En stock
                             </a>
                             <a
-                                class="catalog-filter <?= $availabilityFilter === 'on-order' ? 'catalog-filter--active' : '' ?>"
+                                class="catalog-filter-nav__link <?= $availabilityFilter === 'on-order' ? 'catalog-filter-nav__link--active' : '' ?>"
                                 href="<?= $escape($buildFilterUrl('on-order')) ?>"
                                 <?= $availabilityFilter === 'on-order' ? 'aria-current="page"' : '' ?>
                             >
@@ -133,7 +133,7 @@ $buildFilterUrl = static function (string $filter): string {
                             </a>
                         </div>
                     <?php else: ?>
-                        <div class="product-grid">
+                        <div class="catalog-grid">
                             <?php foreach ($products as $product): ?>
                                 <?php
                                     $productUrl = BASE_URL
@@ -141,48 +141,48 @@ $buildFilterUrl = static function (string $filter): string {
                                         . urlencode($product->getSlug());
                                     $imagePath = $product->getImagePath();
                                 ?>
-                                <article class="product-card">
+                                <article class="catalog-card">
                                     <a
-                                        class="product-card__visual"
+                                        class="catalog-card__visual"
                                         href="<?= $escape($productUrl) ?>"
                                         aria-label="Voir <?= $escape($product->getName()) ?>"
                                     >
                                         <?php if ($imagePath !== null && trim($imagePath) !== ''): ?>
                                             <img
-                                                class="product-card__image"
+                                                class="catalog-card__image"
                                                 src="<?= $escape($getImageUrl($imagePath)) ?>"
                                                 alt="<?= $escape($product->getName()) ?>"
                                                 loading="lazy"
                                                 decoding="async"
                                             >
                                         <?php else: ?>
-                                            <span class="product-card__placeholder" aria-hidden="true">
+                                            <span class="catalog-card__placeholder" aria-hidden="true">
                                                 <span>RGR</span>
                                                 France
                                             </span>
                                         <?php endif; ?>
 
-                                        <span class="product-card__availability">
+                                        <span class="catalog-card__availability">
                                             <?= $product->isInStock() ? 'En stock' : 'Sur commande' ?>
                                         </span>
                                     </a>
 
-                                    <div class="product-card__body">
+                                    <div class="catalog-card__body">
                                         <?php if ($product->getSku() !== null): ?>
-                                            <p class="product-card__reference">
+                                            <p class="catalog-card__reference">
                                                 Réf. <?= $escape($product->getSku()) ?>
                                             </p>
                                         <?php endif; ?>
 
-                                        <h3 class="product-card__title">
+                                        <h3 class="catalog-card__title">
                                             <a href="<?= $escape($productUrl) ?>">
                                                 <?= $escape($product->getName()) ?>
                                             </a>
                                         </h3>
 
-                                        <div class="product-card__price">
+                                        <div class="catalog-card__price">
                                             <?php if ($product->getPromotionalPrice() !== null): ?>
-                                                <span class="product-card__price-old">
+                                                <span class="catalog-card__price-old">
                                                     <?= $escape($formatPrice($product->getRegularPrice())) ?>
                                                 </span>
                                             <?php endif; ?>
@@ -192,7 +192,7 @@ $buildFilterUrl = static function (string $filter): string {
                                             </strong>
                                         </div>
 
-                                        <dl class="product-card__details">
+                                        <dl class="catalog-card__details">
                                             <div>
                                                 <dt>Disponibilité</dt>
                                                 <dd>
@@ -208,7 +208,7 @@ $buildFilterUrl = static function (string $filter): string {
                                         </dl>
 
                                         <a
-                                            class="product-card__link"
+                                            class="catalog-card__link"
                                             href="<?= $escape($productUrl) ?>"
                                         >
                                             Voir le produit

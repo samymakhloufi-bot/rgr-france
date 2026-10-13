@@ -284,15 +284,7 @@ INSERT INTO vehicles (
 ) VALUES
 (
     1,
-    'RGR-F150-RAPTOR-40TH-2018',
-    NULL,
-    'Ford',
-    'F-150 Raptor',
-    '40e Anniversary · Pack 802A · Technology Package',
-    NULL,
-    2018,
-    150000,
-    'Essence',
+    'RGR-F150',
     'Automatique',
     450,
     'Lightning Blue',
@@ -353,7 +345,15 @@ INSERT INTO vehicles (
     92000.00,
     'Shelby GT350 importée de Floride et accompagnée d’un historique complet. Cet exemplaire se distingue par une signature d’Aaron Shelby authentifiée par des photos et vidéos, ainsi que par un dossier d’expertise, d’importation et de conformité.',
     TRUE
-)
+)-RAPTOR-40TH-2018',
+    NULL,
+    'Ford',
+    'F-150 Raptor',
+    '40e Anniversary · Pack 802A · Technology Package',
+    NULL,
+    2018,
+    150000,
+    'Essence
 ON DUPLICATE KEY UPDATE
     status_id = VALUES(status_id),
     vin = VALUES(vin),

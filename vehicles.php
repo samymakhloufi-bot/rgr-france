@@ -13,44 +13,6 @@ $activePage = 'Nos véhicules';
 $metaDescription = 'Découvrez les véhicules américains disponibles et les projets suivis par RGR France.';
 $pageCss = '/assets/css/pages/catalog.css';
 
-$statusFilters = [
-    'all' => [
-        'id' => null,
-        'label' => 'Tous',
-        'cardLabel' => '',
-        'modifier' => 'all',
-    ],
-    'available' => [
-        'id' => 1,
-        'label' => 'Disponibles',
-        'cardLabel' => 'Disponible à l’achat',
-        'modifier' => 'available',
-    ],
-    'homologation' => [
-        'id' => 2,
-        'label' => 'En homologation',
-        'cardLabel' => 'En cours d’homologation',
-        'modifier' => 'homologation',
-    ],
-    'service' => [
-        'id' => 3,
-        'label' => 'Service programmé',
-        'cardLabel' => 'Service programmé',
-        'modifier' => 'service',
-    ],
-    'returned' => [
-        'id' => 4,
-        'label' => 'Véhicules rendus',
-        'cardLabel' => 'Véhicule rendu',
-        'modifier' => 'returned',
-    ],
-];
-
-$statusFilter = (string) ($_GET['status'] ?? 'all');
-
-if (!array_key_exists($statusFilter, $statusFilters)) {
-    $statusFilter = 'all';
-}
 
 $vehicles = [];
 $coverImages = [];
@@ -58,30 +20,60 @@ $catalogError = null;
 
 try {
     $vehicleRepository = new VehicleRepository($pdo);
-    $vehicles = $vehicleRepository->findAllPublished();
+    $vehicles = $vehicleRepository->findAllPublishedForSale();
+} catch (Throwable $exception) {
+    error_log('Impossible de charger les véhicules : ' . $exception->getMessage());
+    $catalogError = $exception->getMessage();
+}
 
+if ($vehicles !== []) {
     $vehicleIds = array_values(array_filter(array_map(
         static fn ($vehicle): ?int => $vehicle->getId(),
         $vehicles
     )));
 
-    $coverImages = $vehicleRepository->findCoverImagesByVehicleIds($vehicleIds);
-} catch (Throwable $exception) {
-    error_log('Impossible de charger les véhicules : ' . $exception->getMessage());
-    $catalogError = 'Les véhicules sont momentanément indisponibles.';
+    try {
+        $coverImages = $vehicleRepository->findCoverImagesByVehicleIds($vehicleIds);
+    } catch (Throwable $exception) {
+        error_log(
+            'Impossible de charger les images des véhicules : '
+            . $exception->getMessage()
+        );
+    }
 }
 
-$selectedStatusId = $statusFilters[$statusFilter]['id'];
+$fuelTypes = [];
+$mileageOptions = [];
+$powerOptions = [];
 
-if ($selectedStatusId !== null) {
-    $vehicles = array_values(array_filter(
-        $vehicles,
-        static fn ($vehicle): bool => $vehicle->getStatusId() === $selectedStatusId
-    ));
+foreach ($vehicles as $vehicle) {
+    $fuelType = $vehicle->getFuelType();
+    $mileage = $vehicle->getMileageKm();
+    $power = $vehicle->getPowerHp();
+
+    if ($fuelType !== null && !in_array($fuelType, $fuelTypes, true)) {
+        $fuelTypes[] = $fuelType;
+    }
+
+    if ($mileage !== null && !in_array($mileage, $mileageOptions, true)) {
+        $mileageOptions[] = $mileage;
+    }
+
+    if ($power !== null && !in_array($power, $powerOptions, true)) {
+        $powerOptions[] = $power;
+    }
 }
 
-$escape = static function (?string $value): string {
-    return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
+sort($fuelTypes, SORT_NATURAL | SORT_FLAG_CASE);
+sort($mileageOptions, SORT_NUMERIC);
+sort($powerOptions, SORT_NUMERIC);
+
+$escape = static function (mixed $value): string {
+    return htmlspecialchars(
+        (string) ($value ?? ''),
+        ENT_QUOTES | ENT_SUBSTITUTE,
+        'UTF-8'
+    );
 };
 
 $formatPrice = static function (float $price): string {
@@ -100,23 +92,7 @@ $getImageUrl = static function (string $imagePath): string {
     return BASE_URL . '/' . ltrim($imagePath, '/');
 };
 
-$getStatusData = static function (int $statusId) use ($statusFilters): array {
-    foreach ($statusFilters as $statusData) {
-        if ($statusData['id'] === $statusId) {
-            return $statusData;
-        }
-    }
 
-    return [
-        'label' => 'Suivi RGR',
-        'cardLabel' => 'Suivi RGR',
-        'modifier' => 'default',
-    ];
-};
-
-$buildFilterUrl = static function (string $filter): string {
-    return BASE_URL . '/vehicles.php?status=' . urlencode($filter);
-};
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -146,25 +122,87 @@ $buildFilterUrl = static function (string $filter): string {
                             <h2 class="catalog-section__title" id="vehicle-catalog-title">
                                 Véhicules américains
                             </h2>
-                            <p class="catalog-count" aria-live="polite">
+                            <p
+                                class="catalog-count"
+                                id="vehicle-result-count"
+                                aria-live="polite"
+                            >
                                 <?= count($vehicles) ?>
-                                <?= count($vehicles) > 1 ? 'véhicules' : 'véhicule' ?>
+                                véhicule<?= count($vehicles) > 1 ? 's' : '' ?>
+                                disponible<?= count($vehicles) > 1 ? 's' : '' ?>
                             </p>
                         </div>
-
-                        <nav class="catalog-filters" aria-label="Filtrer les véhicules">
-                            <?php foreach ($statusFilters as $filterKey => $filterData): ?>
-                                <a
-                                    class="catalog-filter <?= $statusFilter === $filterKey ? 'catalog-filter--active' : '' ?>"
-                                    href="<?= $escape($buildFilterUrl($filterKey)) ?>"
-                                    <?= $statusFilter === $filterKey ? 'aria-current="page"' : '' ?>
-                                >
-                                    <?= $escape($filterData['label']) ?>
-                                </a>
-                            <?php endforeach; ?>
-                        </nav>
                     </div>
+                    <?php if ($catalogError === null): ?>
+                        <form class="catalog-filter-nav__link-form" id="catalog-filter-nav__link-form" role="search">
+                            <div class="catalog-filter-nav__link-field catalog-filter-nav__link-field--search">
+                                <label for="vehicle-search">
+                                    Rechercher un véhicule
+                                </label>
 
+                                <div class="catalog-search-control">
+                                    <input
+                                        type="search"
+                                        id="vehicle-search"
+                                        name="search"
+                                        placeholder="Ex. Mustang, F-150, Raptor…"
+                                        autocomplete="off"
+                                    >
+                                    <span aria-hidden="true">⌕</span>
+                                </div>
+                            </div>
+
+                            <div class="catalog-filter-nav__link-field">
+                                <label for="vehicle-fuel">Carburant</label>
+
+                                <select id="vehicle-fuel" name="fuel">
+                                    <option value="">Tous</option>
+
+                                    <?php foreach ($fuelTypes as $fuelType): ?>
+                                        <option value="<?= $escape(strtolower($fuelType)) ?>">
+                                            <?= $escape($fuelType) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="catalog-filter-nav__link-field">
+                                <label for="vehicle-mileage">
+                                    Kilométrage maximum
+                                </label>
+
+                                <select id="vehicle-mileage" name="mileage">
+                                    <option value="">Indifférent</option>
+
+                                    <?php foreach ($mileageOptions as $mileage): ?>
+                                        <option value="<?= $mileage ?>">
+                                            Jusqu’à <?= $escape($formatMileage($mileage)) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="catalog-filter-nav__link-field">
+                                <label for="vehicle-power">
+                                    Puissance minimum
+                                </label>
+
+                                <select id="vehicle-power" name="power">
+                                    <option value="">Indifférente</option>
+
+                                    <?php foreach ($powerOptions as $power): ?>
+                                        <option value="<?= $power ?>">
+                                            À partir de <?= $power ?> ch
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <button class="catalog-filter-nav__link-form__reset" type="reset">
+                                Réinitialiser
+                            </button>
+                        </form>
+                    <?php endif; ?>
                     <?php if ($catalogError !== null): ?>
                         <div class="catalog-message catalog-message--error" role="alert">
                             <?= $escape($catalogError) ?>
@@ -173,12 +211,9 @@ $buildFilterUrl = static function (string $filter): string {
                         <div class="catalog-message">
                             <h3>Aucun véhicule dans cette sélection</h3>
                             <p>Essayez un autre filtre ou revenez prochainement.</p>
-                            <a href="<?= $escape($buildFilterUrl('all')) ?>">
-                                Voir tous les véhicules
-                            </a>
                         </div>
                     <?php else: ?>
-                        <div class="vehicle-grid">
+                        <div class="catalog-grid" id="catalog-grid">
                             <?php foreach ($vehicles as $vehicle): ?>
                                 <?php
                                     $vehicleId = $vehicle->getId();
@@ -188,7 +223,6 @@ $buildFilterUrl = static function (string $filter): string {
                                     $coverImage = $vehicleId === null
                                         ? null
                                         : ($coverImages[$vehicleId] ?? null);
-                                    $statusData = $getStatusData($vehicle->getStatusId());
                                     $vehicleName = trim(
                                         $vehicle->getBrand()
                                         . ' '
@@ -196,39 +230,58 @@ $buildFilterUrl = static function (string $filter): string {
                                         . ' '
                                         . ($vehicle->getTrimLevel() ?? '')
                                     );
+                                    $searchableDetails = implode(' ', array_filter([
+                                        $vehicleName,
+                                        $vehicle->getInternalReference(),
+                                        $vehicle->getRegistrationYear(),
+                                        $vehicle->getFuelType(),
+                                        $vehicle->getTransmission(),
+                                            $vehicle->getMileageKm(),
+                                            $vehicle->getPowerHp(),
+                                            $vehicle->getExteriorColor(),
+                                            $vehicle->getPrice(),
+                                            $vehicle->getDescription(),
+                                        ], static fn ($value): bool => $value !== null && $value !== ''));
                                 ?>
-                                <article class="vehicle-card">
+                                <article
+                                    class="catalog-card"
+                                    data-catalog-card
+                                    data-search="<?= $escape(strtolower($searchableDetails)) ?>"
+                                    data-fuel="<?= $escape(strtolower($vehicle->getFuelType() ?? '')) ?>"
+                                    data-mileage="<?= $vehicle->getMileageKm() ?? -1 ?>"
+                                    data-power="<?= $vehicle->getPowerHp() ?? 0 ?>"
+                                >
                                     <a
-                                        class="vehicle-card__visual"
+                                        class="catalog-card__visual"
                                         href="<?= $escape($vehicleUrl) ?>"
                                         aria-label="Découvrir <?= $escape($vehicleName) ?>"
                                     >
                                         <?php if ($coverImage !== null): ?>
                                             <img
-                                                class="vehicle-card__image"
+                                                class="catalog-card__image"
                                                 src="<?= $escape($getImageUrl($coverImage['file_path'])) ?>"
                                                 alt="<?= $escape($coverImage['alt_text'] ?: $vehicleName) ?>"
                                                 loading="lazy"
                                                 decoding="async"
                                             >
                                         <?php else: ?>
-                                            <span class="product-card__placeholder" aria-hidden="true">
+                                            <span class="catalog-card__placeholder" aria-hidden="true">
                                                 <span>RGR</span>
                                                 France
                                             </span>
                                         <?php endif; ?>
 
-                                        <span class="vehicle-card__status vehicle-card__status--<?= $escape($statusData['modifier']) ?>">
-                                            <?= $escape($statusData['cardLabel']) ?>
+                                        <span class="catalog-card__status catalog-card__status--available">
+                                            Disponible à l’achat
                                         </span>
                                     </a>
 
-                                    <div class="vehicle-card__body">
-                                        <p class="vehicle-card__reference">
+                                    <div class="catalog-card__body">
+                                        <p class="catalog-card__reference">
                                             Réf. <?= $escape($vehicle->getInternalReference()) ?>
                                         </p>
 
-                                        <h3 class="vehicle-card__title">
+                                        <h3 class="catalog-card__title">
                                             <a href="<?= $escape($vehicleUrl) ?>">
                                                 <?= $escape($vehicle->getBrand()) ?>
                                                 <strong><?= $escape($vehicle->getModel()) ?></strong>
@@ -236,12 +289,12 @@ $buildFilterUrl = static function (string $filter): string {
                                         </h3>
 
                                         <?php if ($vehicle->getTrimLevel() !== null): ?>
-                                            <p class="vehicle-card__trim">
+                                            <p class="catalog-card__trim">
                                                 <?= $escape($vehicle->getTrimLevel()) ?>
                                             </p>
                                         <?php endif; ?>
 
-                                        <dl class="vehicle-card__specifications">
+                                        <dl class="catalog-card__specifications">
                                             <?php if ($vehicle->getRegistrationYear() !== null): ?>
                                                 <div>
                                                     <dt>Année</dt>
@@ -285,8 +338,8 @@ $buildFilterUrl = static function (string $filter): string {
                                             <?php endif; ?>
                                         </dl>
 
-                                        <div class="vehicle-card__footer">
-                                            <p class="vehicle-card__price">
+                                        <div class="catalog-card__footer">
+                                            <p class="catalog-card__price">
                                                 <span>Prix</span>
                                                 <strong>
                                                     <?= $vehicle->getPrice() === null
@@ -295,7 +348,7 @@ $buildFilterUrl = static function (string $filter): string {
                                                 </strong>
                                             </p>
 
-                                            <a class="vehicle-card__link" href="<?= $escape($vehicleUrl) ?>">
+                                            <a class="catalog-card__link" href="<?= $escape($vehicleUrl) ?>">
                                                 Découvrir
                                                 <span aria-hidden="true">→</span>
                                             </a>
@@ -318,5 +371,6 @@ $buildFilterUrl = static function (string $filter): string {
         </main>
 
         <?php include __DIR__ . '/includes/footer.php'; ?>
+        <script src= "<?= $escape(BASE_URL) ?>/assets/js/pages/catalogue-vehicle.js" defer></script>
     </body>
 </html>

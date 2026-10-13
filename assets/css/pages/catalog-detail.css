@@ -1,0 +1,371 @@
+/* ==================================================
+   RGR FRANCE — FICHES CATALOGUE
+   product-detail.php + vehicle-detail.php
+   Mobile first — mesures en rem
+================================================== */
+
+body > header {
+    z-index: 1000 !important;
+}
+
+body > header .nav-bar {
+    position: relative;
+    z-index: 1001;
+}
+
+.catalog-detail {
+    position: relative;
+    z-index: 0;
+    isolation: isolate;
+    color: var(--noir);
+    background-color: var(--blanc);
+}
+
+.catalog-detail__header {
+    position: relative;
+    z-index: 1;
+    padding-block: 2rem 2.5rem;
+    color: var(--blanc);
+    background:
+        repeating-linear-gradient(
+            135deg,
+            transparent 0 0.75rem,
+            rgba(255, 255, 255, 0.02) 0.75rem 0.8125rem
+        ),
+        var(--carbone);
+    border-bottom: 0.25rem solid var(--rouge-rgr);
+}
+
+.catalog-detail__breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    color: var(--gris-metal);
+    font-size: 0.7rem;
+}
+
+.catalog-detail__breadcrumb a {
+    color: var(--gris-clair);
+    text-decoration: none;
+}
+
+.catalog-detail__breadcrumb a:hover,
+.catalog-detail__breadcrumb a:focus-visible {
+    color: var(--rouge-rgr);
+}
+
+.catalog-detail__heading {
+    display: grid;
+    gap: 2rem;
+}
+
+.catalog-detail__title {
+    margin-top: 0.65rem;
+    font-family: var(--police-titre, inherit);
+    font-size: clamp(2.5rem, 12vw, 5rem);
+    font-weight: 700;
+    line-height: 0.92;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
+}
+
+.catalog-detail__title strong {
+    display: block;
+    color: var(--rouge-rgr);
+}
+
+.catalog-detail__subtitle {
+    max-width: 44rem;
+    margin-top: 1rem;
+    color: var(--gris-metal);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.catalog-detail__price {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-self: end;
+    padding-left: 1rem;
+    border-left: 0.25rem solid var(--rouge-rgr);
+}
+
+.catalog-detail__price span {
+    color: var(--gris-metal);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.catalog-detail__price .catalog-detail__price-old {
+    text-decoration: line-through;
+}
+
+.catalog-detail__price strong {
+    font-family: var(--police-titre, inherit);
+    font-size: 1.8rem;
+}
+
+.catalog-detail__content {
+    padding-block: 2rem 4rem;
+}
+
+.catalog-detail__layout {
+    display: grid;
+    gap: 2rem;
+}
+
+.catalog-detail__gallery {
+    min-width: 0;
+}
+
+.catalog-detail__visual,
+.catalog-detail__thumbnails figure {
+    overflow: hidden;
+    background-color: #d8d5d0;
+}
+
+.catalog-detail__visual {
+    aspect-ratio: 16 / 10;
+}
+
+.catalog-detail--product .catalog-detail__visual {
+    aspect-ratio: 4 / 3;
+}
+
+.catalog-detail__gallery img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.catalog-detail__thumbnails {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.catalog-detail__thumbnails figure {
+    aspect-ratio: 4 / 3;
+}
+
+.catalog-detail__placeholder {
+    display: grid;
+    min-height: 22rem;
+    place-content: center;
+    color: #737378;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.45), transparent),
+        #d8d5d0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.catalog-detail__placeholder span {
+    display: block;
+    color: var(--noir);
+    font-family: var(--police-titre, inherit);
+    font-size: 3.5rem;
+    line-height: 1;
+}
+
+.catalog-detail__summary {
+    position: static;
+    align-self: start;
+    padding: 1.5rem;
+    color: var(--blanc);
+    background-color: var(--carbone);
+    border-top: 0.25rem solid var(--rouge-rgr);
+}
+
+.catalog-detail__reference {
+    color: var(--gris-metal);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.catalog-detail__summary h2,
+.catalog-detail__description h2,
+.catalog-detail__specifications h2,
+.catalog-detail__contact h2,
+.catalog-detail__error h1 {
+    margin-top: 0.65rem;
+    font-family: var(--police-titre, inherit);
+    font-size: clamp(1.7rem, 7vw, 2.5rem);
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.catalog-detail__summary > p:not(.catalog-detail__reference) {
+    margin-top: 1rem;
+    color: var(--gris-metal);
+    font-size: 0.825rem;
+    line-height: 1.7;
+}
+
+.catalog-detail__cta,
+.catalog-detail__contact a {
+    display: flex;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    color: var(--blanc);
+    background-color: var(--rouge-rgr);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.catalog-detail__cta {
+    margin-top: 1.5rem;
+}
+
+.catalog-detail__back {
+    display: inline-block;
+    margin-top: 1.25rem;
+    color: var(--gris-metal);
+    font-size: 0.75rem;
+    text-decoration: none;
+}
+
+.catalog-detail__back:hover,
+.catalog-detail__back:focus-visible {
+    color: var(--blanc);
+}
+
+.catalog-detail__description,
+.catalog-detail__specifications {
+    padding-top: 2rem;
+    border-top: 0.0625rem solid #d4cfc8;
+}
+
+.catalog-detail__description > p:last-child {
+    max-width: 50rem;
+    margin-top: 1.25rem;
+    color: #55555a;
+    font-size: 0.9rem;
+    line-height: 1.85;
+}
+
+.catalog-detail__specifications-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 1.5rem;
+    border-top: 0.0625rem solid rgba(244, 241, 236, 0.15);
+    border-left: 0.0625rem solid rgba(244, 241, 236, 0.15);
+}
+
+.catalog-detail__specifications .catalog-detail__specifications-grid {
+    border-color: #d4cfc8;
+}
+
+.catalog-detail__specifications-grid div {
+    min-width: 0;
+    padding: 1rem;
+    border-right: 0.0625rem solid rgba(244, 241, 236, 0.15);
+    border-bottom: 0.0625rem solid rgba(244, 241, 236, 0.15);
+}
+
+.catalog-detail__specifications .catalog-detail__specifications-grid div {
+    border-color: #d4cfc8;
+}
+
+.catalog-detail__specifications-grid dt {
+    color: var(--gris-metal);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.catalog-detail__specifications .catalog-detail__specifications-grid dt {
+    color: #77777c;
+}
+
+.catalog-detail__specifications-grid dd {
+    margin-top: 0.35rem;
+    overflow-wrap: anywhere;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.catalog-detail__contact {
+    padding-block: 2.5rem;
+    color: var(--blanc);
+    background-color: var(--noir);
+    border-top: 0.25rem solid var(--rouge-rgr);
+}
+
+.catalog-detail__contact-content {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.catalog-detail__error {
+    min-height: 32rem;
+    padding-block: 6rem;
+}
+
+@media screen and (min-width: 43.75rem) {
+    .catalog-detail__heading {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+    }
+
+    .catalog-detail__thumbnails {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .catalog-detail__contact-content {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+    }
+
+    .catalog-detail__specifications-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media screen and (min-width: 64rem) {
+    .catalog-detail__header {
+        padding-block: 2.5rem 3.5rem;
+    }
+
+    .catalog-detail__content {
+        padding-block: 4rem 6rem;
+    }
+
+    .catalog-detail__layout {
+        grid-template-columns: minmax(0, 1.55fr) minmax(18rem, 0.65fr);
+        gap: 3rem;
+    }
+
+    .catalog-detail__summary {
+        position: static;
+        top: 6rem;
+        padding: 2rem;
+    }
+
+    .catalog-detail__description {
+        grid-column: 1;
+    }
+
+    .catalog-detail__specifications {
+        grid-column: 1 / -1;
+    }
+}

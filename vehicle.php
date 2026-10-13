@@ -9,7 +9,8 @@ require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/src/Entity/Vehicle.php';
 require_once __DIR__ . '/src/Repository/VehicleRepository.php';
 
-$pageCss = '/assets/css/pages/catalog.css';
+
+$pageCss = '/assets/css/pages/catalog-detail.css';
 $internalReference = trim((string) ($_GET['ref'] ?? ''));
 $vehicle = null;
 $vehicleImages = [];
@@ -23,13 +24,15 @@ if ($internalReference === '' || strlen($internalReference) > 50) {
         $vehicleRepository = new VehicleRepository($pdo);
         $vehicle = $vehicleRepository->findByInternalReference($internalReference);
 
-        if ($vehicle === null || !$vehicle->isPublished()) {
-            http_response_code(404);
-            $vehicle = null;
-            $pageError = 'Le véhicule demandé est introuvable ou n’est plus publié.';
-        } elseif ($vehicle->getId() !== null) {
-            $vehicleImages = $vehicleRepository->findImagesByVehicleId($vehicle->getId());
-        }
+        if (
+    $vehicle === null
+    || !$vehicle->isPublished()
+    || $vehicle->getStatusId() !== 1
+) {
+    http_response_code(404);
+    $pageError = 'Le véhicule demandé est introuvable ou n’est plus disponible.';
+    $vehicle = null;
+}
     } catch (Throwable $exception) {
         error_log('Impossible de charger le véhicule : ' . $exception->getMessage());
         http_response_code(500);
@@ -81,9 +84,9 @@ $statusLabels = [
     <body>
         <?php include __DIR__ . '/includes/header.php'; ?>
 
-        <main class="catalog-page vehicle-detail-page">
+        <main class="catalog-detail catalog-detail--vehicle">
             <?php if ($vehicle === null): ?>
-                <section class="vehicle-detail-error">
+                <section class="catalog-detail__error">
                     <div class="catalog-container catalog-message catalog-message--error">
                         <p class="catalog-eyebrow">Erreur</p>
                         <h1><?= $escape($pageError) ?></h1>
@@ -101,30 +104,29 @@ $statusLabels = [
                     $coverImage = $vehicleImages[0] ?? null;
                 ?>
 
-                <header class="vehicle-detail-header">
+                <header class="catalog-detail__header">
                     <div class="catalog-container">
-                        <nav class="vehicle-breadcrumb" aria-label="Fil d’Ariane">
+                        <nav class="catalog-detail__breadcrumb" aria-label="Fil d’Ariane">
                             <a href="<?= $escape(BASE_URL) ?>/vehicles.php">Nos véhicules</a>
                             <span aria-hidden="true">/</span>
                             <span><?= $escape($vehicleName) ?></span>
                         </nav>
 
-                        <div class="vehicle-detail-header__content">
+                        <div class="catalog-detail__header__content">
                             <div>
-                                <p class="catalog-eyebrow"><?= $escape($statusLabel) ?></p>
-                                <h1 class="vehicle-detail-title">
+                                <h1 class="catalog-detail__title">
                                     <?= $escape($vehicle->getBrand()) ?>
                                     <strong><?= $escape($vehicle->getModel()) ?></strong>
                                 </h1>
 
                                 <?php if ($vehicle->getTrimLevel() !== null): ?>
-                                    <p class="vehicle-detail-trim">
+                                    <p class="catalog-detail__subtitle">
                                         <?= $escape($vehicle->getTrimLevel()) ?>
                                     </p>
                                 <?php endif; ?>
                             </div>
 
-                            <div class="vehicle-detail-price">
+                            <div class="catalog-detail__price">
                                 <span>Prix affiché</span>
                                 <strong>
                                     <?= $vehicle->getPrice() === null
@@ -136,19 +138,20 @@ $statusLabels = [
                     </div>
                 </header>
 
-                <section class="vehicle-detail-content">
-                    <div class="catalog-container vehicle-detail-layout">
-                        <div class="vehicle-gallery">
+                <section class="catalog-detail__content">
+                    <div class="catalog-container catalog-detail__layout">
+                        <div class="catalog-detail__gallery">
                             <?php if ($coverImage !== null): ?>
-                                <figure class="vehicle-gallery__main">
+                                <figure class="catalog-detail__gallery__main">
                                     <img
                                         src="<?= $escape($getImageUrl($coverImage['file_path'])) ?>"
                                         alt="<?= $escape($coverImage['alt_text'] ?: $vehicleName) ?>"
+                                        
                                     >
                                 </figure>
 
                                 <?php if (count($vehicleImages) > 1): ?>
-                                    <div class="vehicle-gallery__secondary">
+                                    <div class="catalog-detail__gallery__secondary">
                                         <?php foreach (array_slice($vehicleImages, 1) as $image): ?>
                                             <figure>
                                                 <img
@@ -162,15 +165,15 @@ $statusLabels = [
                                     </div>
                                 <?php endif; ?>
                             <?php else: ?>
-                                <div class="vehicle-gallery__placeholder">
+                                <div class="catalog-detail__gallery__placeholder">
                                     <span>RGR</span>
                                     France
                                 </div>
                             <?php endif; ?>
                         </div>
 
-                        <aside class="vehicle-detail-summary" aria-label="Résumé du véhicule">
-                            <p class="vehicle-detail-summary__reference">
+                        <aside class="catalog-detail__summary" aria-label="Résumé du véhicule">
+                            <p class="catalog-detail__summary__reference">
                                 Réf. <?= $escape($vehicle->getInternalReference()) ?>
                             </p>
 
@@ -181,17 +184,17 @@ $statusLabels = [
                                 suite de votre projet.
                             </p>
 
-                            <a class="vehicle-detail-cta" href="<?= $escape($contactUrl) ?>">
+                            <a class="catalog-detail__cta" href="<?= $escape($contactUrl) ?>">
                                 Demander des informations
                                 <span aria-hidden="true">→</span>
                             </a>
 
-                            <a class="vehicle-detail-back" href="<?= $escape(BASE_URL) ?>/vehicles.php">
+                            <a class="catalog-detail__back" href="<?= $escape(BASE_URL) ?>/vehicles.php">
                                 ← Retour au catalogue
                             </a>
                         </aside>
 
-                        <section class="vehicle-detail-description" aria-labelledby="vehicle-description-title">
+                        <section class="catalog-detail__description" aria-labelledby="vehicle-description-title">
                             <p class="catalog-eyebrow">Présentation</p>
                             <h2 id="vehicle-description-title">À propos de ce véhicule</h2>
                             <p>
@@ -202,11 +205,11 @@ $statusLabels = [
                             </p>
                         </section>
 
-                        <section class="vehicle-detail-specs" aria-labelledby="vehicle-specs-title">
+                        <section class="catalog-detail__specifications" aria-labelledby="vehicle-specs-title">
                             <p class="catalog-eyebrow">Fiche technique</p>
                             <h2 id="vehicle-specs-title">Caractéristiques</h2>
 
-                            <dl class="vehicle-specs-grid">
+                            <dl class="catalog-detail__specifications-grid">
                                 <?php if ($vehicle->getRegistrationYear() !== null): ?>
                                     <div><dt>Année</dt><dd><?= $vehicle->getRegistrationYear() ?></dd></div>
                                 <?php endif; ?>
@@ -237,8 +240,8 @@ $statusLabels = [
                     </div>
                 </section>
 
-                <aside class="vehicle-detail-contact">
-                    <div class="catalog-container vehicle-detail-contact__content">
+                <aside class="catalog-detail__contact">
+                    <div class="catalog-container catalog-detail__contact__content">
                         <div>
                             <p class="catalog-eyebrow">Un projet en tête ?</p>
                             <h2>Parlons de votre future américaine</h2>
@@ -250,5 +253,6 @@ $statusLabels = [
         </main>
 
         <?php include __DIR__ . '/includes/footer.php'; ?>
+        <script src= "<?= $escape(BASE_URL) ?>/assets/js/pages/vehicle-detail.js" defer></script>
     </body>
 </html>
