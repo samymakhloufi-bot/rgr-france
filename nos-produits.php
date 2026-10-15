@@ -3,11 +3,14 @@
 declare(strict_types=1);
 
 use App\Repository\ProductRepository;
+use App\Support\ImageUrl;
+
 
 require_once __DIR__ . '/config/app.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/src/Entity/Product.php';
 require_once __DIR__ . '/src/Repository/ProductRepository.php';
+require_once __DIR__ . '/src/Support/ImageUrl.php';
 
 $activePage = 'Nos produits';
 $metaDescription = 'Découvrez les pièces et équipements sélectionnés par RGR France pour les véhicules américains.';
@@ -48,14 +51,6 @@ $escape = static function (?string $value): string {
 
 $formatPrice = static function (float $price): string {
     return number_format($price, 2, ',', ' ') . ' €';
-};
-
-$getImageUrl = static function (string $imagePath): string {
-    if (filter_var($imagePath, FILTER_VALIDATE_URL) !== false) {
-        return $imagePath;
-    }
-
-    return BASE_URL . '/' . ltrim($imagePath, '/');
 };
 
 $buildFilterUrl = static function (string $filter): string {
@@ -139,7 +134,7 @@ $buildFilterUrl = static function (string $filter): string {
                                     $productUrl = BASE_URL
                                         . '/product.php?slug='
                                         . urlencode($product->getSlug());
-                                    $imagePath = $product->getImagePath();
+                                    $imagePath = $product->ImageUrl::resolve($product->getImagePath(), 'products');
                                 ?>
                                 <article class="catalog-card">
                                     <a
@@ -150,7 +145,7 @@ $buildFilterUrl = static function (string $filter): string {
                                         <?php if ($imagePath !== null && trim($imagePath) !== ''): ?>
                                             <img
                                                 class="catalog-card__image"
-                                                src="<?= $escape($getImageUrl($imagePath)) ?>"
+                                                src="<?= $escape(ImageUrl::resolve($product->getImagePath(), 'products')) ?>"
                                                 alt="<?= $escape($product->getName()) ?>"
                                                 loading="lazy"
                                                 decoding="async"

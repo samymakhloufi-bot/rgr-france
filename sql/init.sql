@@ -2,12 +2,6 @@
 -- RGR FRANCE — Base de données MySQL 8+
 -- ============================================================
 
-CREATE DATABASE IF NOT EXISTS rgr_france
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-
-USE rgr_france;
-
 -- ------------------------------------------------------------
 -- INFORMATIONS RGR FRANCE
 -- ------------------------------------------------------------
@@ -223,21 +217,6 @@ CREATE TABLE vehicle_images (
     INDEX idx_vehicle_images_order (vehicle_id, display_order)
 ) ENGINE=InnoDB;
 
-    INSERT INTO vehicle_images (
-        vehicle_id,
-        file_path,
-        alt_text,
-        is_cover,
-        display_order
-    ) VALUES
-    (4, 'shelby-gt350/01-front.webp', 'Shelby GT350 noire vue avant trois quarts', 1, 1),
-    (4, 'shelby-gt350/02-rear.webp', 'Shelby GT350 noire vue arrière trois quarts', 0, 2),
-    (4, 'shelby-gt350/03-cockpit.webp', 'Habitacle et poste de conduite de la Shelby GT350', 0, 3),
-    (4, 'shelby-gt350/04-seats.webp', 'Sièges sport noirs de la Shelby GT350', 0, 4),
-    (4, 'shelby-gt350/05-engine.webp', 'Moteur V8 de la Shelby GT350', 0, 5),
-    (4, 'shelby-gt350/06-wheel.webp', 'Jante noire et étrier de frein rouge de la Shelby GT350', 0, 6);
-
-
 CREATE TABLE vehicle_status_history (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     vehicle_id BIGINT UNSIGNED NOT NULL,
@@ -299,16 +278,24 @@ INSERT INTO vehicles (
 ) VALUES
 (
     1,
-    'RGR-F150',
+    'RGR-F150-RAPTOR-40TH-2018',
+    NULL,
+    'Ford',
+    'F-150 Raptor',
+    '40e Anniversary · Pack 802A · Technology Package',
+    NULL,
+    2018,
+    150000,
+    'Essence',
     'Automatique',
     450,
     'Lightning Blue',
     65000.00,
-    'Un Raptor particulièrement complet équipé de la sellerie spéciale 40e Anniversary, du Pack 802A, du Technology Package et de jantes Forged de 17 pouces. Son historique Ford américain est documenté et le véhicule est proposé sur commande.',
+    'Un Raptor particulièrement complet...',
     TRUE
 ),
 (
-    1,
+    2,
     'RGR-MUSTANG-GT-CONVERTIBLE-2021',
     '1FATP8FF8M5123112',
     'Ford',
@@ -326,7 +313,7 @@ INSERT INTO vehicles (
     TRUE
 ),
 (
-    1,
+    3,
     'RGR-F150-XLT-E85-2016',
     '1FTEW1EF2GKF00425',
     'Ford',
@@ -344,7 +331,7 @@ INSERT INTO vehicles (
     TRUE
 ),
 (
-    1,
+    4,
     'RGR-SHELBY-GT350-2016',
     '1FA6P8JZXG5522672',
     'Ford',
@@ -360,15 +347,8 @@ INSERT INTO vehicles (
     92000.00,
     'Shelby GT350 importée de Floride et accompagnée d’un historique complet. Cet exemplaire se distingue par une signature d’Aaron Shelby authentifiée par des photos et vidéos, ainsi que par un dossier d’expertise, d’importation et de conformité.',
     TRUE
-)-RAPTOR-40TH-2018',
-    NULL,
-    'Ford',
-    'F-150 Raptor',
-    '40e Anniversary · Pack 802A · Technology Package',
-    NULL,
-    2018,
-    150000,
-    'Essence
+);
+
 ON DUPLICATE KEY UPDATE
     status_id = VALUES(status_id),
     vin = VALUES(vin),
@@ -394,40 +374,66 @@ INSERT INTO vehicle_images (
 )
 SELECT
     vehicle.id,
-    image_data.file_path,
-    image_data.alt_text,
-    1,
-    TRUE
-FROM (
+    image.file_path,
+    image.alt_text,
+    image.display_order,
+    image.is_cover
+FROM vehicles AS vehicle
+INNER JOIN (
     SELECT
-        'RGR-F150-RAPTOR-40TH-2018' AS internal_reference,
-        'https://rgrfrance.fr/wp-content/uploads/2026/07/Copilot_20260717_155318.png' AS file_path,
-        'Ford F-150 Raptor Lightning Blue dans un environnement montagneux' AS alt_text
+        'RGR-SHELBY-GT350-2016' AS internal_reference,
+        'assets/images/vehicles/shelby-gt350/01-front.webp' AS file_path,
+        'Shelby GT350 vue avant trois quarts' AS alt_text,
+        1 AS display_order,
+        TRUE AS is_cover
+
     UNION ALL
-    SELECT
-        'RGR-MUSTANG-GT-CONVERTIBLE-2021',
-        'https://rgrfrance.fr/wp-content/uploads/2026/07/Copilot_20260710_133824.png',
-        'Ford Mustang GT Convertible Orange Fury vue de face'
-    UNION ALL
-    SELECT
-        'RGR-F150-XLT-E85-2016',
-        'https://rgrfrance.fr/wp-content/uploads/2026/06/F150-RAYMON.jpg',
-        'Ford F-150 XLT bleu photographié de trois quarts avant'
-    UNION ALL
+
     SELECT
         'RGR-SHELBY-GT350-2016',
-        'https://rgrfrance.fr/wp-content/uploads/2026/06/Shelby-Delicato.jpg',
-        'Ford Mustang Shelby GT350 blanche avec bandes bleues'
-) AS image_data
-INNER JOIN vehicles AS vehicle
-    ON vehicle.internal_reference = image_data.internal_reference
-WHERE NOT EXISTS (
-    SELECT 1
-    FROM vehicle_images AS existing_image
-    WHERE existing_image.vehicle_id = vehicle.id
-      AND existing_image.file_path = image_data.file_path
-);
+        'assets/images/vehicles/shelby-gt350/02-rear.webp',
+        'Shelby GT350 vue arrière trois quarts',
+        2,
+        FALSE
 
+    UNION ALL
+
+    SELECT
+        'RGR-SHELBY-GT350-2016',
+        'assets/images/vehicles/shelby-gt350/03-cockpit.webp',
+        'Habitacle de la Shelby GT350',
+        3,
+        FALSE
+
+    UNION ALL
+
+    SELECT
+        'RGR-SHELBY-GT350-2016',
+        'assets/images/vehicles/shelby-gt350/04-seats.webp',
+        'Sièges sport de la Shelby GT350',
+        4,
+        FALSE
+
+    UNION ALL
+
+    SELECT
+        'RGR-SHELBY-GT350-2016',
+        'assets/images/vehicles/shelby-gt350/05-engine.webp',
+        'Moteur V8 de la Shelby GT350',
+        5,
+        FALSE
+
+    UNION ALL
+
+    SELECT
+        'RGR-SHELBY-GT350-2016',
+        'assets/images/vehicles/shelby-gt350/06-wheel.webp',
+        'Jante de la Shelby GT350',
+        6,
+        FALSE
+) AS image
+    ON image.internal_reference = vehicle.internal_reference;
+    
 COMMIT;
 
 

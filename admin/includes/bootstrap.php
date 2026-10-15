@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Repository\AdminContentRepository;
+use App\Support\ImageUrl;
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -13,6 +14,7 @@ $projectRoot = dirname(__DIR__, 2);
 require_once $projectRoot . '/config/app.php';
 require_once $projectRoot . '/config/database.php';
 require_once $projectRoot . '/src/Repository/AdminContentRepository.php';
+require_once $projectRoot . '/src/Support/ImageUrl.php';
 
 if (
     !isset($_SESSION['user_id'], $_SESSION['user_role'])
@@ -140,28 +142,12 @@ $adminNullableFloat = static function (mixed $value): ?float {
     return (float) str_replace(',', '.', (string) $value);
 };
 
-$adminImageUrl = static function (?string $path, ?string $directory = null): ?string {
-    if ($path === null || trim($path) === '') {
-        return null;
-    }
-
-    if (filter_var($path, FILTER_VALIDATE_URL) !== false) {
-        return $path;
-    }
-
-    $path = ltrim(str_replace('\\', '/', $path), '/');
-
-    if (str_starts_with($path, 'assets/')) {
-        return BASE_URL . '/' . $path;
-    }
-
-    if (str_starts_with($path, 'images/')) {
-        return BASE_URL . '/assets/' . $path;
-    }
-
-    if ($directory !== null && !str_starts_with($path, $directory . '/')) {
-        $path = $directory . '/' . $path;
-    }
-
-    return BASE_URL . '/assets/images/' . $path;
+$adminImageUrl = static function (
+    ?string $path,
+    ?string $directory = null
+): ?string {
+    return ImageUrl::resolve(
+        $path,
+        $directory
+    );
 };
