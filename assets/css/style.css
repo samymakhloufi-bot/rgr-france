@@ -39,6 +39,7 @@
     /* Mise en page */
     --container-width: 1344px;
     --header-height: 5rem;
+    --header-height: 5rem;
 
     /* Transitions */
     --transition-rapide: 0.2s ease;
@@ -72,45 +73,67 @@ button {
 }
 
 /* =========================
-  1. HEADER MOBILE
+   1. HEADER — MOBILE FIRST
 ========================= */
 
-header {
+.site-header {
     position: fixed;
     top: 0;
     left: 0;
     z-index: 1000;
 
-    transition: transform 250ms ease;
-    transform: translateY(0);
-    
     width: 100%;
-    
+
     background-color: var(--noir);
-    border-bottom: 1px solid rgba(244, 241, 236, 0.12);
+    border-bottom: 0.0625rem solid rgba(244, 241, 236, 0.12);
+
+    transform: translateY(0);
+    transition: transform 0.25s ease;
 }
 
-header.header-hidden {
+.site-header.header-hidden {
     transform: translateY(-100%);
 }
 
 .nav-bar {
+    --nav-inline-padding: 1rem;
+
     position: relative;
-    display: flex;
+
+    display: grid;
+    grid-template-columns:
+        auto
+        minmax(0, 1fr);
+        auto;
+    column-gap: .75rem;
+    grid-template-areas: "logo burger contact";
     align-items: center;
-    justify-content: space-between;
+
     width: 100%;
-    min-height: 5rem;
-    padding: 0 1.25rem;
+    min-height: var(--header-height);
+    padding-inline: var(--nav-inline-padding);
 }
 
-/* Logo */
+/*
+ * Permet aux éléments contenus dans .nav-menu
+ * de participer directement à la grille .nav-bar.
+ */
+.nav-menu {
+    display: contents;
+}
+
+/* =========================
+   LOGO
+========================= */
 
 #logo {
     position: relative;
     z-index: 1002;
+
     display: flex;
+    grid-area: logo;
     align-items: center;
+    justify-self: center;
 }
 
 #logo a {
@@ -124,30 +147,34 @@ header.header-hidden {
     height: auto;
 }
 
-/* Navigation */
-
-.nav-menu {
-    display: flex;
-    align-items: center;
-}
-
-/* Bouton burger */
+/* =========================
+   BOUTON BURGER
+========================= */
 
 .burger-btn {
     position: relative;
     z-index: 1002;
+
     display: flex;
+    grid-area: burger;
     align-items: center;
     justify-content: center;
+    justify-self: start;
+
     width: 2.5rem;
     height: 2.5rem;
     padding: 0;
+
     color: var(--blanc);
     font-size: 1.8rem;
     line-height: 1;
+
     background-color: transparent;
     border: 0;
+
     cursor: pointer;
+
+    transition: color var(--transition-rapide);
 }
 
 .burger-btn:hover,
@@ -155,65 +182,91 @@ header.header-hidden {
     color: var(--rouge-rgr);
 }
 
-/* Menu principal fermé par défaut */
+/* =========================
+   NAVIGATION MOBILE FERMÉE
+========================= */
 
 .nav-list {
     position: absolute;
     top: 100%;
     left: 0;
+    z-index: 1001;
+    width: 100%;
+
     display: flex;
     flex-direction: column;
-    gap: 0;
+    grid-area: navigation;
+
     width: 100%;
-    height: calc(100vh - 72px);
-    padding: 24px 20px 120px;
-    overflow-y: auto;
+    max-height: 0;
+    padding: 0 var(--nav-inline-padding);
+    overflow: hidden;
+
     list-style: none;
     background-color: var(--noir);
+    border-top: 0 solid var(--bordure);
 
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-12px);
+    pointer-events: none;
+    transform: translateY(-0.75rem);
 
     transition:
-        opacity 0.3s ease,
-        visibility 0.3s ease,
-        transform 0.3s ease;
+        max-height var(--transition-normalee),
+        padding var(--transition-normalee),
+        opacity var(--transition-rapide),
+        visibility var(--transition-rapide),
+        transform var(--transition-rapide),
+        border-color var(--transition-rapide);
 }
 
-/* Ouverture du menu avec aria-expanded */
+/* Navigation mobile ouverte */
 
-.burger-btn[aria-expanded="true"] + .nav-list {
+.nav-list.nav-list--open {
+    max-height: 45rem;
+    padding-top: 0.75rem;
+    padding-bottom: 1.25rem;
+
+    border-top-width: 0.0625rem;
+
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
     transform: translateY(0);
 }
 
-/* Liens principaux */
+/* =========================
+   LIENS PRINCIPAUX
+========================= */
 
 .nav-list > li > a,
 .dropbtn {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     width: 100%;
-    min-height: 52px;
-    padding: 14px 0;
+    min-height: 3.25rem;
+    padding: 0.875rem 0;
+
     color: var(--blanc);
-    font-family: "Barlow Condensed", sans-serif;
+    font-family: var(--police-titre);
     font-size: 1.25rem;
     font-weight: 600;
     letter-spacing: 0.0625rem;
     text-align: left;
     text-transform: uppercase;
-    background: transparent;
+
+    background-color: transparent;
     border: 0;
-    border-bottom: 1px solid rgba(244, 241, 236, 0.12);
+    border-bottom: 0.0625rem solid rgba(244, 241, 236, 0.12);
+
     cursor: pointer;
 
     transition:
-        color 0.2s ease,
-        border-color 0.2s ease;
+        color var(--transition-rapide),
+        border-color var(--transition-rapide),
+        transform var(--transition-rapide);
 }
 
 .nav-list > li > a:hover,
@@ -223,11 +276,11 @@ header.header-hidden {
 .nav-list .nav-active {
     color: var(--rouge-rgr);
     border-color: var(--rouge-rgr);
-    transform: scale(1.02); 
+    transform: scale(1.02);
 }
 
 /* =========================
-   2. SOUS-MENU "PLUS"
+   2. SOUS-MENU « PLUS »
 ========================= */
 
 .dropdown {
@@ -236,9 +289,11 @@ header.header-hidden {
 
 .arrow {
     display: inline-block;
-    margin-left: 8px;
+    margin-left: 0.5rem;
+
     font-size: 0.65rem;
-    transition: transform 0.3s ease;
+
+    transition: transform var(--transition-normalee);
 }
 
 .dropbtn[aria-expanded="true"] .arrow {
@@ -247,8 +302,10 @@ header.header-hidden {
 
 .drop-menu {
     display: none;
+
     width: 100%;
     padding: 0.375rem 0 0.375rem 1rem;
+
     list-style: none;
     background-color: var(--carbone);
     border-left: 0.125rem solid var(--rouge-rgr);
@@ -261,14 +318,16 @@ header.header-hidden {
 .drop-menu a {
     display: block;
     padding: 0.75rem 1rem;
+
     color: var(--gris-metal);
     font-size: 0.9rem;
     font-weight: 500;
-    border-bottom: 1px solid rgba(244, 241, 236, 0.08);
+
+    border-bottom: 0.0625rem solid rgba(244, 241, 236, 0.08);
 
     transition:
-        color 0.2s ease,
-        background-color 0.2s ease;
+        color var(--transition-rapide),
+        background-color var(--transition-rapide);
 }
 
 .drop-menu a:hover,
@@ -279,64 +338,117 @@ header.header-hidden {
 }
 
 /* =========================
-   3. BOUTON CONTACT MOBILE
+   3. BOUTON CONTACT
 ========================= */
 
 .contact {
-    position: fixed;
-    right: 1.25rem;
-    bottom: 1.5rem;
-    left: 1.25rem;
+    position: relative;
     z-index: 1002;
-    display: none;
-    padding: 0;
-    background-color: var(--rouge-rgr);
-    border: 1px solid var(--rouge-rgr);
-}
 
-.burger-btn[aria-expanded="true"] ~ .contact {
-    display: block;
-}
+    display: inline-flex;
+    grid-area: contact;
+    align-items: center;
+    justify-content: center;
+    justify-self: center;
 
-.contact a {
-    display: block;
-    width: 100%;
-    padding: 0.875rem 1.25rem;
+    min-height: 2.5rem;
+    padding: 0.75rem;
+
     color: var(--blanc);
-    font-family: "Barlow Condensed", sans-serif;
-    font-size: 1.15rem;
-    font-weight: 600;
+    font-family: var(--police-texte);
+    font-size: 0.75rem;
+    font-weight: 700;
     letter-spacing: 0.06em;
+    line-height: 1;
     text-align: center;
+    text-decoration: none;
     text-transform: uppercase;
+    white-space: nowrap;
+
+    background-color: var(--rouge-rgr);
+    border: 0.0625rem solid var(--rouge-rgr);
+
+    cursor: pointer;
+
+    transition:
+        color var(--transition-rapide),
+        background-color var(--transition-rapide),
+        border-color var(--transition-rapide),
+        transform var(--transition-rapide);
 }
 
-.contact:hover {
-    background-color: var(--noir);
+.contact:hover,
+.contact:focus-visible {
+    color: var(--blanc);
+    background-color: #bd260f;
+    border-color: #bd260f;
 }
 
-.contact a:hover {
-    transform: scale(1.2);
+.contact:active {
+    transform: translateY(0.0625rem);
 }
 
-/* Accessibilité clavier */
+.contact.nav-active {
+    color: var(--blanc);
+    background-color: var(--rouge-rgr);
+    box-shadow: inset 0 -0.1875rem 0 var(--blanc);
+}
+
+/* =========================
+   ACCESSIBILITÉ
+========================= */
 
 .burger-btn:focus-visible,
 .dropbtn:focus-visible,
 .nav-list a:focus-visible,
-.contact a:focus-visible {
-    outline: 2px solid var(--rouge-rgr);
-    outline-offset: 3px;
+.contact:focus-visible {
+    outline: 0.125rem solid var(--rouge-rgr);
+    outline-offset: 0.1875rem;
 }
 
 /* =========================
-   4. VERSION DESKTOP
+   4. TABLETTE
 ========================= */
 
-@media (min-width: 1024px) {
+@media screen and (min-width: 26.5625rem) and (max-width: 63.9375rem) {
+    :root {
+        --header-height: 5.5rem;
+    }
+
     .nav-bar {
-        max-width: 1440px;
-        min-height: 88px;
+        --nav-inline-padding: 1.5rem;
+    }
+
+    .logo-img {
+        width: 4.5rem;
+    }
+
+    .nav-list > li > a,
+    .dropbtn {
+        font-size: 1.125rem;
+    }
+
+    .contact {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* =========================
+   5. DESKTOP
+========================= */
+
+@media screen and (min-width: 64rem) {
+    :root {
+        --header-height: 6.25rem;
+    }
+    .nav-bar {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-areas: "logo navigation contact";
+        gap: 1.875rem;
+
+        max-width: 90rem;
+        min-height: 5.5rem;
         margin: 0 auto;
         padding: 0.625rem 3rem;
     }
@@ -345,28 +457,36 @@ header.header-hidden {
         width: 5.5rem;
     }
 
-    .nav-menu {
-        gap: 1.875rem;
-    }
-
     .burger-btn {
         display: none;
     }
 
-    .nav-list {
+    /*
+     * La même nav-list repasse dans le header.
+     * Aucun deuxième menu n’est nécessaire.
+     */
+    .nav-list,
+    .nav-list.nav-list--open {
         position: static;
+
         display: flex;
+        grid-area: navigation;
         flex-direction: row;
         align-items: center;
+        justify-content: center;
         gap: 1.75rem;
+
         width: auto;
-        height: auto;
+        max-height: none;
         padding: 0;
         overflow: visible;
+
         background-color: transparent;
+        border: 0;
 
         opacity: 1;
         visibility: visible;
+        pointer-events: auto;
         transform: none;
     }
 
@@ -374,9 +494,11 @@ header.header-hidden {
     .dropbtn {
         min-height: auto;
         padding: 0.75rem 0;
+
         font-size: 1rem;
         white-space: nowrap;
-        border-bottom: 2px solid transparent;
+
+        border-bottom: 0.125rem solid transparent;
     }
 
     .nav-list > li > a:hover,
@@ -391,23 +513,39 @@ header.header-hidden {
 
     .drop-menu {
         position: absolute;
-        top: calc(100% + 12px);
+        top: calc(100% + 0.75rem);
         right: 0;
+        z-index: 1002;
+
         display: block;
+
+        width: auto;
         min-width: 11.875rem;
         padding: 0.5rem;
+
         background-color: var(--carbone);
-        border: 1px solid rgba(244, 241, 236, 0.12);
-        border-top: 2px solid var(--rouge-rgr);
+        border: 0.0625rem solid rgba(244, 241, 236, 0.12);
+        border-top: 0.125rem solid var(--rouge-rgr);
 
         opacity: 0;
         visibility: hidden;
+        pointer-events: none;
         transform: translateY(-0.5rem);
 
         transition:
-            opacity 0.2s ease,
-            visibility 0.2s ease,
-            transform 0.2s ease;
+            opacity var(--transition-rapide),
+            visibility var(--transition-rapide),
+            transform var(--transition-rapide);
+    }
+
+    .dropdown::after {
+        position: absolute;
+        top: 100%;
+        right: -0.75rem;
+        left: -0.75rem;
+        z-index: 1002;
+        height: 0.75rem;
+        content: "";
     }
 
     .dropdown:hover .drop-menu,
@@ -415,7 +553,14 @@ header.header-hidden {
     .dropbtn[aria-expanded="true"] + .drop-menu {
         opacity: 1;
         visibility: visible;
+        pointer-events: auto;
         transform: translateY(0);
+    }
+
+    .dropdown:hover .arrow,
+    .dropdown:focus-within .arrow,
+    .dropbtn[aria-expanded="true"] .arrow {
+        transform: rotate(180deg);
     }
 
     .drop-menu a {
@@ -424,20 +569,11 @@ header.header-hidden {
         border-bottom: 0;
     }
 
-    /* Bouton contact desktop */
-
     .contact {
-        position: static;
-        display: block;
         min-width: 9.375rem;
+        padding: 0.875rem 1.25rem;
+        font-size: 0.875rem;
     }
-
-    .contact a {
-        padding: 0.75rem 1.25rem;
-        font-size: 1rem;
-    }
-
-
 }
 /* =========================
    5. VERSION TABLETTE

@@ -1,0 +1,370 @@
+/* ==================================================
+   CONNEXION ADMINISTRATEUR — MOBILE FIRST
+================================================== */
+
+.admin-login-page {
+    min-width: 20rem;
+    min-height: 100vh;
+    min-height: 100svh;
+    color: var(--blanc);
+    background-color: var(--noir);
+}
+
+.admin-login {
+    position: relative;
+    display: grid;
+    min-height: 100vh;
+    min-height: 100svh;
+    isolation: isolate;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(11, 11, 12, 0.18) 0%,
+            rgba(11, 11, 12, 0.72) 35%,
+            rgba(11, 11, 12, 0.98) 72%
+        ),
+        url('../../images/admin-login/admin-login-mobile.webp') center top / cover no-repeat;
+}
+
+.admin-login__visual {
+    display: none;
+}
+
+.admin-login__panel {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.125rem;
+}
+
+.admin-login__form-container {
+    width: min(100%, 27rem);
+    padding: 1.75rem 1.25rem;
+    background-color: rgba(11, 11, 12, 0.94);
+    border: 0.0625rem solid rgba(244, 241, 236, 0.16);
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.4);
+}
+
+.admin-login__logo {
+    display: block;
+    width: 6.5rem;
+    height: auto;
+}
+
+.admin-login__logo--mobile {
+    margin: 0 auto 2rem;
+}
+
+.admin-login__heading {
+    margin-bottom: 1.75rem;
+}
+
+.admin-login__lock {
+    position: relative;
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: 1.5rem;
+    place-items: center;
+    color: var(--gris-metal);
+}
+
+.admin-login__lock::after {
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    width: 2.5rem;
+    height: 0.125rem;
+    content: '';
+    background-color: var(--rouge-rgr);
+}
+
+.admin-login__lock svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
+}
+
+.admin-login__heading p {
+    margin-bottom: 0.45rem;
+    color: var(--gris-metal);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.admin-login__heading h1 {
+    max-width: 18rem;
+    font-family: var(--police-titre);
+    font-size: clamp(2.5rem, 12vw, 3.5rem);
+    font-weight: 600;
+    line-height: 0.9;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+}
+
+.admin-login__error {
+    margin-bottom: 1.25rem;
+    padding: 0.85rem 1rem;
+    color: #ffd9d2;
+    background-color: rgba(228, 51, 20, 0.14);
+    border-left: 0.1875rem solid var(--rouge-rgr);
+    font-size: 0.75rem;
+    line-height: 1.5;
+}
+
+.admin-login__form {
+    display: grid;
+    gap: 1.1rem;
+}
+
+.admin-login__field {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.admin-login__field > label {
+    color: var(--gris-clair);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+}
+
+.admin-login__control {
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+    gap: 0.7rem;
+    align-items: center;
+    min-height: 3.5rem;
+    padding-inline: 1rem;
+    background-color: rgba(255, 255, 255, 0.035);
+    border: 0.0625rem solid rgba(244, 241, 236, 0.28);
+    transition:
+        border-color var(--transition-rapide),
+        background-color var(--transition-rapide);
+}
+
+.admin-login__control:focus-within {
+    background-color: rgba(255, 255, 255, 0.055);
+    border-color: var(--rouge-rgr);
+}
+
+.admin-login__control > svg,
+.admin-login__password-toggle svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: var(--gris-metal);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
+}
+
+.admin-login__control input {
+    width: 100%;
+    min-width: 0;
+    padding-block: 0.95rem;
+    color: var(--blanc);
+    background: transparent;
+    border: 0;
+    outline: 0;
+    font: inherit;
+    font-size: 0.9rem;
+}
+
+.admin-login__password-toggle {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    color: var(--gris-metal);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.admin-login__password-toggle:hover svg,
+.admin-login__password-toggle[aria-pressed='true'] svg {
+    stroke: var(--rouge-rgr);
+}
+
+.admin-login__password-toggle:focus-visible,
+.admin-login__remember input:focus-visible,
+.admin-login__submit:focus-visible {
+    outline: 0.125rem solid var(--rouge-rgr);
+    outline-offset: 0.1875rem;
+}
+
+.admin-login__options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.admin-login__remember {
+    display: inline-flex;
+    gap: 0.65rem;
+    align-items: center;
+    color: var(--gris-clair);
+    font-size: 0.72rem;
+    cursor: pointer;
+}
+
+.admin-login__remember input {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--rouge-rgr);
+}
+
+.admin-login__submit {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.5rem;
+    margin-top: 0.35rem;
+    padding: 0.9rem 1.25rem;
+    color: var(--blanc);
+    background-color: var(--rouge-rgr);
+    border: 0.0625rem solid var(--rouge-rgr);
+    font-family: var(--police-titre);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+        background-color var(--transition-rapide),
+        border-color var(--transition-rapide),
+        transform var(--transition-rapide);
+}
+
+.admin-login__submit:hover {
+    background-color: #bd260f;
+    border-color: #bd260f;
+    transform: translateY(-0.125rem);
+}
+
+.admin-login__security-message {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    color: #777b80;
+    border-top: 0.0625rem solid rgba(244, 241, 236, 0.14);
+    font-size: 0.65rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.admin-login__honeypot {
+    position: absolute;
+    left: -999rem;
+    width: 0.0625rem;
+    height: 0.0625rem;
+    overflow: hidden;
+}
+
+/* ==================================================
+   TABLETTE
+================================================== */
+
+@media (min-width: 47.5rem) {
+    .admin-login__panel {
+        padding: 3rem;
+    }
+
+    .admin-login__form-container {
+        padding: 2.5rem;
+    }
+}
+
+/* ==================================================
+   DESKTOP
+================================================== */
+
+@media (min-width: 64rem) {
+    .admin-login {
+        grid-template-columns: minmax(0, 1.65fr) minmax(24rem, 0.85fr);
+        background: var(--noir);
+    }
+
+    .admin-login__visual {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-width: 0;
+        padding: 3rem;
+        background:
+            linear-gradient(
+                90deg,
+                rgba(11, 11, 12, 0.2),
+                rgba(11, 11, 12, 0.02) 58%,
+                rgba(11, 11, 12, 0.75)
+            ),
+            url('../../images/admin-login/admin-login-desktop.webp') center / cover no-repeat;
+    }
+
+    .admin-login__visual::after {
+        position: absolute;
+        inset: 0 0 0 auto;
+        width: 0.0625rem;
+        content: '';
+        background-color: rgba(244, 241, 236, 0.14);
+    }
+
+    .admin-login__logo--visual {
+        width: 7.5rem;
+    }
+
+    .admin-login__logo--mobile {
+        display: none;
+    }
+
+    .admin-login__notice {
+        position: relative;
+        max-width: 17rem;
+        padding-left: 1.15rem;
+        font-size: 0.8rem;
+        line-height: 1.6;
+    }
+
+    .admin-login__notice::before {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 0.1875rem;
+        content: '';
+        background-color: var(--rouge-rgr);
+    }
+
+    .admin-login__panel {
+        padding: 3rem clamp(2rem, 4vw, 4.5rem);
+        background:
+            repeating-linear-gradient(
+                135deg,
+                transparent 0 0.75rem,
+                rgba(255, 255, 255, 0.012) 0.75rem 0.8125rem
+            ),
+            var(--noir);
+    }
+
+    .admin-login__form-container {
+        padding: 0;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-login__control,
+    .admin-login__submit {
+        transition: none;
+    }
+}

@@ -9,8 +9,7 @@ require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/src/Entity/Vehicle.php';
 require_once __DIR__ . '/src/Repository/VehicleRepository.php';
 
-
-$pageCss = '/assets/css/pages/catalog-detail.css';
+$pageCss = '/assets/css/pages/catalog-detail.css?v=2';
 $internalReference = trim((string) ($_GET['ref'] ?? ''));
 $vehicle = null;
 $vehicleImages = [];
@@ -22,36 +21,47 @@ if ($internalReference === '' || strlen($internalReference) > 50) {
 } else {
     try {
         $vehicleRepository = new VehicleRepository($pdo);
-        $vehicle = $vehicleRepository->findByInternalReference($internalReference);
+        $vehicle = $vehicleRepository->findByInternalReference(
+            $internalReference
+        );
 
-        if (
-    $vehicle === null
+        if ($vehicle === null
     || !$vehicle->isPublished()
-    || $vehicle->getStatusId() !== 1
-) {
-    http_response_code(404);
-    $pageError = 'Le véhicule demandé est introuvable ou n’est plus disponible.';
-    $vehicle = null;
-}
+    || $vehicle->getStatusId() !== 1) {
+            http_response_code(404);
+            $pageError = 'Le véhicule demandé est introuvable ou n’est plus disponible.';
+        } elseif ($vehicle->getId() !== null) {
+            $vehicleImages = $vehicleRepository->findImagesByVehicleId(
+                $vehicle->getId()
+            );
+        }
     } catch (Throwable $exception) {
-        error_log('Impossible de charger le véhicule : ' . $exception->getMessage());
+        error_log(
+            'Impossible de charger la fiche véhicule : '
+            . $exception->getMessage()
+        );
+
         http_response_code(500);
         $vehicle = null;
         $pageError = 'Cette fiche est momentanément indisponible.';
     }
 }
 
-$vehicleName = $vehicle === null
+$vehicleTitle = $vehicle === null
     ? 'Véhicule introuvable'
-    : trim($vehicle->getBrand() . ' ' . $vehicle->getModel());
+    : $vehicle->getModel();
 
-$activePage = $vehicleName;
+$activePage = 'Nos véhicules';
 $metaDescription = $vehicle === null
     ? 'Le véhicule demandé est introuvable.'
-    : 'Découvrez ' . $vehicleName . ' proposé et accompagné par RGR France.';
+    : 'Découvrez le ' . $vehicle->getBrand() . ' ' . $vehicleTitle . ' proposé par RGR France.';
 
-$escape = static function (?string $value): string {
-    return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
+$escape = static function (mixed $value): string {
+    return htmlspecialchars(
+        (string) ($value ?? ''),
+        ENT_QUOTES | ENT_SUBSTITUTE,
+        'UTF-8'
+    );
 };
 
 $formatPrice = static function (float $price): string {
@@ -67,15 +77,30 @@ $getImageUrl = static function (string $imagePath): string {
         return $imagePath;
     }
 
-    return BASE_URL . '/' . ltrim($imagePath, '/');
+    $imagePath = ltrim(str_replace('\\', '/', $imagePath), '/');
+
+    if (str_starts_with($imagePath, 'assets/')) {
+        return BASE_URL . '/' . $imagePath;
+    }
+
+    if (str_starts_with($imagePath, 'images/')) {
+        return BASE_URL . '/assets/' . $imagePath;
+    }
+
+    if (str_starts_with($imagePath, 'vehicles/')) {
+        return BASE_URL . '/assets/images/' . $imagePath;
+    }
+
+    return BASE_URL . '/assets/images/vehicles/' . $imagePath;
 };
 
-$statusLabels = [
-    1 => 'Disponible à l’achat',
-    2 => 'En cours d’homologation',
-    3 => 'Service programmé',
-    4 => 'Véhicule rendu',
-];
+$contactUrl = $vehicle === null
+    ? BASE_URL . '/contact.php'
+    : BASE_URL
+        . '/contact.php?vehicle='
+        . urlencode($vehicle->getInternalReference());
+
+$coverImage = $vehicleImages[0] ?? null;
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -96,163 +121,207 @@ $statusLabels = [
                     </div>
                 </section>
             <?php else: ?>
-                <?php
-                    $statusLabel = $statusLabels[$vehicle->getStatusId()] ?? 'Suivi RGR France';
-                    $contactUrl = BASE_URL
-                        . '/contact.php?vehicle='
-                        . urlencode($vehicle->getInternalReference());
-                    $coverImage = $vehicleImages[0] ?? null;
-                ?>
-
-                <header class="catalog-detail__header">
+                <section class="catalog-detail__intro">
                     <div class="catalog-container">
                         <nav class="catalog-detail__breadcrumb" aria-label="Fil d’Ariane">
-                            <a href="<?= $escape(BASE_URL) ?>/vehicles.php">Nos véhicules</a>
-                            <span aria-hidden="true">/</span>
-                            <span><?= $escape($vehicleName) ?></span>
+                            <a href="<?= $escape(BASE_URL) ?>/vehicles.php">
+                                Nos véhicules
+                            </a>
+                            <span aria-hidden="true">›</span>
+                            <span><?= $escape($vehicle->getBrand()) ?></span>
+                            <span aria-hidden="true">›</span>
+                            <span aria-current="page">
+                                <?= $escape($vehicle->getModel()) ?>
+                            </span>
                         </nav>
 
-                        <div class="catalog-detail__header__content">
-                            <div>
-                                <h1 class="catalog-detail__title">
-                                    <?= $escape($vehicle->getBrand()) ?>
-                                    <strong><?= $escape($vehicle->getModel()) ?></strong>
-                                </h1>
+                        <p class="catalog-detail__brand">
+                            <?= $escape($vehicle->getBrand()) ?>
+                        </p>
 
-                                <?php if ($vehicle->getTrimLevel() !== null): ?>
-                                    <p class="catalog-detail__subtitle">
-                                        <?= $escape($vehicle->getTrimLevel()) ?>
-                                    </p>
-                                <?php endif; ?>
-                            </div>
+                        <h1 class="catalog-detail__title">
+                            <?= $escape($vehicleTitle) ?>
+                        </h1>
 
-                            <div class="catalog-detail__price">
-                                <span>Prix affiché</span>
-                                <strong>
-                                    <?= $vehicle->getPrice() === null
-                                        ? 'Sur demande'
-                                        : $escape($formatPrice($vehicle->getPrice())) ?>
-                                </strong>
-                            </div>
-                        </div>
+                        <p class="catalog-detail__reference">
+                            Réf. <?= $escape($vehicle->getInternalReference()) ?>
+                        </p>
                     </div>
-                </header>
+                </section>
 
-                <section class="catalog-detail__content">
+                <section class="catalog-detail__content" aria-label="Présentation du véhicule">
                     <div class="catalog-container catalog-detail__layout">
-                        <div class="catalog-detail__gallery">
+                        <div class="catalog-detail__gallery" data-catalog-gallery>
                             <?php if ($coverImage !== null): ?>
-                                <figure class="catalog-detail__gallery__main">
+                                <figure class="catalog-detail__visual">
                                     <img
                                         src="<?= $escape($getImageUrl($coverImage['file_path'])) ?>"
-                                        alt="<?= $escape($coverImage['alt_text'] ?: $vehicleName) ?>"
-                                        
+                                        alt="<?= $escape($coverImage['alt_text'] ?: $vehicleTitle) ?>"
+                                        data-gallery-main
                                     >
+
+                                    <?php if (count($vehicleImages) > 1): ?>
+                                        <button
+                                            class="catalog-detail__gallery-control catalog-detail__gallery-control--previous"
+                                            type="button"
+                                            data-gallery-previous
+                                            aria-label="Afficher la photo précédente"
+                                        >
+                                            ‹
+                                        </button>
+
+                                        <button
+                                            class="catalog-detail__gallery-control catalog-detail__gallery-control--next"
+                                            type="button"
+                                            data-gallery-next
+                                            aria-label="Afficher la photo suivante"
+                                        >
+                                            ›
+                                        </button>
+                                    <?php endif; ?>
+
+                                    <span class="catalog-detail__counter" data-gallery-counter>
+                                        1 / <?= count($vehicleImages) ?>
+                                    </span>
                                 </figure>
 
                                 <?php if (count($vehicleImages) > 1): ?>
-                                    <div class="catalog-detail__gallery__secondary">
-                                        <?php foreach (array_slice($vehicleImages, 1) as $image): ?>
-                                            <figure>
+                                    <div class="catalog-detail__thumbnails" aria-label="Galerie du véhicule">
+                                        <?php foreach ($vehicleImages as $index => $image): ?>
+                                            <button
+                                                class="catalog-detail__thumbnail<?= $index === 0 ? ' catalog-detail__thumbnail--active' : '' ?>"
+                                                type="button"
+                                                data-gallery-thumbnail
+                                                data-image-src="<?= $escape($getImageUrl($image['file_path'])) ?>"
+                                                data-image-alt="<?= $escape($image['alt_text'] ?: $vehicleTitle) ?>"
+                                                data-image-index="<?= $index ?>"
+                                                aria-label="Afficher la photo <?= $index + 1 ?> sur <?= count($vehicleImages) ?>"
+                                                aria-pressed="<?= $index === 0 ? 'true' : 'false' ?>"
+                                            >
                                                 <img
                                                     src="<?= $escape($getImageUrl($image['file_path'])) ?>"
-                                                    alt="<?= $escape($image['alt_text'] ?: $vehicleName) ?>"
+                                                    alt=""
                                                     loading="lazy"
                                                     decoding="async"
                                                 >
-                                            </figure>
+                                            </button>
                                         <?php endforeach; ?>
                                     </div>
                                 <?php endif; ?>
                             <?php else: ?>
-                                <div class="catalog-detail__gallery__placeholder">
+                                <div class="catalog-detail__placeholder" aria-hidden="true">
                                     <span>RGR</span>
                                     France
                                 </div>
                             <?php endif; ?>
                         </div>
 
-                        <aside class="catalog-detail__summary" aria-label="Résumé du véhicule">
-                            <p class="catalog-detail__summary__reference">
-                                Réf. <?= $escape($vehicle->getInternalReference()) ?>
-                            </p>
+                        <aside class="catalog-detail__summary" aria-label="Informations principales">
+                            <div class="catalog-detail__price">
+                                <strong>
+                                    <?= $vehicle->getPrice() === null
+                                        ? 'Sur demande'
+                                        : $escape($formatPrice($vehicle->getPrice())) ?>
+                                </strong>
+                            </div>
 
-                            <h2>Votre projet automobile</h2>
-                            <p>
-                                Notre équipe vous accompagne pour obtenir les informations
-                                complémentaires, vérifier la disponibilité et organiser la
-                                suite de votre projet.
-                            </p>
+
+
+                            <dl class="catalog-detail__specifications-grid catalog-detail__specifications-grid--summary">
+                                <?php if ($vehicle->getRegistrationYear() !== null): ?>
+                                    <div>
+                                        <dt>Année</dt>
+                                        <dd><?= $vehicle->getRegistrationYear() ?></dd>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($vehicle->getMileageKm() !== null): ?>
+                                    <div>
+                                        <dt>Kilométrage</dt>
+                                        <dd><?= $escape($formatMileage($vehicle->getMileageKm())) ?></dd>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($vehicle->getFuelType() !== null): ?>
+                                    <div>
+                                        <dt>Énergie</dt>
+                                        <dd><?= $escape($vehicle->getFuelType()) ?></dd>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($vehicle->getTransmission() !== null): ?>
+                                    <div>
+                                        <dt>Transmission</dt>
+                                        <dd><?= $escape($vehicle->getTransmission()) ?></dd>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($vehicle->getPowerHp() !== null): ?>
+                                    <div>
+                                        <dt>Puissance</dt>
+                                        <dd><?= $vehicle->getPowerHp() ?> ch</dd>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($vehicle->getExteriorColor() !== null): ?>
+                                    <div>
+                                        <dt>Couleur</dt>
+                                        <dd><?= $escape($vehicle->getExteriorColor()) ?></dd>
+                                    </div>
+                                <?php endif; ?>
+                            </dl>
 
                             <a class="catalog-detail__cta" href="<?= $escape($contactUrl) ?>">
                                 Demander des informations
                                 <span aria-hidden="true">→</span>
                             </a>
-
-                            <a class="catalog-detail__back" href="<?= $escape(BASE_URL) ?>/vehicles.php">
-                                ← Retour au catalogue
-                            </a>
                         </aside>
 
-                        <section class="catalog-detail__description" aria-labelledby="vehicle-description-title">
-                            <p class="catalog-eyebrow">Présentation</p>
-                            <h2 id="vehicle-description-title">À propos de ce véhicule</h2>
-                            <p>
-                                <?= nl2br($escape(
-                                    $vehicle->getDescription()
-                                    ?? 'Contactez RGR France pour obtenir toutes les informations sur ce véhicule.'
-                                )) ?>
-                            </p>
-                        </section>
+                        <div class="catalog-detail__lower-content">
+                            <article class="catalog-detail__description">
+                                <h2>À propos de ce véhicule</h2>
+                                <p>
+                                    <?= nl2br($escape(
+                                        $vehicle->getDescription()
+                                        ?? 'Contactez RGR France pour obtenir toutes les informations concernant ce véhicule.'
+                                    )) ?>
+                                </p>
+                            </article>
 
-                        <section class="catalog-detail__specifications" aria-labelledby="vehicle-specs-title">
-                            <p class="catalog-eyebrow">Fiche technique</p>
-                            <h2 id="vehicle-specs-title">Caractéristiques</h2>
+                            <section class="catalog-detail__specifications" aria-labelledby="vehicle-specifications-title">
+                                <h2 id="vehicle-specifications-title">Caractéristiques</h2>
 
-                            <dl class="catalog-detail__specifications-grid">
-                                <?php if ($vehicle->getRegistrationYear() !== null): ?>
-                                    <div><dt>Année</dt><dd><?= $vehicle->getRegistrationYear() ?></dd></div>
-                                <?php endif; ?>
-
-                                <?php if ($vehicle->getMileageKm() !== null): ?>
-                                    <div><dt>Kilométrage</dt><dd><?= $escape($formatMileage($vehicle->getMileageKm())) ?></dd></div>
-                                <?php endif; ?>
-
-                                <?php if ($vehicle->getFuelType() !== null): ?>
-                                    <div><dt>Énergie</dt><dd><?= $escape($vehicle->getFuelType()) ?></dd></div>
-                                <?php endif; ?>
-
-                                <?php if ($vehicle->getTransmission() !== null): ?>
-                                    <div><dt>Transmission</dt><dd><?= $escape($vehicle->getTransmission()) ?></dd></div>
-                                <?php endif; ?>
-
-                                <?php if ($vehicle->getPowerHp() !== null): ?>
-                                    <div><dt>Puissance</dt><dd><?= $vehicle->getPowerHp() ?> hp</dd></div>
-                                <?php endif; ?>
-
-                                <?php if ($vehicle->getExteriorColor() !== null): ?>
-                                    <div><dt>Couleur</dt><dd><?= $escape($vehicle->getExteriorColor()) ?></dd></div>
-                                <?php endif; ?>
-
-                                <div><dt>Statut</dt><dd><?= $escape($statusLabel) ?></dd></div>
-                            </dl>
-                        </section>
+                                <dl class="catalog-detail__specifications-grid">
+                                    <?php if ($vehicle->getRegistrationYear() !== null): ?>
+                                        <div><dt>Année</dt><dd><?= $vehicle->getRegistrationYear() ?></dd></div>
+                                    <?php endif; ?>
+                                    <?php if ($vehicle->getMileageKm() !== null): ?>
+                                        <div><dt>Kilométrage</dt><dd><?= $escape($formatMileage($vehicle->getMileageKm())) ?></dd></div>
+                                    <?php endif; ?>
+                                    <?php if ($vehicle->getFuelType() !== null): ?>
+                                        <div><dt>Énergie</dt><dd><?= $escape($vehicle->getFuelType()) ?></dd></div>
+                                    <?php endif; ?>
+                                    <?php if ($vehicle->getTransmission() !== null): ?>
+                                        <div><dt>Transmission</dt><dd><?= $escape($vehicle->getTransmission()) ?></dd></div>
+                                    <?php endif; ?>
+                                    <?php if ($vehicle->getPowerHp() !== null): ?>
+                                        <div><dt>Puissance</dt><dd><?= $vehicle->getPowerHp() ?> ch</dd></div>
+                                    <?php endif; ?>
+                                    <?php if ($vehicle->getExteriorColor() !== null): ?>
+                                        <div><dt>Couleur</dt><dd><?= $escape($vehicle->getExteriorColor()) ?></dd></div>
+                                    <?php endif; ?>
+                                </dl>
+                            </section>
+                        </div>
                     </div>
                 </section>
-
-                <aside class="catalog-detail__contact">
-                    <div class="catalog-container catalog-detail__contact__content">
-                        <div>
-                            <p class="catalog-eyebrow">Un projet en tête ?</p>
-                            <h2>Parlons de votre future américaine</h2>
-                        </div>
-                        <a href="<?= $escape($contactUrl) ?>">Contacter RGR France</a>
-                    </div>
-                </aside>
             <?php endif; ?>
         </main>
 
         <?php include __DIR__ . '/includes/footer.php'; ?>
-        <script src= "<?= $escape(BASE_URL) ?>/assets/js/pages/vehicle-detail.js" defer></script>
+
+        <?php if ($vehicle !== null && count($vehicleImages) > 1): ?>
+            <script src="<?= $escape(BASE_URL) ?>/assets/js/pages/catalog-detail-gallery.js" defer></script>
+        <?php endif; ?>
     </body>
 </html>

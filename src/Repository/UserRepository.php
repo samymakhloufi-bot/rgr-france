@@ -1,7 +1,14 @@
 <?php 
-require_once __DIR__ .'/../Entity/UserEntity.php';
 
-class UserRepository{
+declare(strict_types=1);
+
+namespace App\Repository;
+
+use App\Entity\User;
+use DateTimeImmutable;
+use PDO;
+
+final class UserRepository{
     private PDO $pdo;
 
     public function __construct(PDO $pdo){
@@ -9,8 +16,25 @@ class UserRepository{
     }
 
     private function hydrate(array|false|null $data): ?User{
-    if(!$data) return null;
-    return new User($data);
+        return new User(
+            username: (string) $data['username'],
+            passwordHash: (string) $data['password_hash'],
+            role: (string) $data['role'],
+            firstName: $data['first_name'] ?: null,
+            lastName: $data['last_name'] ?: null,
+            email: $data['email'] ?: null,
+            isActive: (bool) $data['is_active'],
+            id: (int) $data['id'],
+            lastLoginAt: !empty($data['last_login_at'])
+                ? new DateTimeImmutable($data['last_login_at'])
+                : null,
+            createdAt: !empty($data['created_at'])
+                ? new DateTimeImmutable($data['created_at'])
+                : null,
+            updatedAt: !empty($data['updated_at'])
+                ? new DateTimeImmutable($data['updated_at'])
+                : null
+        );
 }
 
     public function findById(int $id): ?User{
@@ -18,6 +42,26 @@ class UserRepository{
         $stmt->execute([$id]);
         $data = $stmt ->fetch(PDO::FETCH_ASSOC);
         return $this->hydrate($data);
+    }
+
+        public function findByUsername(string $username): ?User
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT *
+            FROM users
+            WHERE username = :username
+            LIMIT 1'
+        );
+
+        $stmt->execute([
+            'username' => $username,
+        ]);
+
+        $data = $stmt->fetch();
+
+        return $data === false
+            ? null
+            : $this->hydrate($data);
     }
 
     public function findByEmail(string $email): ?User{

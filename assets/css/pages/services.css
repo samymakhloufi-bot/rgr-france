@@ -146,19 +146,40 @@
 /* Introduction */
 
 .service-introduction {
-    padding: 54px 0;
-    border-bottom: 1px solid #d5d1cb;
+    padding: 0;
+    background-color: var(--blanc);
+    border-bottom: 0.0625rem solid #d5d1cb;
 }
 
 .service-introduction__layout {
     display: grid;
-    gap: 24px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
 }
 
-.service-introduction__layout > p {
+.service-introduction__main {
+    padding: 3rem 1.125rem;
+}
+
+.service-introduction__main h2::after {
+    display: block;
+    width: 2.5rem;
+    height: 0.1875rem;
+    margin-top: 0.75rem;
+    content: '';
+    background-color: var(--rouge-rgr);
+}
+
+.service-introduction__main p {
+    max-width: 46rem;
+    margin-top: 1rem;
     color: #5e5e62;
-    font-size: 0.92rem;
-    line-height: 1.85;
+    font-size: 0.86rem;
+    line-height: 1.65;
+}
+
+.service-introduction__aside {
+    display: none;
 }
 
 /* Prestations */
@@ -387,15 +408,60 @@
             var(--service-hero-desktop, var(--service-hero-mobile, none));
     }
 
-    .service-introduction,
     .service-process {
-        padding-block: 78px;
+        padding-block: 4.875rem;
     }
 
     .service-introduction__layout {
-        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-        gap: 64px;
-        align-items: end;
+        grid-template-columns: minmax(0, 63%) minmax(0, 37%);
+        min-height: 12rem;
+    }
+
+    .service-introduction__main {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 2rem clamp(2rem, 5vw, 5rem);
+    }
+
+    .service-introduction__main h2 {
+        font-size: clamp(2rem, 3vw, 2.8rem);
+    }
+
+    .service-introduction__aside {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(7rem, 42%) minmax(0, 58%);
+        align-items: stretch;
+    }
+
+    .service-introduction__aside::before {
+        position: absolute;
+        top: 1.5rem;
+        bottom: 1.5rem;
+        left: 0;
+        width: 0.0625rem;
+        content: '';
+        background-color: var(--rouge-rgr);
+    }
+
+    .service-introduction__aside-copy {
+        align-self: center;
+        padding: 1.5rem 1.25rem 1.5rem 2rem;
+        color: #737378;
+        font-size: 0.72rem;
+        font-weight: 800;
+        line-height: 1.35;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .service-introduction__aside img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 12rem;
+        object-fit: cover;
     }
 
     .service-support__layout {
@@ -527,5 +593,546 @@
 @media (prefers-reduced-motion: reduce) {
     .service-button {
         transition: none;
+    }
+}
+
+/* ==================================================
+   IMPORTATION — COMPOSANTS SPÉCIFIQUES
+================================================== */
+
+.service-page--importation {
+    position: relative;
+    z-index: 0;
+    padding-top: 5.5rem;
+    overflow: hidden;
+}
+
+.service-page--importation h2 {
+    font-size: clamp(2.2rem, 9vw, 3.8rem);
+}
+
+/* Hero */
+
+.import-hero {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    min-height: 43rem;
+    color: var(--blanc);
+    background:
+        linear-gradient(
+            90deg,
+            rgba(8, 8, 9, 0.98) 0%,
+            rgba(8, 8, 9, 0.9) 38%,
+            rgba(8, 8, 9, 0.3) 70%,
+            rgba(8, 8, 9, 0.12) 100%
+        ),
+        url('/assets/images/importation/importation-hero-mobile.webp') center / cover no-repeat;
+    border-bottom: 0.25rem solid var(--rouge-rgr);
+}
+
+.import-hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding-block: 18rem 3rem;
+}
+
+.import-hero h1 {
+    max-width: 45rem;
+    font-family: var(--police-titre, sans-serif);
+    font-size: clamp(3.2rem, 13vw, 6.5rem);
+    line-height: 0.86;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+}
+
+.import-hero h1 span {
+    display: block;
+}
+
+.import-hero__description {
+    max-width: 31rem;
+    margin-top: 1.4rem;
+    color: var(--gris-clair);
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.import-hero__price {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    margin-top: 1.5rem;
+    color: var(--gris-metal);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.import-hero__price span {
+    width: 1.7rem;
+    height: 0.0625rem;
+    background-color: var(--gris-metal);
+}
+
+/* Titres de sections */
+
+.import-section-heading {
+    display: grid;
+    gap: 1.25rem;
+    align-items: end;
+}
+
+.import-section-heading > p {
+    max-width: 31rem;
+    color: #57575c;
+    font-size: 0.78rem;
+    line-height: 1.65;
+}
+
+.import-section-heading--dark > p {
+    color: var(--gris-metal);
+}
+
+/* Méthode */
+
+.import-process {
+    padding-block: 3.5rem 4rem;
+    background-color: var(--blanc);
+}
+
+.import-process__list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin-top: 2.5rem;
+    list-style: none;
+}
+
+.import-process__list li {
+    padding: 1.3rem 0;
+    border-bottom: 0.0625rem solid #d5d1cb;
+}
+
+.import-process__step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.import-process__step strong {
+    color: var(--rouge-rgr);
+    font-family: var(--police-titre, sans-serif);
+    font-size: 2.3rem;
+    line-height: 1;
+}
+
+.import-process__step span {
+    height: 0.0625rem;
+    background-color: #8b8b8e;
+}
+
+.import-process__list svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-block: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+}
+
+.import-process__list h3,
+.import-security__grid h3 {
+    font-family: var(--police-titre, sans-serif);
+    font-size: 1.1rem;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+}
+
+.import-process__list p {
+    margin-top: 0.5rem;
+    color: #57575c;
+    font-size: 0.72rem;
+    line-height: 1.55;
+}
+
+/* Transparence */
+
+.import-transparency {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    background-color: var(--blanc);
+    border-top: 0.0625rem solid #d5d1cb;
+}
+
+.import-transparency > img {
+    display: block;
+    width: 100%;
+    min-height: 19rem;
+    max-height: 30rem;
+    object-fit: cover;
+}
+
+.import-transparency__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem max(1.125rem, calc((100vw - var(--container-width)) / 2));
+}
+
+.import-transparency__content > p:not(.service-eyebrow) {
+    max-width: 38rem;
+    margin-top: 1.1rem;
+    color: #515156;
+    font-size: 0.86rem;
+    line-height: 1.7;
+}
+
+.import-red-rule {
+    width: 3rem;
+    height: 0.1875rem;
+    margin-top: 1.7rem;
+    background-color: var(--rouge-rgr);
+}
+
+/* Sécurité */
+
+.import-security {
+    padding-block: 3.7rem 4.2rem;
+    color: var(--blanc);
+    background:
+        linear-gradient(rgba(7, 7, 8, 0.93), rgba(7, 7, 8, 0.96)),
+        repeating-linear-gradient(45deg, #151515 0 0.25rem, #0d0d0e 0.25rem 0.5rem);
+}
+
+.import-security__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.8rem;
+    margin-top: 2.2rem;
+}
+
+.import-security__grid article {
+    min-height: 13rem;
+    padding: 1.8rem 1.3rem;
+    background-color: rgba(14, 14, 15, 0.82);
+    border: 0.0625rem solid rgba(244, 241, 236, 0.2);
+}
+
+.import-security__brand {
+    display: flex;
+    align-items: center;
+    min-height: 2.8rem;
+    margin-bottom: 1.3rem;
+    font-size: 1.45rem;
+}
+
+.import-security__brand--ford {
+    width: 6rem;
+    min-height: 2.5rem;
+    justify-content: center;
+    color: #fff;
+    background-color: #063f80;
+    border: 0.125rem solid #dbe8f7;
+    border-radius: 50%;
+    font-family: Georgia, serif;
+    font-style: italic;
+}
+
+.import-security__brand--carfax {
+    display: inline-flex;
+    width: auto;
+    min-height: auto;
+    padding: 0.28rem 0.4rem;
+    color: #111;
+    background-color: #fff;
+    font-family: var(--police-titre, sans-serif);
+    font-size: 1.2rem;
+    letter-spacing: 0.12em;
+}
+
+.import-security__brand--hsbc {
+    gap: 0.6rem;
+}
+
+.import-security__brand--hsbc span {
+    width: 2rem;
+    height: 1.4rem;
+    background-color: var(--rouge-rgr);
+    clip-path: polygon(0 50%, 25% 0, 50% 50%, 75% 0, 100% 50%, 75% 100%, 50% 50%, 25% 100%);
+}
+
+.import-security__document {
+    width: 2.8rem;
+    height: 2.8rem;
+    margin-bottom: 1.3rem;
+    fill: none;
+    stroke: var(--blanc);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.6;
+}
+
+.import-security__grid p {
+    margin-top: 0.65rem;
+    color: var(--gris-metal);
+    font-size: 0.7rem;
+    line-height: 1.6;
+}
+
+/* Trajet */
+
+.import-journey {
+    padding-block: 3.8rem 4.5rem;
+    background-color: var(--blanc);
+}
+
+.import-route {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem 0.8rem;
+    margin-top: 2.7rem;
+    list-style: none;
+}
+
+.import-route li {
+    position: relative;
+    min-width: 0;
+}
+
+.import-route li::after {
+    position: absolute;
+    top: 1rem;
+    right: 0;
+    left: 2.5rem;
+    height: 0.0625rem;
+    content: '';
+    background-color: #8f8f92;
+}
+
+.import-route li::before {
+    position: absolute;
+    top: 0.83rem;
+    right: 0;
+    z-index: 1;
+    width: 0.35rem;
+    height: 0.35rem;
+    content: '';
+    background-color: var(--blanc);
+    border: 0.0625rem solid var(--noir);
+    border-radius: 50%;
+}
+
+.import-route li:nth-child(2n)::after,
+.import-route li:nth-child(2n)::before,
+.import-route li:last-child::after,
+.import-route li:last-child::before {
+    display: none;
+}
+
+.import-route span {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--blanc);
+    font-size: 1.25rem;
+}
+
+.import-route strong {
+    display: block;
+    margin-top: 0.45rem;
+    font-family: var(--police-titre, sans-serif);
+    font-size: 0.75rem;
+    line-height: 1.05;
+    text-transform: uppercase;
+}
+
+.import-journey__cards {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.4rem;
+    margin-top: 2.2rem;
+}
+
+.import-journey__cards img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 8.5;
+    object-fit: cover;
+}
+
+.import-journey__cards p {
+    padding: 0.7rem 0.7rem 0;
+    color: #505055;
+    font-size: 0.7rem;
+    line-height: 1.55;
+}
+
+/* CTA final */
+
+.import-cta {
+    position: relative;
+    min-height: 17rem;
+    color: var(--blanc);
+    background:
+        linear-gradient(90deg, rgba(5, 5, 6, 0.98) 0%, rgba(5, 5, 6, 0.78) 52%, rgba(5, 5, 6, 0.35) 100%),
+        url('/assets/images/importation/importation-cta.webp') 68% center / cover no-repeat;
+    border-top: 0.25rem solid var(--rouge-rgr);
+}
+
+.import-cta__content {
+    display: grid;
+    gap: 1.5rem;
+    align-items: center;
+    min-height: 17rem;
+    padding-block: 2.6rem;
+}
+
+.import-cta h2 {
+    max-width: 35rem;
+    font-size: clamp(2.2rem, 9vw, 3.5rem);
+}
+
+.import-cta p {
+    max-width: 32rem;
+    margin-top: 0.7rem;
+    color: var(--gris-metal);
+    font-size: 0.78rem;
+    line-height: 1.65;
+}
+
+.import-cta .service-button {
+    margin-top: 0;
+    justify-self: start;
+}
+
+/* Tablette */
+
+@media (min-width: 47.5rem) {
+    .import-hero {
+        min-height: 42rem;
+        background-image:
+            linear-gradient(
+                90deg,
+                rgba(8, 8, 9, 0.98) 0%,
+                rgba(8, 8, 9, 0.9) 38%,
+                rgba(8, 8, 9, 0.3) 70%,
+                rgba(8, 8, 9, 0.12) 100%
+            ),
+            url('/assets/images/importation/importation-hero.webp');
+        background-position: 60% center;
+    }
+
+    .import-hero__content {
+        justify-content: center;
+        padding-block: 5rem;
+    }
+
+    .import-section-heading {
+        grid-template-columns: minmax(0, 1.45fr) minmax(17rem, 0.55fr);
+        gap: 3rem;
+    }
+
+    .import-process__list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.5rem;
+    }
+
+    .import-process__list li {
+        border-bottom: 0;
+    }
+
+    .import-transparency {
+        grid-template-columns: minmax(0, 52%) minmax(0, 48%);
+    }
+
+    .import-transparency > img {
+        height: 100%;
+        max-height: none;
+    }
+
+    .import-transparency__content {
+        min-height: 29rem;
+        padding: 3rem clamp(2.5rem, 6vw, 6rem);
+    }
+
+    .import-security__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .import-route {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 0;
+    }
+
+    .import-route li::after,
+    .import-route li::before {
+        display: block;
+    }
+
+    .import-route li:last-child::after,
+    .import-route li:last-child::before {
+        display: none;
+    }
+
+    .import-journey__cards {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .import-cta__content {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 3rem;
+    }
+}
+
+/* Desktop */
+
+@media (min-width: 65.625rem) {
+    .import-hero {
+        min-height: 46rem;
+        background-position: center;
+    }
+
+    .import-hero__content {
+        padding-block: 6rem;
+    }
+
+    .import-hero h1 {
+        font-size: clamp(5rem, 6vw, 6.8rem);
+    }
+
+    .import-process {
+        padding-block: 4.4rem 4.8rem;
+    }
+
+    .import-process__list {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 1.15rem;
+    }
+
+    .import-process__list li {
+        min-width: 0;
+    }
+
+    .import-security {
+        padding-block: 4.5rem 5rem;
+    }
+
+    .import-security__grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .import-journey {
+        padding-block: 4.5rem 5.2rem;
     }
 }

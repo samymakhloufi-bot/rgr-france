@@ -9,7 +9,9 @@ require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/src/Entity/Product.php';
 require_once __DIR__ . '/src/Repository/ProductRepository.php';
 
-$pageCss = '/assets/css/pages/catalog-detail.css';
+$activePage = 'Nos produits';
+$pageCss = BASE_URL . '/assets/css/pages/catalog-detail.css?v=4';
+
 $slug = trim((string) ($_GET['slug'] ?? ''));
 $product = null;
 $pageError = null;
@@ -27,7 +29,11 @@ if ($slug === '' || strlen($slug) > 190) {
             $pageError = 'Le produit demandé est introuvable ou n’est plus disponible.';
         }
     } catch (Throwable $exception) {
-        error_log('Impossible de charger le produit : ' . $exception->getMessage());
+        error_log(
+            'Impossible de charger la fiche produit : '
+            . $exception->getMessage()
+        );
+
         http_response_code(500);
         $product = null;
         $pageError = 'Cette fiche est momentanément indisponible.';
@@ -38,13 +44,16 @@ $productName = $product === null
     ? 'Produit introuvable'
     : $product->getName();
 
-$activePage = 'Nos produits';
 $metaDescription = $product === null
     ? 'Le produit demandé est introuvable.'
     : 'Découvrez ' . $productName . ' sélectionné par RGR France.';
 
-$escape = static function (?string $value): string {
-    return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
+$escape = static function (mixed $value): string {
+    return htmlspecialchars(
+        (string) ($value ?? ''),
+        ENT_QUOTES | ENT_SUBSTITUTE,
+        'UTF-8'
+    );
 };
 
 $formatPrice = static function (float $price): string {
@@ -56,12 +65,30 @@ $getImageUrl = static function (string $imagePath): string {
         return $imagePath;
     }
 
-    return BASE_URL . '/' . ltrim($imagePath, '/');
+    $imagePath = ltrim(str_replace('\\', '/', $imagePath), '/');
+
+    if (str_starts_with($imagePath, 'assets/')) {
+        return BASE_URL . '/' . $imagePath;
+    }
+
+    if (str_starts_with($imagePath, 'images/')) {
+        return BASE_URL . '/assets/' . $imagePath;
+    }
+
+    if (str_starts_with($imagePath, 'products/')) {
+        return BASE_URL . '/assets/images/' . $imagePath;
+    }
+
+    return BASE_URL . '/assets/images/products/' . $imagePath;
 };
 
 $contactUrl = $product === null
     ? BASE_URL . '/contact.php'
-    : BASE_URL . '/contact.php?product=' . urlencode($product->getSlug());
+    : BASE_URL
+        . '/contact.php?product='
+        . urlencode($product->getSlug());
+
+$imagePath = $product?->getImagePath();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -82,78 +109,94 @@ $contactUrl = $product === null
                     </div>
                 </section>
             <?php else: ?>
-                <header class="catalog-detail__header">
+                <section class="catalog-detail__intro">
                     <div class="catalog-container">
-                        <nav class="catalog-detail__breadcrumb" aria-label="Fil d’Ariane">
+                        <nav
+                            class="catalog-detail__breadcrumb"
+                            aria-label="Fil d’Ariane"
+                        >
                             <a href="<?= $escape(BASE_URL) ?>/nos-produits.php">
                                 Nos produits
                             </a>
-                            <span aria-hidden="true">/</span>
-                            <span><?= $escape($productName) ?></span>
+                            <span aria-hidden="true">›</span>
+                            <span aria-current="page">
+                                <?= $escape($productName) ?>
+                            </span>
                         </nav>
 
-                        <div class="catalog-detail__heading">
-                            <div>
-                                <p class="catalog-eyebrow">Pièces &amp; équipements</p>
-                                <h1 class="catalog-detail__title">
-                                    <?= $escape($productName) ?>
-                                </h1>
+                        <p class="catalog-detail__brand">
+                            Pièces &amp; équipements
+                        </p>
 
-                                <?php if ($product->getSku() !== null): ?>
-                                    <p class="catalog-detail__subtitle">
-                                        Réf. <?= $escape($product->getSku()) ?>
-                                    </p>
-                                <?php endif; ?>
-                            </div>
+                        <h1 class="catalog-detail__title">
+                            <?= $escape($productName) ?>
+                        </h1>
 
-                            <div class="catalog-detail__price">
-                                <?php if ($product->getPromotionalPrice() !== null): ?>
-                                    <span class="catalog-detail__price-old">
-                                        <?= $escape($formatPrice($product->getRegularPrice())) ?>
-                                    </span>
-                                <?php else: ?>
-                                    <span>Prix affiché</span>
-                                <?php endif; ?>
-
-                                <strong>
-                                    <?= $escape($formatPrice($product->getCurrentPrice())) ?>
-                                </strong>
-                            </div>
-                        </div>
+                        <?php if ($product->getSku() !== null): ?>
+                            <p class="catalog-detail__reference">
+                                Réf. <?= $escape($product->getSku()) ?>
+                            </p>
+                        <?php endif; ?>
                     </div>
-                </header>
+                </section>
 
-                <section class="catalog-detail__content">
+                <section
+                    class="catalog-detail__content"
+                    aria-label="Présentation du produit"
+                >
                     <div class="catalog-container catalog-detail__layout">
                         <div class="catalog-detail__gallery">
-                            <?php if ($product->getImagePath() !== null): ?>
+                            <?php if ($imagePath !== null && trim($imagePath) !== ''): ?>
                                 <figure class="catalog-detail__visual">
                                     <img
-                                        src="<?= $escape($getImageUrl($product->getImagePath())) ?>"
+                                        src="<?= $escape($getImageUrl($imagePath)) ?>"
                                         alt="<?= $escape($productName) ?>"
+                                        decoding="async"
                                     >
                                 </figure>
                             <?php else: ?>
-                                <div class="catalog-detail__placeholder" aria-hidden="true">
+                                <div
+                                    class="catalog-detail__placeholder"
+                                    aria-hidden="true"
+                                >
                                     <span>RGR</span>
                                     France
                                 </div>
                             <?php endif; ?>
                         </div>
 
-                        <aside class="catalog-detail__summary" aria-label="Résumé du produit">
+                        <aside
+                            class="catalog-detail__summary"
+                            aria-label="Informations principales"
+                        >
+                            <div class="catalog-detail__price">
+                                <?php if ($product->getPromotionalPrice() !== null): ?>
+                                    <span class="catalog-detail__price-old">
+                                        <?= $escape($formatPrice($product->getRegularPrice())) ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span>Prix TTC</span>
+                                <?php endif; ?>
+
+                                <strong>
+                                    <?= $escape($formatPrice($product->getCurrentPrice())) ?>
+                                </strong>
+                            </div>
+
                             <?php if ($product->getSku() !== null): ?>
                                 <p class="catalog-detail__reference">
                                     Réf. <?= $escape($product->getSku()) ?>
                                 </p>
                             <?php endif; ?>
 
-                            <h2>Disponibilité</h2>
-
-                            <dl class="catalog-detail__specifications-grid">
+                            <dl class="catalog-detail__specifications-grid catalog-detail__specifications-grid--summary">
                                 <div>
                                     <dt>État</dt>
-                                    <dd><?= $product->isInStock() ? 'En stock' : 'Sur commande' ?></dd>
+                                    <dd>
+                                        <?= $product->isInStock()
+                                            ? 'En stock'
+                                            : 'Sur commande' ?>
+                                    </dd>
                                 </div>
                                 <div>
                                     <dt>Quantité</dt>
@@ -164,43 +207,70 @@ $contactUrl = $product === null
                                     </dd>
                                 </div>
                                 <div>
-                                    <dt>Accompagnement</dt>
-                                    <dd>Conseil RGR</dd>
+                                    <dt>Compatibilité</dt>
+                                    <dd>Vérifiée par RGR</dd>
                                 </div>
                             </dl>
 
-                            <a class="catalog-detail__cta" href="<?= $escape($contactUrl) ?>">
+                            <a
+                                class="catalog-detail__cta"
+                                href="<?= $escape($contactUrl) ?>"
+                            >
                                 Demander des informations
                                 <span aria-hidden="true">→</span>
                             </a>
 
-                            <a class="catalog-detail__back" href="<?= $escape(BASE_URL) ?>/nos-produits.php">
+                            <a
+                                class="catalog-detail__back"
+                                href="<?= $escape(BASE_URL) ?>/nos-produits.php"
+                            >
                                 ← Retour aux produits
                             </a>
                         </aside>
 
-                        <section class="catalog-detail__description" aria-labelledby="product-description-title">
-                            <p class="catalog-eyebrow">Présentation</p>
-                            <h2 id="product-description-title">À propos de ce produit</h2>
-                            <p>
-                                <?= nl2br($escape(
-                                    $product->getDescription()
-                                    ?? 'Contactez RGR France pour obtenir toutes les informations concernant ce produit.'
-                                )) ?>
-                            </p>
-                        </section>
+                        <div class="catalog-detail__lower-content">
+                            <article
+                                class="catalog-detail__description"
+                                aria-labelledby="product-description-title"
+                            >
+                                <h2 id="product-description-title">
+                                    À propos de ce produit
+                                </h2>
+                                <p>
+                                    <?= nl2br($escape(
+                                        $product->getDescription()
+                                        ?? 'Contactez RGR France pour connaître les caractéristiques et la compatibilité de ce produit avec votre véhicule.'
+                                    )) ?>
+                                </p>
+                            </article>
+
+                            <section
+                                class="catalog-detail__specifications"
+                                aria-labelledby="product-service-title"
+                            >
+                                <h2 id="product-service-title">
+                                    Conseil et installation
+                                </h2>
+
+                                <dl class="catalog-detail__specifications-grid">
+                                    <div>
+                                        <dt>Compatibilité</dt>
+                                        <dd>Contrôlée avant commande</dd>
+                                    </div>
+                                    <div>
+                                        <dt>Installation</dt>
+                                        <dd>Disponible au garage</dd>
+                                    </div>
+                                    <div>
+                                        <dt>Accompagnement</dt>
+                                        <dd>Conseil personnalisé</dd>
+                                    </div>
+                                </dl>
+                            </section>
+                        </div>
                     </div>
                 </section>
 
-                <aside class="catalog-detail__contact">
-                    <div class="catalog-container catalog-detail__contact-content">
-                        <div>
-                            <p class="catalog-eyebrow">Besoin d’un conseil ?</p>
-                            <h2>Vérifions la compatibilité avec votre véhicule</h2>
-                        </div>
-                        <a href="<?= $escape($contactUrl) ?>">Contacter RGR France</a>
-                    </div>
-                </aside>
             <?php endif; ?>
         </main>
 

@@ -179,7 +179,6 @@ body > header .nav-bar {
 }
 
 .catalog-detail__summary {
-    position: static;
     align-self: start;
     padding: 1.5rem;
     color: var(--blanc);
@@ -367,5 +366,359 @@ body > header .nav-bar {
 
     .catalog-detail__specifications {
         grid-column: 1 / -1;
+    }
+}
+
+/* ==================================================
+   FICHE VÉHICULE — VERSION CLAIRE INSPIRÉE MAQUETTE
+================================================== */
+
+.catalog-detail--vehicle {
+    background-color: var(--blanc);
+}
+
+.catalog-detail--vehicle .catalog-detail__intro {
+    padding: 1.5rem 0 1.25rem;
+    background-color: var(--blanc);
+}
+
+.catalog-detail--vehicle .catalog-detail__breadcrumb {
+    margin-bottom: 1.35rem;
+    color: #66666b;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+}
+
+.catalog-detail--vehicle .catalog-detail__breadcrumb a {
+    color: #3f3f43;
+}
+
+.catalog-detail--vehicle .catalog-detail__breadcrumb a:hover,
+.catalog-detail--vehicle .catalog-detail__breadcrumb a:focus-visible {
+    color: var(--rouge-rgr);
+}
+
+.catalog-detail--vehicle .catalog-detail__brand {
+    margin-bottom: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.catalog-detail--vehicle .catalog-detail__title {
+    margin: 0;
+    color: var(--noir);
+    font-size: clamp(2.45rem, 12vw, 4.75rem);
+    line-height: 0.88;
+}
+
+.catalog-detail--vehicle .catalog-detail__intro > .catalog-container > .catalog-detail__reference {
+    margin-top: 0.7rem;
+    color: #66666b;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.catalog-detail--vehicle .catalog-detail__content {
+    padding: 0 0 4rem;
+}
+
+.catalog-detail--vehicle .catalog-detail__layout {
+    gap: 1.25rem;
+}
+
+.catalog-detail--vehicle .catalog-detail__gallery {
+    min-width: 0;
+}
+
+.catalog-detail--vehicle .catalog-detail__visual {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    margin: 0;
+    background-color: #d5d3cf;
+}
+
+.catalog-detail--vehicle .catalog-detail__visual > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.catalog-detail__gallery-control {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    width: 2.75rem;
+    height: 3.5rem;
+    padding: 0;
+    place-items: center;
+    color: var(--blanc);
+    background-color: rgba(11, 11, 12, 0.76);
+    border: 0;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background-color var(--transition-rapide, 180ms ease);
+}
+
+.catalog-detail__gallery-control:hover,
+.catalog-detail__gallery-control:focus-visible {
+    background-color: var(--rouge-rgr);
+}
+
+.catalog-detail__gallery-control--previous {
+    left: 0;
+}
+
+.catalog-detail__gallery-control--next {
+    right: 0;
+}
+
+.catalog-detail__counter {
+    position: absolute;
+    right: 0.65rem;
+    bottom: 0.65rem;
+    z-index: 2;
+    padding: 0.4rem 0.55rem;
+    color: var(--blanc);
+    background-color: rgba(11, 11, 12, 0.74);
+    font-size: 0.6875rem;
+}
+
+.catalog-detail--vehicle .catalog-detail__thumbnails {
+    display: flex;
+    grid-template-columns: none;
+    gap: 0.55rem;
+    margin-top: 0.55rem;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scroll-snap-type: x proximity;
+}
+
+.catalog-detail__thumbnail {
+    flex: 0 0 5.75rem;
+    aspect-ratio: 3 / 2;
+    padding: 0;
+    overflow: hidden;
+    background-color: #d5d3cf;
+    border: 0.125rem solid transparent;
+    cursor: pointer;
+    opacity: 0.68;
+    scroll-snap-align: start;
+    transition:
+        border-color var(--transition-rapide, 180ms ease),
+        opacity var(--transition-rapide, 180ms ease);
+}
+
+.catalog-detail__thumbnail:hover,
+.catalog-detail__thumbnail:focus-visible,
+.catalog-detail__thumbnail--active {
+    border-color: var(--rouge-rgr);
+    opacity: 1;
+}
+
+.catalog-detail__thumbnail img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.catalog-detail--vehicle .catalog-detail__summary {
+    position: static;
+    padding: 1.5rem;
+    color: var(--noir);
+    background-color: #fff;
+    border-top: 0;
+    box-shadow: 0 0.75rem 2rem rgba(11, 11, 12, 0.06);
+}
+
+.catalog-detail--vehicle .catalog-detail__price {
+    display: block;
+    padding: 0 0 0.8rem;
+    border-bottom: 0.1875rem solid var(--rouge-rgr);
+    border-left: 0;
+}
+
+.catalog-detail--vehicle .catalog-detail__price strong {
+    color: var(--noir);
+    font-size: clamp(2rem, 9vw, 3rem);
+    line-height: 1;
+}
+
+.catalog-detail--vehicle .catalog-detail__summary > .catalog-detail__reference {
+    margin-top: 0.75rem;
+    color: #66666b;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.catalog-detail--vehicle .catalog-detail__specifications-grid--summary {
+    display: block;
+    margin-top: 1.35rem;
+    border: 0;
+}
+
+.catalog-detail--vehicle .catalog-detail__specifications-grid--summary div {
+    display: flex;
+    min-width: 0;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-right: 0;
+    border-bottom: 0.0625rem solid #d8d5d0;
+}
+
+.catalog-detail--vehicle .catalog-detail__specifications-grid--summary dt {
+    color: #4f4f54;
+    font-size: 0.6875rem;
+    letter-spacing: 0.035em;
+}
+
+.catalog-detail--vehicle .catalog-detail__specifications-grid--summary dd {
+    margin: 0;
+    color: var(--noir);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: right;
+    text-transform: uppercase;
+}
+
+.catalog-detail--vehicle .catalog-detail__cta {
+    margin-top: 1.5rem;
+    min-height: 3.2rem;
+}
+
+.catalog-detail__lower-content {
+    display: grid;
+    grid-column: 1 / -1;
+    gap: 2.5rem;
+    margin-top: 0.5rem;
+    padding: 1.5rem;
+    background-color: #fff;
+}
+
+.catalog-detail--vehicle .catalog-detail__description,
+.catalog-detail--vehicle .catalog-detail__specifications {
+    padding-top: 0;
+    border-top: 0;
+}
+
+.catalog-detail--vehicle .catalog-detail__description h2,
+.catalog-detail--vehicle .catalog-detail__specifications h2 {
+    position: relative;
+    display: inline-block;
+    margin: 0 0 1.5rem;
+    padding-bottom: 0.65rem;
+    font-size: clamp(1.45rem, 7vw, 2rem);
+}
+
+.catalog-detail--vehicle .catalog-detail__description h2::after,
+.catalog-detail--vehicle .catalog-detail__specifications h2::after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 3rem;
+    height: 0.1875rem;
+    background-color: var(--rouge-rgr);
+    content: '';
+}
+
+.catalog-detail--vehicle .catalog-detail__description > p:last-child {
+    margin: 0;
+    color: #55555a;
+    font-size: 0.875rem;
+    line-height: 1.75;
+}
+
+.catalog-detail--vehicle .catalog-detail__specifications > .catalog-detail__specifications-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-top: 0;
+    border: 0;
+}
+
+.catalog-detail--vehicle .catalog-detail__specifications > .catalog-detail__specifications-grid div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-right: 0;
+    border-bottom: 0.0625rem solid #d8d5d0;
+}
+
+.catalog-detail--vehicle .catalog-detail__specifications > .catalog-detail__specifications-grid dd {
+    margin: 0;
+    text-align: right;
+}
+
+@media screen and (min-width: 43.75rem) {
+    .catalog-detail--vehicle .catalog-detail__intro {
+        padding: 2rem 0 1.75rem;
+    }
+
+    .catalog-detail__thumbnail {
+        flex-basis: 8rem;
+    }
+
+    .catalog-detail__lower-content {
+        padding: 2rem;
+    }
+
+    .catalog-detail--vehicle .catalog-detail__specifications > .catalog-detail__specifications-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 1.5rem;
+    }
+}
+
+@media screen and (min-width: 64rem) {
+    .catalog-detail--vehicle .catalog-detail__intro {
+        padding: 2.25rem 0 1.5rem;
+    }
+
+    .catalog-detail--vehicle .catalog-detail__content {
+        padding: 0 0 5.5rem;
+    }
+
+    .catalog-detail--vehicle .catalog-detail__layout {
+        grid-template-columns: minmax(0, 2.25fr) minmax(19rem, 0.82fr);
+        gap: 1.25rem;
+    }
+
+    .catalog-detail--vehicle .catalog-detail__summary {
+        position: static;
+        padding: 1.75rem;
+        top: auto;
+        align-self: start;
+        height: auto;
+    }
+
+    .catalog-detail--vehicle .catalog-detail__thumbnails {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        overflow: visible;
+    }
+
+    .catalog-detail__thumbnail {
+        width: auto;
+        min-width: 0;
+    }
+
+    .catalog-detail__lower-content {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+        gap: 4rem;
+        margin-top: 0.25rem;
+        padding: 2.25rem;
     }
 }

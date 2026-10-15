@@ -35,8 +35,8 @@ body > header .nav-bar {
     z-index: 1;
     isolation: isolate;
     display: flex;
-    min-height: 27rem;
-    align-items: flex-end;
+    align-items: center;
+    min-height: 25rem;
     padding-block: 5rem 3rem;
     overflow: hidden;
     color: var(--blanc);
@@ -601,7 +601,7 @@ body > header .nav-bar {
     }
 
     .catalog-hero {
-        min-height: 31rem;
+        min-height: 22.5rem;
         padding-block: 6rem 4rem;
     }
 

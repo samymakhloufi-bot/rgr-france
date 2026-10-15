@@ -1,0 +1,679 @@
+/* ==================================================
+   ACCUEIL RGR FRANCE — MOBILE FIRST
+================================================== */
+
+.home-page {
+    position: relative;
+    z-index: 0;
+    padding-top: var(--header-height, 5rem);
+    overflow: hidden;
+    color: var(--noir);
+    background-color: var(--blanc);
+}
+
+.home-container {
+    width: min(calc(100% - 2.25rem), var(--container-width));
+    margin-inline: auto;
+}
+
+.home-page h1,
+.home-page h2,
+.home-page h3 {
+    font-family: var(--police-titre, sans-serif);
+    text-transform: uppercase;
+}
+
+.home-page h2 {
+    font-size: clamp(2.25rem, 9vw, 3.8rem);
+    line-height: 0.95;
+    letter-spacing: 0.01em;
+}
+
+.home-eyebrow {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    color: var(--rouge-rgr);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.home-eyebrow::before {
+    width: 1.65rem;
+    height: 0.125rem;
+    content: '';
+    background-color: currentColor;
+}
+
+.home-button,
+.home-outline-button {
+    display: inline-flex;
+    gap: 1.25rem;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.25rem;
+    padding: 0.85rem 1.4rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-align: center;
+    text-transform: uppercase;
+    transition:
+        color var(--transition-rapide, 0.2s ease),
+        background-color var(--transition-rapide, 0.2s ease),
+        border-color var(--transition-rapide, 0.2s ease),
+        transform var(--transition-rapide, 0.2s ease);
+}
+
+.home-button {
+    color: var(--blanc);
+    background-color: var(--rouge-rgr);
+    border: 0.0625rem solid var(--rouge-rgr);
+}
+
+.home-button:hover {
+    color: var(--blanc);
+    background-color: #bd260f;
+    border-color: #bd260f;
+    transform: translateY(-0.125rem);
+}
+
+.home-button:focus-visible,
+.home-outline-button:focus-visible,
+.home-text-link:focus-visible,
+.home-service-card a:focus-visible,
+.home-vehicle-card a:focus-visible {
+    outline: 0.125rem solid var(--rouge-rgr);
+    outline-offset: 0.25rem;
+}
+
+/* Hero */
+
+.home-hero {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    min-height: 43rem;
+    align-items: flex-end;
+    overflow: hidden;
+    color: var(--blanc);
+    background:
+        linear-gradient(
+            90deg,
+            rgba(7, 7, 8, 0.98) 0%,
+            rgba(7, 7, 8, 0.88) 44%,
+            rgba(7, 7, 8, 0.18) 100%
+        ),
+        url('../../images/home/home-hero-mobile.webp') 58% center / cover no-repeat;
+    border-bottom: 0.25rem solid var(--rouge-rgr);
+}
+
+.home-hero__content {
+    padding-block: 15rem 3rem;
+}
+
+.home-hero h1 {
+    max-width: 43rem;
+    font-size: clamp(3.35rem, 14vw, 6.8rem);
+    line-height: 0.84;
+    letter-spacing: 0.005em;
+}
+
+.home-hero h1 span {
+    display: block;
+}
+
+.home-hero__description {
+    max-width: 31rem;
+    margin-top: 1.4rem;
+    color: var(--gris-clair);
+    font-size: 0.86rem;
+    line-height: 1.7;
+}
+
+.home-hero__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: flex-start;
+    margin-top: 1.7rem;
+}
+
+.home-text-link {
+    display: inline-flex;
+    gap: 1rem;
+    align-items: center;
+    padding-block: 0.35rem;
+    color: var(--blanc);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.home-text-link::before {
+    width: 1.5rem;
+    height: 0.0625rem;
+    content: '';
+    background-color: var(--gris-metal);
+}
+
+.home-text-link:hover {
+    color: var(--rouge-rgr);
+}
+
+/* Bandeau d’engagement */
+
+.home-commitments {
+    background-color: var(--blanc);
+    border-bottom: 0.0625rem solid #d6d1ca;
+}
+
+.home-commitments__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.home-commitments article {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0.9rem;
+    align-items: center;
+    padding-block: 1.3rem;
+    border-bottom: 0.0625rem solid #d6d1ca;
+}
+
+.home-commitments article:last-child {
+    border-bottom: 0;
+}
+
+.home-commitments svg {
+    width: 2rem;
+    height: 2rem;
+    fill: none;
+    stroke: var(--noir);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.6;
+}
+
+.home-commitments h2 {
+    font-size: 0.95rem;
+    line-height: 1.1;
+}
+
+.home-commitments p {
+    margin-top: 0.28rem;
+    color: #636368;
+    font-size: 0.65rem;
+    line-height: 1.45;
+}
+
+/* Titres communs */
+
+.home-heading {
+    display: grid;
+    gap: 1.2rem;
+    align-items: end;
+}
+
+.home-heading > p {
+    max-width: 34rem;
+    color: #58585d;
+    font-size: 0.78rem;
+    line-height: 1.7;
+}
+
+.home-heading--dark > p {
+    color: var(--gris-metal);
+}
+
+/* Services */
+
+.home-services {
+    padding-block: 3.8rem 4.5rem;
+    background-color: var(--blanc);
+}
+
+.home-services__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    margin-top: 2.4rem;
+}
+
+.home-service-card {
+    background-color: #fff;
+    border: 0.0625rem solid #ddd8d1;
+    box-shadow: 0 0.9rem 2rem rgba(11, 11, 12, 0.055);
+    transition:
+        border-color var(--transition-normale, 0.3s ease),
+        transform var(--transition-normale, 0.3s ease);
+}
+
+.home-service-card:hover {
+    border-color: var(--rouge-rgr);
+    transform: translateY(-0.25rem);
+}
+
+.home-service-card > img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.home-service-card > div {
+    padding: 1.25rem;
+}
+
+.home-service-card h3 {
+    font-size: 1.65rem;
+    line-height: 1;
+}
+
+.home-service-card p {
+    margin-top: 0.75rem;
+    color: #5b5b60;
+    font-size: 0.76rem;
+    line-height: 1.65;
+}
+
+.home-service-card a {
+    display: inline-flex;
+    gap: 0.8rem;
+    align-items: center;
+    margin-top: 1rem;
+    padding-bottom: 0.25rem;
+    color: var(--noir);
+    border-bottom: 0.125rem solid var(--rouge-rgr);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.home-service-card a:hover {
+    color: var(--rouge-rgr);
+}
+
+/* Véhicules */
+
+.home-vehicles {
+    padding-block: 3.8rem 4.5rem;
+    color: var(--blanc);
+    background:
+        linear-gradient(rgba(8, 8, 9, 0.94), rgba(8, 8, 9, 0.97)),
+        repeating-linear-gradient(45deg, #171717 0 0.25rem, #0d0d0e 0.25rem 0.5rem);
+}
+
+.home-vehicles__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+}
+
+.home-vehicle-card {
+    min-width: 0;
+    overflow: hidden;
+    background-color: #101011;
+    border: 0.0625rem solid rgba(244, 241, 236, 0.22);
+    transition:
+        border-color var(--transition-normale, 0.3s ease),
+        transform var(--transition-normale, 0.3s ease);
+}
+
+.home-vehicle-card:hover {
+    border-color: var(--rouge-rgr);
+    transform: translateY(-0.25rem);
+}
+
+.home-vehicle-card__visual {
+    display: block;
+    overflow: hidden;
+    background-color: var(--carbone);
+}
+
+.home-vehicle-card__visual img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    transition: transform 0.45s ease;
+}
+
+.home-vehicle-card:hover .home-vehicle-card__visual img {
+    transform: scale(1.035);
+}
+
+.home-vehicle-card__placeholder {
+    display: grid;
+    min-height: 13rem;
+    place-items: center;
+    color: var(--gris-metal);
+    font-family: var(--police-titre, sans-serif);
+    font-size: 2rem;
+    text-transform: uppercase;
+}
+
+.home-vehicle-card__body {
+    padding: 1.15rem;
+}
+
+.home-vehicle-card h3 {
+    font-size: 1.65rem;
+    line-height: 1;
+}
+
+.home-vehicle-card h3 a:hover {
+    color: var(--rouge-rgr);
+}
+
+.home-vehicle-card__summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.8rem;
+    margin-top: 0.55rem;
+    color: var(--gris-metal);
+    font-size: 0.66rem;
+}
+
+.home-vehicle-card__summary span:not(:last-child)::after {
+    margin-left: 0.8rem;
+    content: '·';
+}
+
+.home-vehicle-card__price {
+    margin-top: 0.7rem;
+    color: var(--rouge-rgr);
+    font-family: var(--police-titre, sans-serif);
+    font-size: 1.55rem;
+    font-weight: 700;
+}
+
+.home-vehicle-card__details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 1.2rem;
+    margin-top: 0.8rem;
+    padding-top: 0.75rem;
+    color: var(--gris-clair);
+    border-top: 0.0625rem solid rgba(244, 241, 236, 0.14);
+    font-size: 0.65rem;
+}
+
+.home-vehicles__empty {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    color: var(--gris-metal);
+    border: 0.0625rem solid rgba(244, 241, 236, 0.18);
+    font-size: 0.8rem;
+}
+
+.home-outline-button {
+    margin: 2rem auto 0;
+    color: var(--rouge-rgr);
+    background-color: transparent;
+    border: 0.125rem solid var(--rouge-rgr);
+}
+
+.home-outline-button:hover {
+    color: var(--blanc);
+    background-color: var(--rouge-rgr);
+}
+
+/* Pourquoi RGR */
+
+.home-expertise {
+    padding-block: 3.8rem 4.2rem;
+    background-color: var(--blanc);
+}
+
+.home-expertise__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.8rem;
+}
+
+.home-expertise__introduction > p:last-child {
+    max-width: 31rem;
+    margin-top: 1.1rem;
+    color: #57575c;
+    font-size: 0.8rem;
+    line-height: 1.7;
+}
+
+.home-expertise__introduction::after {
+    display: block;
+    width: 3rem;
+    height: 0.1875rem;
+    margin-top: 1.5rem;
+    content: '';
+    background-color: var(--rouge-rgr);
+}
+
+.home-expertise__layout > img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.home-expertise__list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    list-style: none;
+}
+
+.home-expertise__list li {
+    position: relative;
+    padding: 1.15rem 0 1.15rem 2.2rem;
+    border-bottom: 0.0625rem solid #d3cec7;
+}
+
+.home-expertise__list li::before {
+    position: absolute;
+    top: 1.25rem;
+    left: 0;
+    width: 1.2rem;
+    height: 0.1875rem;
+    content: '';
+    background-color: var(--rouge-rgr);
+}
+
+.home-expertise__list strong {
+    display: block;
+    font-family: var(--police-titre, sans-serif);
+    font-size: 1.05rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.home-expertise__list span {
+    display: block;
+    margin-top: 0.3rem;
+    color: #616166;
+    font-size: 0.7rem;
+    line-height: 1.5;
+}
+
+/* CTA */
+
+.home-cta {
+    color: var(--blanc);
+    background:
+        linear-gradient(90deg, rgba(5, 5, 6, 0.98) 0%, rgba(5, 5, 6, 0.8) 52%, rgba(5, 5, 6, 0.38) 100%),
+        url('../../images/home/home-cta.webp') 68% center / cover no-repeat;
+    border-top: 0.25rem solid var(--rouge-rgr);
+}
+
+.home-cta__content {
+    display: grid;
+    gap: 1.6rem;
+    align-items: center;
+    min-height: 18rem;
+    padding-block: 2.8rem;
+}
+
+.home-cta h2 {
+    max-width: 37rem;
+}
+
+.home-cta__content > div > p:last-child {
+    max-width: 31rem;
+    margin-top: 0.8rem;
+    color: var(--gris-metal);
+    font-size: 0.78rem;
+    line-height: 1.65;
+}
+
+.home-cta .home-button {
+    justify-self: start;
+}
+
+/* ==================================================
+   TABLETTE
+================================================== */
+
+@media (min-width: 47.5rem) {
+    .home-container {
+        width: min(calc(100% - 5rem), var(--container-width));
+    }
+
+    .home-hero {
+        align-items: center;
+        min-height: 42rem;
+        background-image:
+            linear-gradient(
+                90deg,
+                rgba(7, 7, 8, 0.98) 0%,
+                rgba(7, 7, 8, 0.84) 40%,
+                rgba(7, 7, 8, 0.14) 100%
+            ),
+            url('../../images/home/home-hero.webp');
+        background-position: 58% center;
+    }
+
+    .home-hero__content {
+        padding-block: 4rem;
+    }
+
+    .home-hero__actions {
+        flex-direction: row;
+        gap: 1.8rem;
+        align-items: center;
+    }
+
+    .home-commitments__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-commitments article {
+        padding-inline: 1.2rem;
+    }
+
+    .home-commitments article:nth-child(odd) {
+        border-right: 0.0625rem solid #d6d1ca;
+    }
+
+    .home-heading {
+        grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.55fr);
+        gap: 3rem;
+    }
+
+    .home-services__grid,
+    .home-vehicles__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-expertise__layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: center;
+    }
+
+    .home-expertise__list {
+        grid-column: 1 / -1;
+    }
+
+    .home-cta__content {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 3rem;
+    }
+}
+
+/* ==================================================
+   DESKTOP
+================================================== */
+
+@media (min-width: 64rem) {
+    .home-page {
+        padding-top: 5.5rem;
+    }
+
+    .home-hero {
+        min-height: 43rem;
+        background-position: center;
+    }
+
+    .home-hero h1 {
+        font-size: clamp(5rem, 5.8vw, 6.8rem);
+    }
+
+    .home-commitments__grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .home-commitments article,
+    .home-commitments article:last-child {
+        padding: 1.6rem 1.35rem;
+        border-right: 0.0625rem solid #d6d1ca;
+        border-bottom: 0;
+    }
+
+    .home-commitments article:first-child {
+        padding-left: 0;
+    }
+
+    .home-commitments article:last-child {
+        padding-right: 0;
+        border-right: 0;
+    }
+
+    .home-services,
+    .home-vehicles {
+        padding-block: 4.6rem 5.2rem;
+    }
+
+    .home-services__grid,
+    .home-vehicles__grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .home-expertise {
+        padding-block: 4.8rem;
+    }
+
+    .home-expertise__layout {
+        grid-template-columns: minmax(0, 0.85fr) minmax(20rem, 0.85fr) minmax(0, 0.8fr);
+        gap: 2.5rem;
+    }
+
+    .home-expertise__list {
+        grid-column: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-button,
+    .home-outline-button,
+    .home-service-card,
+    .home-vehicle-card,
+    .home-vehicle-card__visual img {
+        transition: none;
+    }
+}

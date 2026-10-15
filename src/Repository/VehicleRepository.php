@@ -176,6 +176,52 @@ final class VehicleRepository
         return $data === false ? null : $this->hydrate($data);
     }
 
+    /**
+ * Retourne toutes les images d’un véhicule.
+ *
+ * @return array<int, array{
+ *     file_path: string,
+ *     alt_text: ?string,
+ *     is_cover: bool
+ * }>
+ */
+public function findImagesByVehicleId(int $vehicleId): array
+{
+    if ($vehicleId <= 0) {
+        return [];
+    }
+
+    $stmt = $this->pdo->prepare(
+        'SELECT
+            file_path,
+            alt_text,
+            is_cover
+         FROM vehicle_images
+         WHERE vehicle_id = :vehicle_id
+         ORDER BY
+            is_cover DESC,
+            display_order ASC,
+            id ASC'
+    );
+
+    $stmt->execute([
+        'vehicle_id' => $vehicleId,
+    ]);
+
+    $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return array_map(
+        static fn (array $image): array => [
+            'file_path' => (string) $image['file_path'],
+            'alt_text' => $image['alt_text'] !== null
+                ? (string) $image['alt_text']
+                : null,
+            'is_cover' => (bool) $image['is_cover'],
+        ],
+        $images
+    );
+}
+
     public function findByInternalReference(string $internalReference): ?Vehicle
     {
         $stmt = $this->pdo->prepare(

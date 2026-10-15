@@ -223,6 +223,21 @@ CREATE TABLE vehicle_images (
     INDEX idx_vehicle_images_order (vehicle_id, display_order)
 ) ENGINE=InnoDB;
 
+    INSERT INTO vehicle_images (
+        vehicle_id,
+        file_path,
+        alt_text,
+        is_cover,
+        display_order
+    ) VALUES
+    (4, 'shelby-gt350/01-front.webp', 'Shelby GT350 noire vue avant trois quarts', 1, 1),
+    (4, 'shelby-gt350/02-rear.webp', 'Shelby GT350 noire vue arrière trois quarts', 0, 2),
+    (4, 'shelby-gt350/03-cockpit.webp', 'Habitacle et poste de conduite de la Shelby GT350', 0, 3),
+    (4, 'shelby-gt350/04-seats.webp', 'Sièges sport noirs de la Shelby GT350', 0, 4),
+    (4, 'shelby-gt350/05-engine.webp', 'Moteur V8 de la Shelby GT350', 0, 5),
+    (4, 'shelby-gt350/06-wheel.webp', 'Jante noire et étrier de frein rouge de la Shelby GT350', 0, 6);
+
+
 CREATE TABLE vehicle_status_history (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     vehicle_id BIGINT UNSIGNED NOT NULL,
