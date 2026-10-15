@@ -55,6 +55,17 @@ final class VehicleRepository
                     );
     }
 
+    private function hydrateAll(array $rows): array
+    {
+        $users = [];
+
+        foreach ($rows as $row) {
+            $users[] = $this->hydrate($row);
+        }
+
+        return $users;
+    }
+
     private function hydrateMany(array $rows): array
     {
         $vehicles = [];
