@@ -245,7 +245,7 @@ $socialNetworks = [
             </a>
 
             <a
-                href="<?= $escape(BASE_URL . '/CGV.php') ?>"
+                href="<?= $escape(BASE_URL . '/cgv.php') ?>"
                 class="footer__legal-link"
             >
                 Conditions générales de vente

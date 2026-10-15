@@ -309,6 +309,6 @@ $formatRating = static function (float $rating): string {
         </main>
 
         <?php include __DIR__ . '/includes/footer.php'; ?>
-        <script src="<?= $escape(BASE_URL) ?>/assets/js/pages/reviews.js?v=1" defer></script>
+        <script src="<?= $escape(BASE_URL) ?>/assets/js/pages/review.js?v=1" defer></script>
     </body>
 </html>

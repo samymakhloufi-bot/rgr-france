@@ -135,7 +135,7 @@ $escape = static function (?string $value): string {
 
         <link rel="icon" href="<?= $escape(BASE_URL) ?>/assets/images/icons/logo-rgr-vector.svg" type="image/svg+xml">
         <link rel="stylesheet" href="<?= $escape(BASE_URL) ?>/assets/css/style.css">
-        <link rel="stylesheet" href="<?= $escape(BASE_URL) ?>/assets/css/pages/admin-login.css?v=1">
+        <link rel="stylesheet" href="<?= $escape(BASE_URL) ?>/assets/css/admin/admin-login.css?v=1">
     </head>
 
     <body class="admin-login-page">

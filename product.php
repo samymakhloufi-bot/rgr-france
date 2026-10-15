@@ -22,7 +22,7 @@ if ($slug === '' || strlen($slug) > 190) {
 } else {
     try {
         $productRepository = new ProductRepository($pdo);
-        $product = $productRepository->findBySlug($slug);
+        $product = $productRepository->findActiveBySlug($slug);
 
         if ($product === null) {
             http_response_code(404);
