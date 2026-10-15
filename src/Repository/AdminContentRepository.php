@@ -305,13 +305,30 @@ final class AdminContentRepository
 
     public function updateContactStatus(int $id, string $status): void
     {
+        $allowedStatuses = [
+            'NEW',
+            'IN_PROGRESS',
+            'CLOSED',
+            'ARCHIVED',
+        ];
+
+        if (!in_array($status, $allowedStatuses, true)) {
+            throw new InvalidArgumentException(
+                'Statut de contact invalide.'
+            );
+        }
         if (!$this->columnExists('contact_requests', 'status')) {
             throw new RuntimeException('La colonne status est absente de contact_requests.');
         }
 
         $stmt = $this->pdo->prepare(
-            'UPDATE contact_requests SET status = :status WHERE id = :id'
-        );
+            'UPDATE contact_requests SET status = :status,
+                processed_at = CASE
+                WHEN :processed_status = "CLOSED"
+                THEN CURRENT_TIMESTAMP
+                ELSE processed_at
+            END WHERE id = :id'
+            );
         $stmt->execute(['status' => $status, 'id' => $id]);
     }
 
