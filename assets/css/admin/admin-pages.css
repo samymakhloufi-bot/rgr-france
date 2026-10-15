@@ -33,6 +33,24 @@
     cursor: pointer;
 }
 
+.admin-page-heading > .admin-primary-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+
+    min-height: 3rem;
+    padding: 0.75rem 1.1rem;
+
+    color: var(--blanc);
+    background-color: var(--rouge-rgr);
+    border: 0;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
 .admin-flash {
     margin-bottom: 1.25rem;
     padding: 1rem 1.15rem;
