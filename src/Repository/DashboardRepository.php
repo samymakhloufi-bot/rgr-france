@@ -182,7 +182,7 @@ final class DashboardRepository
             return null;
         }
 
-        $priceColumn = $this->columnExists('services', 'regular_price')
+        $priceColumn = $this->columnExists('products', 'regular_price')
             ? 'COALESCE(promotional_price, regular_price) AS price'
             : 'NULL AS price';
 
@@ -223,7 +223,7 @@ final class DashboardRepository
             return null;
         }
 
-        $priceColumn = $this->columnExists('services', 'price')
+        $priceColumn = $this->columnExists('products', 'price')
             ? 'price'
             : ($this->columnExists('services', 'base_price')
                 ? 'base_price AS price'
