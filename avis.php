@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/config/app.php';
+require_once __DIR__ . '/config/bootstrap.php';
 
 $activePage = 'Nos avis';
 $metaDescription = 'Découvrez les avis des clients accompagnés par RGR France pour leur importation, leur homologation ou l’entretien de leur véhicule américain.';

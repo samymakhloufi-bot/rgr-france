@@ -3,12 +3,14 @@
 declare(strict_types=1);
 
 use App\Repository\AdminContentRepository;
+use App\Repository\UserRepository;
 use App\Support\ImageUrl;
 
 
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-require_once __DIR__ . '/app.php';
-require_once __DIR__ . '/database.php';
+$projectRoot = dirname(__DIR__, 2);
+
+require_once $projectRoot . '/config/bootstrap.php';
+require_once $projectRoot . '/config/session.php';
 
 
 

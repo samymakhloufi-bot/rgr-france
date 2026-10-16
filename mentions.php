@@ -5,7 +5,7 @@ $activePage = 'Mentions légales';
 $metaDescription = 'Mentions légales, propriété intellectuelle et traitement des données du site RGR France.';
 $pageCss = '/assets/css/pages/legal.css';
 
-    require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/bootstrap.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
