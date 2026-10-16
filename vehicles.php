@@ -25,7 +25,7 @@ try {
     $vehicles = $vehicleRepository->findAllPublishedForSale();
 } catch (Throwable $exception) {
     error_log('Impossible de charger les véhicules : ' . $exception->getMessage());
-    $catalogError = $exception->getMessage();
+    $catalogError = "Les véhicules ne sont pas disponibles pour le moment. Veuillez réessayer plus tard.";
 }
 
 if ($vehicles !== []) {

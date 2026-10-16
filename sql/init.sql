@@ -361,7 +361,7 @@ INSERT INTO vehicles (
     92000.00,
     'Shelby GT350 importée de Floride et accompagnée d’un historique complet. Cet exemplaire se distingue par une signature d’Aaron Shelby authentifiée par des photos et vidéos, ainsi que par un dossier d’expertise, d’importation et de conformité.',
     TRUE
-);
+)
 
 ON DUPLICATE KEY UPDATE
     status_id = VALUES(status_id),

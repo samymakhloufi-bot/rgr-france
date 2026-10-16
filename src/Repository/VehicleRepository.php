@@ -66,18 +66,6 @@ final class VehicleRepository
         return $users;
     }
 
-    private function hydrateMany(array $rows): array
-    {
-        $vehicles = [];
-
-        foreach ($rows as $row) {
-            $vehicles[] = $this->hydrate($row);
-        }
-
-        return $vehicles;
-    }
-
-
     public function findAll(): array
     {
         $stmt = $this->pdo->query(
@@ -86,7 +74,7 @@ final class VehicleRepository
              ORDER BY created_at DESC'
         );
 
-        return $this->hydrateMany($stmt->fetchAll());
+        return $this->hydrateAll($stmt->fetchAll());
     }
 
     public function findAllPublished(): array
@@ -102,7 +90,7 @@ final class VehicleRepository
             'is_published' => 1,
         ]);
 
-        return $this->hydrateMany($stmt->fetchAll());
+        return $this->hydrateAll($stmt->fetchAll());
     }
 
     public function findAllPublishedForSale(): array
@@ -120,7 +108,7 @@ final class VehicleRepository
             'status_id' => 1,
         ]);
 
-        return $this->hydrateMany($stmt->fetchAll());
+        return $this->hydrateAll($stmt->fetchAll());
     }
 
     public function findCoverImagesByVehicleIds(array $vehicleIds): array
@@ -264,7 +252,7 @@ public function findImagesByVehicleId(int $vehicleId): array
             'status_id' => $statusId,
         ]);
 
-        return $this->hydrateMany($stmt->fetchAll());
+        return $this->hydrateAll($stmt->fetchAll());
     }
 
     public function save(Vehicle $vehicle): Vehicle

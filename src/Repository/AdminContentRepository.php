@@ -317,19 +317,23 @@ final class AdminContentRepository
                 'Statut de contact invalide.'
             );
         }
-        if (!$this->columnExists('contact_requests', 'status')) {
-            throw new RuntimeException('La colonne status est absente de contact_requests.');
-        }
 
         $stmt = $this->pdo->prepare(
-            'UPDATE contact_requests SET status = :status,
+            'UPDATE contact_requests
+            SET status = :status,
                 processed_at = CASE
-                WHEN :processed_status = "CLOSED"
-                THEN CURRENT_TIMESTAMP
-                ELSE processed_at
-            END WHERE id = :id'
-            );
-        $stmt->execute(['status' => $status, 'id' => $id]);
+                    WHEN :is_closed = 1
+                    THEN CURRENT_TIMESTAMP
+                    ELSE processed_at
+                END
+            WHERE id = :id'
+        );
+
+        $stmt->execute([
+            'status' => $status,
+            'is_closed' => $status === 'CLOSED' ? 1 : 0,
+            'id' => $id,
+        ]);
     }
 
     public function tableColumns(string $table): array

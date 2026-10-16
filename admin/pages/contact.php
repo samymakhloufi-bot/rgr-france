@@ -86,7 +86,7 @@ require __DIR__ . '/../includes/page-start.php';
                 <select name="status">
                     <option value="NEW" <?= strtoupper((string) ($contact['status'] ?? 'NEW')) === 'NEW' ? 'selected' : '' ?>>Nouvelle</option>
                     <option value="IN_PROGRESS" <?= strtoupper((string) ($contact['status'] ?? '')) === 'IN_PROGRESS' ? 'selected' : '' ?>>En cours</option>
-                    <option value="CLOSED" <?= strtoupper((string) ($contact['status'] ?? '')) === 'CLOSED' ? 'selected' : '' ?>>Traitée</option>
+                    <option value="closed" <?= strtoupper((string) ($contact['status'] ?? '')) === 'closed' ? 'selected' : '' ?>>Traitée</option>
                     <option value="ARCHIVED" <?= strtoupper((string) ($contact['status'] ?? '')) === 'ARCHIVED' ? 'selected' : '' ?>>Archivée</option>
                 </select>
             </label>

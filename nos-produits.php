@@ -133,7 +133,7 @@ $buildFilterUrl = static function (string $filter): string {
                                     $productUrl = BASE_URL
                                         . '/product.php?slug='
                                         . urlencode($product->getSlug());
-                                    $imagePath = $product->ImageUrl::resolve($product->getImagePath(), 'products');
+                                    $imagePath = ImageUrl::resolve($product->getImagePath(), 'products');
                                 ?>
                                 <article class="catalog-card">
                                     <a
@@ -141,10 +141,10 @@ $buildFilterUrl = static function (string $filter): string {
                                         href="<?= $escape($productUrl) ?>"
                                         aria-label="Voir <?= $escape($product->getName()) ?>"
                                     >
-                                        <?php if ($imagePath !== null && trim($imagePath) !== ''): ?>
+                                        <?php if ($imagePath !== null): ?>
                                             <img
                                                 class="catalog-card__image"
-                                                src="<?= $escape(ImageUrl::resolve($product->getImagePath(), 'products')) ?>"
+                                                src="<?= $escape($imagePath) ?>"
                                                 alt="<?= $escape($product->getName()) ?>"
                                                 loading="lazy"
                                                 decoding="async"

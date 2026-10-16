@@ -31,8 +31,9 @@ unset(
     $_SESSION['contact_success'],
     $_SESSION['contact_errors'],
     $_SESSION['contact_old'],
-    $_SESSION['contact_form_started_at'] ??= time()
 );
+
+    $_SESSION['contact_form_started_at'] ??= time()
 
 $redirectWithErrors = static function (array $errors, array $old): never {
     $_SESSION['contact_errors'] = $errors;

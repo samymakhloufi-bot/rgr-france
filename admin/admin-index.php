@@ -351,10 +351,6 @@ $icons = [
                                             default => null,
                                         };
 
-                                        $imageUrl = ImageUrl::resolve(
-                                            $item['image_path'] ?? null,
-                                            $imageDirectory
-                                        );
                                         $editPage = match ($item['type']) {
                                             'vehicle' => '/admin/pages/vehicle-form.php',
                                             'product' => '/admin/pages/product-form.php',
