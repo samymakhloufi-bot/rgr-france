@@ -223,7 +223,7 @@ final class DashboardRepository
             return null;
         }
 
-        $priceColumn = $this->columnExists('products', 'price')
+        $priceColumn = $this->columnExists('services', 'price')
             ? 'price'
             : ($this->columnExists('services', 'base_price')
                 ? 'base_price AS price'

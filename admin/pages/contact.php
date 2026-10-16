@@ -10,7 +10,7 @@ if ($contact === null) { http_response_code(404); exit('Demande introuvable.'); 
 $allowedStatuses = [
     'NEW',
     'IN_PROGRESS',
-    'CLOSED',
+    'closed',
     'ARCHIVED',
 ];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
