@@ -7,10 +7,6 @@ use App\Repository\CompanyInformationRepository;
 use App\Repository\ContactRequestRepository;
 use App\Repository\OpeningHourRepository;
 
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
-
 require_once __DIR__ . '/config/app.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/src/Entity/ContactRequest.php';
@@ -19,6 +15,7 @@ require_once __DIR__ . '/src/Entity/OpeningHour.php';
 require_once __DIR__ . '/src/Repository/ContactRequestRepository.php';
 require_once __DIR__ . '/src/Repository/CompanyInformationRepository.php';
 require_once __DIR__ . '/src/Repository/OpeningHourRepository.php';
+require_once __DIR__ . '/config/session.php';
 
 $activePage = 'Nous contacter';
 $metaDescription = 'Contactez RGR France pour votre projet d’importation, d’homologation, de programmation ou de recherche de véhicule.';
@@ -33,12 +30,14 @@ $old = $_SESSION['contact_old'] ?? [];
 unset(
     $_SESSION['contact_success'],
     $_SESSION['contact_errors'],
-    $_SESSION['contact_old']
+    $_SESSION['contact_old'],
+    $_SESSION['contact_form_started_at'] ??= time()
 );
 
 $redirectWithErrors = static function (array $errors, array $old): never {
     $_SESSION['contact_errors'] = $errors;
     $_SESSION['contact_old'] = $old;
+    
 
     header('Location: ' . BASE_URL . '/contact.php');
     exit;
@@ -58,6 +57,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $privacyConsent = ($_POST['privacy_consent'] ?? '') === '1';
     $csrfToken = (string) ($_POST['csrf_token'] ?? '');
     $website = trim((string) ($_POST['website'] ?? ''));
+    $formStartedAt = (int) ($_SESSION['contact_form_started_at'] ?? 0);
+
+    if (
+        $formStartedAt === 0
+        || time() - $formStartedAt < 3
+    ) {
+        $errors[] = 'Le formulaire a été envoyé trop rapidement.';
+    }
 
     $old = [
         'first_name' => $firstName,
@@ -165,6 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'Votre demande a bien été envoyée. Notre équipe vous répondra rapidement.';
 
         $_SESSION['contact_csrf_token'] = bin2hex(random_bytes(32));
+        $_SESSION['contact_form_started_at'] = time();
 
         header('Location: ' . BASE_URL . '/contact.php');
         exit;

@@ -2,6 +2,20 @@
 -- RGR FRANCE — Base de données MySQL 8+
 -- ============================================================
 
+-- -----------------------------------------------------------
+-- TENTATIVES DE CONNEXION ADMIN
+-- ------------------------------------------------------------
+
+CREATE TABLE login_attempts (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    identifier_hash CHAR(64) NOT NULL,
+    attempted_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_login_attempts_identifier_date (
+        identifier_hash,
+        attempted_at
+    )
+) ENGINE=InnoDB;
 -- ------------------------------------------------------------
 -- INFORMATIONS RGR FRANCE
 -- ------------------------------------------------------------

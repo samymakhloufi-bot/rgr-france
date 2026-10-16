@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Styles communs à toutes les pages -->
-    <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
+    <link rel="stylesheet" href="<?= htmlspecialchars(BASE_URL . '/assets/css/style.css', ENT_QUOTES, 'UTF-8') ?>">
 
     <!-- Styles propres à la page actuelle -->
     <?php if (!empty($pageCss)): ?>

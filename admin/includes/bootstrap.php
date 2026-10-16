@@ -5,16 +5,20 @@ declare(strict_types=1);
 use App\Repository\AdminContentRepository;
 use App\Support\ImageUrl;
 
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
 
 $projectRoot = dirname(__DIR__, 2);
 
+require_once $projectRoot . '/src/Entity/User.php';
+require_once $projectRoot . '/src/Repository/UserRepository.php';
+require_once $projectRoot . '/src/Repository/AdminContentRepository.php';
+
 require_once $projectRoot . '/config/app.php';
 require_once $projectRoot . '/config/database.php';
-require_once $projectRoot . '/src/Repository/AdminContentRepository.php';
+require_once $projectRoot . '/config/session.php';
+
 require_once $projectRoot . '/src/Support/ImageUrl.php';
+
+
 
 if (
     !isset($_SESSION['user_id'], $_SESSION['user_role'])
@@ -48,6 +52,23 @@ $adminVerifyCsrf = static function (?string $token): void {
     }
 };
 
+$userRepository = new UserRepository($pdo);
+$currentUser = $userRepository->findById(
+    (int) $_SESSION['user_id']
+);
+
+if (
+    $currentUser === null
+    || !$currentUser->isActive()
+    || !$currentUser->isAdmin()
+) {
+    $_SESSION = [];
+    session_destroy();
+
+    header('Location: ' . BASE_URL . '/admin-login.php');
+    exit;
+}
+
 $adminFlash = static function (string $type, string $message): void {
     $_SESSION['admin_flash'] = ['type' => $type, 'message' => $message];
 };
@@ -69,6 +90,30 @@ $adminStoreImage = static function (array $file, string $directory) use ($projec
     }
 
     $temporaryPath = (string) ($file['tmp_name'] ?? '');
+    if (
+    $temporaryPath === ''
+    || !is_uploaded_file($temporaryPath)
+) {
+    throw new RuntimeException(
+        'Le fichier envoyé est invalide.'
+    );
+}
+
+    $imageInformation = getimagesize($temporaryPath);
+
+    if ($imageInformation === false) {
+        throw new RuntimeException(
+            'Le fichier n’est pas une image valide.'
+        );
+    }
+
+    [$width, $height] = $imageInformation;
+
+    if ($width > 8000 || $height > 8000) {
+        throw new RuntimeException(
+            'Les dimensions de l’image sont trop importantes.'
+        );
+    }
     $mimeType = (new finfo(FILEINFO_MIME_TYPE))->file($temporaryPath);
     $extensions = [
         'image/jpeg' => 'jpg',
@@ -113,7 +158,24 @@ $adminDeleteImageFile = static function (?string $relativePath) use ($projectRoo
         return;
     }
 
-    $absolutePath = $projectRoot . '/' . $relativePath;
+    $imagesRoot = realpath(
+    $projectRoot . '/assets/images'
+    );
+
+    $absolutePath = realpath(
+        $projectRoot . '/' . $relativePath
+    );
+
+    if (
+        $imagesRoot === false
+        || $absolutePath === false
+        || !str_starts_with(
+            $absolutePath,
+            $imagesRoot . DIRECTORY_SEPARATOR
+        )
+    ) {
+        return;
+    }
 
     if (is_file($absolutePath)) {
         unlink($absolutePath);
@@ -151,3 +213,31 @@ $adminImageUrl = static function (
         $directory
     );
 };
+
+$idleTimeout = 30 * 60;
+$absoluteTimeout = 8 * 60 * 60;
+$currentTime = time();
+
+if (
+    isset($_SESSION['last_activity'])
+    && $currentTime - $_SESSION['last_activity'] > $idleTimeout
+) {
+    $_SESSION = [];
+    session_destroy();
+
+    header('Location: ' . BASE_URL . '/admin-login.php?expired=1');
+    exit;
+}
+
+if (
+    isset($_SESSION['authenticated_at'])
+    && $currentTime - $_SESSION['authenticated_at'] > $absoluteTimeout
+) {
+    $_SESSION = [];
+    session_destroy();
+
+    header('Location: ' . BASE_URL . '/admin-login.php?expired=1');
+    exit;
+}
+
+$_SESSION['last_activity'] = $currentTime;
