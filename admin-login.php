@@ -5,12 +5,9 @@ declare(strict_types=1);
 use App\Repository\UserRepository;
 //use App\Repository\LoginAttemptRepository;
 
-require_once __DIR__ . '/config/app.php';
-require_once __DIR__ . '/config/database.php';
+
 require_once __DIR__ . '/config/session.php';
-require_once __DIR__ . '/src/Entity/User.php';
-require_once __DIR__ . '/src/Repository/UserRepository.php';
-//require_once __DIR__ . '/src/Repository/LoginAttemptRepository.php';
+require_once __DIR__ . '/config/bootstrap.php';
 
 
 

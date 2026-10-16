@@ -6,10 +6,7 @@ use App\Repository\ProductRepository;
 use App\Support\ImageUrl;
 
 
-require_once __DIR__ . '/config/app.php';
-require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/src/Support/ImageUrl.php';
+require_once __DIR__ . '/config/bootstrap.php';
 
 $activePage = 'Nos produits';
 $metaDescription = 'Découvrez les pièces et équipements sélectionnés par RGR France pour les véhicules américains.';

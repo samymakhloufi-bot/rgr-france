@@ -5,11 +5,7 @@ declare(strict_types=1);
 use App\Repository\VehicleRepository;
 use App\Support\ImageUrl;
 
-require_once __DIR__ . '/config/app.php';
-require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/src/Entity/Vehicle.php';
-require_once __DIR__ . '/src/Repository/VehicleRepository.php';
-require_once __DIR__ . '/src/Support/ImageUrl.php';
+require_once __DIR__ . '/config/bootstrap.php';
 
 $activePage = 'Nos véhicules';
 $metaDescription = 'Découvrez les véhicules américains disponibles et les projets suivis par RGR France.';

@@ -57,13 +57,13 @@ final class VehicleRepository
 
     private function hydrateAll(array $rows): array
     {
-        $users = [];
+        $vehicles = [];
 
         foreach ($rows as $row) {
-            $users[] = $this->hydrate($row);
+            $vehicles[] = $this->hydrate($row);
         }
 
-        return $users;
+        return $vehicles;
     }
 
     public function findAll(): array

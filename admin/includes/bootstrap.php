@@ -6,17 +6,9 @@ use App\Repository\AdminContentRepository;
 use App\Support\ImageUrl;
 
 
-$projectRoot = dirname(__DIR__, 2);
-
-require_once $projectRoot . '/src/Entity/User.php';
-require_once $projectRoot . '/src/Repository/UserRepository.php';
-require_once $projectRoot . '/src/Repository/AdminContentRepository.php';
-
-require_once $projectRoot . '/config/app.php';
-require_once $projectRoot . '/config/database.php';
-require_once $projectRoot . '/config/session.php';
-
-require_once $projectRoot . '/src/Support/ImageUrl.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once __DIR__ . '/app.php';
+require_once __DIR__ . '/database.php';
 
 
 

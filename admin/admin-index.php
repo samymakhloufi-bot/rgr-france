@@ -72,10 +72,6 @@ $formatTime = static function (?string $time): string {
     return $time === null || $time === '' ? '' : substr($time, 0, 5);
 };
 
-$imageUrl = ImageUrl::resolve(
-    $item['image_path'] ?? null,
-    'products'
-);
 
 $statusLabel = static function (?string $status): string {
     return match (strtolower(trim((string) $status))) {
@@ -350,6 +346,11 @@ $icons = [
                                             'product' => 'products',
                                             default => null,
                                         };
+
+                                        $imageUrl = ImageUrl::resolve(
+                                            $item['image_path'] ?? null,
+                                            $imageDirectory
+                                        );
 
                                         $editPage = match ($item['type']) {
                                             'vehicle' => '/admin/pages/vehicle-form.php',

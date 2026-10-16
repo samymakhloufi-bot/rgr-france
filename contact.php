@@ -7,14 +7,7 @@ use App\Repository\CompanyInformationRepository;
 use App\Repository\ContactRequestRepository;
 use App\Repository\OpeningHourRepository;
 
-require_once __DIR__ . '/config/app.php';
-require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/src/Entity/ContactRequest.php';
-require_once __DIR__ . '/src/Entity/CompanyInformation.php';
-require_once __DIR__ . '/src/Entity/OpeningHour.php';
-require_once __DIR__ . '/src/Repository/ContactRequestRepository.php';
-require_once __DIR__ . '/src/Repository/CompanyInformationRepository.php';
-require_once __DIR__ . '/src/Repository/OpeningHourRepository.php';
+require_once __DIR__ . '/config/bootstrap.php';
 require_once __DIR__ . '/config/session.php';
 
 $activePage = 'Nous contacter';
@@ -33,7 +26,7 @@ unset(
     $_SESSION['contact_old'],
 );
 
-    $_SESSION['contact_form_started_at'] ??= time()
+    $_SESSION['contact_form_started_at'] ??= time();
 
 $redirectWithErrors = static function (array $errors, array $old): never {
     $_SESSION['contact_errors'] = $errors;
