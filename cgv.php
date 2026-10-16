@@ -5,8 +5,8 @@ $activePage = 'CGV';
 $metaDescription = 'Conditions générales applicables aux prestations et ventes proposées par RGR France.';
 $pageCss = '/assets/css/pages/legal.css';
 
+require_once __DIR__ . '/config/bootstrap.php';
 
-    require_once __DIR__ . '/config/database.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">

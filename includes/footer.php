@@ -5,13 +5,6 @@ declare(strict_types=1);
 use App\Repository\CompanyInformationRepository;
 use App\Repository\OpeningHourRepository;
 
-require_once dirname(__DIR__) . '/config/app.php';
-require_once dirname(__DIR__) . '/config/database.php';
-require_once dirname(__DIR__) . '/src/Entity/CompanyInformation.php';
-require_once dirname(__DIR__) . '/src/Entity/OpeningHour.php';
-require_once dirname(__DIR__) . '/src/Repository/CompanyInformationRepository.php';
-require_once dirname(__DIR__) . '/src/Repository/OpeningHourRepository.php';
-
 $companyInformation = null;
 $openingHours = [];
 

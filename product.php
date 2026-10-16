@@ -3,11 +3,9 @@
 declare(strict_types=1);
 
 use App\Repository\ProductRepository;
+use App\Support\ImageUrl;
 
-require_once __DIR__ . '/config/app.php';
-require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/src/Entity/Product.php';
-require_once __DIR__ . '/src/Repository/ProductRepository.php';
+require_once __DIR__ . '/config/bootstrap.php';
 
 $activePage = 'Nos produits';
 $pageCss = BASE_URL . '/assets/css/pages/catalog-detail.css?v=4';
@@ -60,36 +58,19 @@ $formatPrice = static function (float $price): string {
     return number_format($price, 2, ',', ' ') . ' €';
 };
 
-$getImageUrl = static function (string $imagePath): string {
-    if (filter_var($imagePath, FILTER_VALIDATE_URL) !== false) {
-        return $imagePath;
-    }
-
-    $imagePath = ltrim(str_replace('\\', '/', $imagePath), '/');
-
-    if (str_starts_with($imagePath, 'assets/')) {
-        return BASE_URL . '/' . $imagePath;
-    }
-
-    if (str_starts_with($imagePath, 'images/')) {
-        return BASE_URL . '/assets/' . $imagePath;
-    }
-
-    if (str_starts_with($imagePath, 'products/')) {
-        return BASE_URL . '/assets/images/' . $imagePath;
-    }
-
-    return BASE_URL . '/assets/images/products/' . $imagePath;
-};
-
 $contactUrl = $product === null
     ? BASE_URL . '/contact.php'
     : BASE_URL
         . '/contact.php?product='
         . urlencode($product->getSlug());
 
-$imagePath = $product?->getImagePath();
+$imageUrl = ImageUrl::resolve(
+    $product?->getImagePath(),
+    'products'
+);
+
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
     <?php include __DIR__ . '/includes/head.php'; ?>
@@ -146,10 +127,10 @@ $imagePath = $product?->getImagePath();
                 >
                     <div class="catalog-container catalog-detail__layout">
                         <div class="catalog-detail__gallery">
-                            <?php if ($imagePath !== null && trim($imagePath) !== ''): ?>
+                            <?php if ($imageUrl !== null && trim($imageUrl) !== ''): ?>
                                 <figure class="catalog-detail__visual">
                                     <img
-                                        src="<?= $escape($getImageUrl($imagePath)) ?>"
+                                        src="<?= $escape($imageUrl) ?>"
                                         alt="<?= $escape($productName) ?>"
                                         decoding="async"
                                     >

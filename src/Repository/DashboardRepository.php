@@ -182,11 +182,9 @@ final class DashboardRepository
             return null;
         }
 
-        $priceColumn = $this->columnExists('products', 'promotional_price')
+        $priceColumn = $this->columnExists('products', 'regular_price')
             ? 'COALESCE(promotional_price, regular_price) AS price'
-            : ($this->columnExists('products', 'regular_price')
-                ? 'regular_price AS price'
-                : 'NULL AS price');
+            : 'NULL AS price';
 
         $imageColumn = $this->columnExists('products', 'image_path')
             ? 'image_path'

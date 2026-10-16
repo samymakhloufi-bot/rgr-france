@@ -3,11 +3,9 @@
 declare(strict_types=1);
 
 use App\Repository\VehicleRepository;
+use App\Support\ImageUrl;
 
-require_once __DIR__ . '/config/app.php';
-require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/src/Entity/Vehicle.php';
-require_once __DIR__ . '/src/Repository/VehicleRepository.php';
+require_once __DIR__ . '/config/bootstrap.php';
 
 $pageCss = '/assets/css/pages/catalog-detail.css?v=2';
 $internalReference = trim((string) ($_GET['ref'] ?? ''));
@@ -72,28 +70,6 @@ $formatMileage = static function (int $mileage): string {
     return number_format($mileage, 0, ',', ' ') . ' km';
 };
 
-$getImageUrl = static function (string $imagePath): string {
-    if (filter_var($imagePath, FILTER_VALIDATE_URL) !== false) {
-        return $imagePath;
-    }
-
-    $imagePath = ltrim(str_replace('\\', '/', $imagePath), '/');
-
-    if (str_starts_with($imagePath, 'assets/')) {
-        return BASE_URL . '/' . $imagePath;
-    }
-
-    if (str_starts_with($imagePath, 'images/')) {
-        return BASE_URL . '/assets/' . $imagePath;
-    }
-
-    if (str_starts_with($imagePath, 'vehicles/')) {
-        return BASE_URL . '/assets/images/' . $imagePath;
-    }
-
-    return BASE_URL . '/assets/images/vehicles/' . $imagePath;
-};
-
 $contactUrl = $vehicle === null
     ? BASE_URL . '/contact.php'
     : BASE_URL
@@ -155,7 +131,7 @@ $coverImage = $vehicleImages[0] ?? null;
                             <?php if ($coverImage !== null): ?>
                                 <figure class="catalog-detail__visual">
                                     <img
-                                        src="<?= $escape($getImageUrl($coverImage['file_path'])) ?>"
+                                        src="<?= $escape(ImageUrl::resolve($coverImage['file_path'], 'vehicles')) ?>"
                                         alt="<?= $escape($coverImage['alt_text'] ?: $vehicleTitle) ?>"
                                         data-gallery-main
                                     >
@@ -192,14 +168,14 @@ $coverImage = $vehicleImages[0] ?? null;
                                                 class="catalog-detail__thumbnail<?= $index === 0 ? ' catalog-detail__thumbnail--active' : '' ?>"
                                                 type="button"
                                                 data-gallery-thumbnail
-                                                data-image-src="<?= $escape($getImageUrl($image['file_path'])) ?>"
+                                                data-image-src="<?= $escape(ImageUrl::resolve($image['file_path'], 'vehicles')) ?>"
                                                 data-image-alt="<?= $escape($image['alt_text'] ?: $vehicleTitle) ?>"
                                                 data-image-index="<?= $index ?>"
                                                 aria-label="Afficher la photo <?= $index + 1 ?> sur <?= count($vehicleImages) ?>"
                                                 aria-pressed="<?= $index === 0 ? 'true' : 'false' ?>"
                                             >
                                                 <img
-                                                    src="<?= $escape($getImageUrl($image['file_path'])) ?>"
+                                                    src="<?= $escape(ImageUrl::resolve($image['file_path'], 'vehicles')) ?>"
                                                     alt=""
                                                     loading="lazy"
                                                     decoding="async"

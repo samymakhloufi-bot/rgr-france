@@ -3,14 +3,11 @@
 declare(strict_types=1);
 
 use App\Repository\DashboardRepository;
+use App\Support\ImageUrl;
 
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
 
-require_once dirname(__DIR__) . '/config/app.php';
-require_once dirname(__DIR__) . '/config/database.php';
-require_once dirname(__DIR__) . '/src/Repository/DashboardRepository.php';
+require_once dirname(__DIR__) . '/config/bootstrap.php';
+require_once dirname(__DIR__) . '/config/session.php';
 
 if (
     !isset($_SESSION['user_id'], $_SESSION['user_role'])
@@ -72,29 +69,6 @@ $formatTime = static function (?string $time): string {
     return $time === null || $time === '' ? '' : substr($time, 0, 5);
 };
 
-$getImageUrl = static function (?string $imagePath, string $type): ?string {
-    if ($imagePath === null || trim($imagePath) === '') {
-        return null;
-    }
-
-    if (filter_var($imagePath, FILTER_VALIDATE_URL) !== false) {
-        return $imagePath;
-    }
-
-    $imagePath = ltrim(str_replace('\\', '/', $imagePath), '/');
-
-    if (str_starts_with($imagePath, 'assets/')) {
-        return BASE_URL . '/' . $imagePath;
-    }
-
-    if (str_starts_with($imagePath, 'images/')) {
-        return BASE_URL . '/assets/' . $imagePath;
-    }
-
-    $directory = $type === 'vehicle' ? 'vehicles' : 'products';
-
-    return BASE_URL . '/assets/images/' . $directory . '/' . $imagePath;
-};
 
 $statusLabel = static function (?string $status): string {
     return match (strtolower(trim((string) $status))) {
@@ -129,6 +103,7 @@ $icons = [
     'mail' => '<rect x="3" y="5" width="18" height="14" rx="1"/><path d="m4 7 8 6 8-6"/>',
     'clock' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
 ];
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -363,7 +338,17 @@ $icons = [
                             <div class="admin-catalog-grid">
                                 <?php foreach ($catalogItems as $item): ?>
                                     <?php
-                                        $imageUrl = $getImageUrl($item['image_path'] ?? null, $item['type']);
+                                        $imageDirectory = match ($item['type']) {
+                                            'vehicle' => 'vehicles',
+                                            'product' => 'products',
+                                            default => null,
+                                        };
+
+                                        $imageUrl = ImageUrl::resolve(
+                                            $item['image_path'] ?? null,
+                                            $imageDirectory
+                                        );
+
                                         $editPage = match ($item['type']) {
                                             'vehicle' => '/admin/pages/vehicle-form.php',
                                             'product' => '/admin/pages/product-form.php',

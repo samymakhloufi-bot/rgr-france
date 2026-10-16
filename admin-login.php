@@ -3,25 +3,11 @@
 declare(strict_types=1);
 
 use App\Repository\UserRepository;
+//use App\Repository\LoginAttemptRepository;
 
-require_once __DIR__ . '/config/app.php';
-require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/src/Entity/User.php';
-require_once __DIR__ . '/src/Repository/UserRepository.php';
+require_once __DIR__ . '/config/bootstrap.php';
+require_once __DIR__ . '/config/session.php';
 
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    ini_set('session.gc_maxlifetime', (string) (30 * 24 * 60 * 60));
-
-    session_set_cookie_params([
-        'lifetime' => 0,
-        'path' => '/',
-        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-        'httponly' => true,
-        'samesite' => 'Strict',
-    ]);
-
-    session_start();
-}
 
 $dashboardUrl = BASE_URL . '/admin/admin-index.php';
 $loginError = null;
@@ -52,6 +38,9 @@ if (
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim((string) ($_POST['username'] ?? ''));
     $password = (string) ($_POST['password'] ?? '');
+    /*$normalizedUsername = strtolower($username);
+    $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $identifierHash = hash('sha256',$normalizedUsername . '|' . $clientIp);*/
     $csrfToken = (string) ($_POST['csrf_token'] ?? '');
     $rememberMe = ($_POST['remember_me'] ?? '') === '1';
     $website = trim((string) ($_POST['website'] ?? ''));
@@ -73,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             $userRepository = new UserRepository($pdo);
-            $user = $userRepository->findByUsername($username);
+            $user = $userRepository->findActiveByUsername($username);
 
             $isAuthenticated = $user !== null
                 && $user->isActive()
@@ -91,15 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['admin_login_locked_at'] = null;
                 $_SESSION['admin_login_csrf'] = bin2hex(random_bytes(32));
 
-                if ($rememberMe) {
-                    setcookie(session_name(), session_id(), [
-                        'expires' => time() + 30 * 24 * 60 * 60,
-                        'path' => '/',
-                        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-                        'httponly' => true,
-                        'samesite' => 'Strict',
-                    ]);
-                }
+                //$loginAttemptRepository->clearAttempts($identifierHash);
 
                 header('Location: ' . $dashboardUrl);
                 exit;
@@ -114,8 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $loginError = 'Identifiant ou mot de passe incorrect.';
             }
         } catch (Throwable $exception) {
-            error_log('Connexion administrateur impossible : ' . $exception->getMessage());
-            $loginError = 'La connexion est momentanément indisponible.' .$exception->getMessage();
+            error_log('Connexion administrateur impossible : '. $exception->getMessage());
+            $loginError = 'La connexion est momentanément indisponible.';
         }
     }
 }
@@ -235,13 +216,6 @@ $escape = static function (?string $value): string {
                                     </svg>
                                 </button>
                             </div>
-                        </div>
-
-                        <div class="admin-login__options">
-                            <label class="admin-login__remember">
-                                <input type="checkbox" name="remember_me" value="1">
-                                <span>Se souvenir de moi</span>
-                            </label>
                         </div>
 
                         <button class="admin-login__submit" type="submit">

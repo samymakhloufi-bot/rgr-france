@@ -3,11 +3,9 @@
 declare(strict_types=1);
 
 use App\Repository\VehicleRepository;
+use App\Support\ImageUrl;
 
-require_once __DIR__ . '/config/app.php';
-require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/src/Entity/Vehicle.php';
-require_once __DIR__ . '/src/Repository/VehicleRepository.php';
+require_once __DIR__ . '/config/bootstrap.php';
 
 $activePage = 'Nos véhicules';
 $metaDescription = 'Découvrez les véhicules américains disponibles et les projets suivis par RGR France.';
@@ -23,7 +21,7 @@ try {
     $vehicles = $vehicleRepository->findAllPublishedForSale();
 } catch (Throwable $exception) {
     error_log('Impossible de charger les véhicules : ' . $exception->getMessage());
-    $catalogError = $exception->getMessage();
+    $catalogError = "Les véhicules ne sont pas disponibles pour le moment. Veuillez réessayer plus tard.";
 }
 
 if ($vehicles !== []) {
@@ -83,15 +81,6 @@ $formatPrice = static function (float $price): string {
 $formatMileage = static function (int $mileage): string {
     return number_format($mileage, 0, ',', ' ') . ' km';
 };
-
-$getImageUrl = static function (string $imagePath): string {
-    if (filter_var($imagePath, FILTER_VALIDATE_URL) !== false) {
-        return $imagePath;
-    }
-
-    return BASE_URL . '/' . ltrim($imagePath, '/');
-};
-
 
 ?>
 <!DOCTYPE html>
@@ -259,7 +248,7 @@ $getImageUrl = static function (string $imagePath): string {
                                         <?php if ($coverImage !== null): ?>
                                             <img
                                                 class="catalog-card__image"
-                                                src="<?= $escape($getImageUrl($coverImage['file_path'])) ?>"
+                                                src="<?= $escape(ImageUrl::resolve($coverImage['file_path'], 'vehicles')) ?>"
                                                 alt="<?= $escape($coverImage['alt_text'] ?: $vehicleName) ?>"
                                                 loading="lazy"
                                                 decoding="async"

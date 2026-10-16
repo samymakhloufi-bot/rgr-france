@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/config/bootstrap.php';
+
 $activePage = 'Importation';
 $metaDescription = 'RGR France vous accompagne pour rechercher, acheter, transporter et réceptionner votre véhicule américain en toute sécurité.';
 $pageCss = '/assets/css/pages/services.css?v=importation-1';
