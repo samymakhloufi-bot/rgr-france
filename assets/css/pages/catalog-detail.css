@@ -378,7 +378,7 @@ body > header .nav-bar {
 }
 
 .catalog-detail--vehicle .catalog-detail__intro {
-    padding: 1.5rem 0 1.25rem;
+    margin: 5rem 0.875rem 1.25rem;
     background-color: var(--blanc);
 }
 

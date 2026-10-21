@@ -99,17 +99,6 @@ $coverImage = $vehicleImages[0] ?? null;
             <?php else: ?>
                 <section class="catalog-detail__intro">
                     <div class="catalog-container">
-                        <nav class="catalog-detail__breadcrumb" aria-label="Fil d’Ariane">
-                            <a href="<?= $escape(BASE_URL) ?>/vehicles.php">
-                                Nos véhicules
-                            </a>
-                            <span aria-hidden="true">›</span>
-                            <span><?= $escape($vehicle->getBrand()) ?></span>
-                            <span aria-hidden="true">›</span>
-                            <span aria-current="page">
-                                <?= $escape($vehicle->getModel()) ?>
-                            </span>
-                        </nav>
 
                         <p class="catalog-detail__brand">
                             <?= $escape($vehicle->getBrand()) ?>
@@ -122,6 +111,19 @@ $coverImage = $vehicleImages[0] ?? null;
                         <p class="catalog-detail__reference">
                             Réf. <?= $escape($vehicle->getInternalReference()) ?>
                         </p>
+                        
+                        <nav class="catalog-detail__breadcrumb" aria-label="Fil d’Ariane">
+                            <a href="<?= $escape(BASE_URL) ?>/vehicles.php">
+                                Nos véhicules
+                            </a>
+                            <span aria-hidden="true">›</span>
+                            <span><?= $escape($vehicle->getBrand()) ?></span>
+                            <span aria-hidden="true">›</span>
+                            <span aria-current="page">
+                                <?= $escape($vehicle->getModel()) ?>
+                            </span>
+                        </nav>
+                        
                     </div>
                 </section>
 
@@ -206,42 +208,42 @@ $coverImage = $vehicleImages[0] ?? null;
                             <dl class="catalog-detail__specifications-grid catalog-detail__specifications-grid--summary">
                                 <?php if ($vehicle->getRegistrationYear() !== null): ?>
                                     <div>
-                                        <dt>Année</dt>
+                                        <dt>Année :</dt>
                                         <dd><?= $vehicle->getRegistrationYear() ?></dd>
                                     </div>
                                 <?php endif; ?>
 
                                 <?php if ($vehicle->getMileageKm() !== null): ?>
                                     <div>
-                                        <dt>Kilométrage</dt>
+                                        <dt>Kilométrage :</dt>
                                         <dd><?= $escape($formatMileage($vehicle->getMileageKm())) ?></dd>
                                     </div>
                                 <?php endif; ?>
 
                                 <?php if ($vehicle->getFuelType() !== null): ?>
                                     <div>
-                                        <dt>Énergie</dt>
+                                        <dt>Énergie :</dt>
                                         <dd><?= $escape($vehicle->getFuelType()) ?></dd>
                                     </div>
                                 <?php endif; ?>
 
                                 <?php if ($vehicle->getTransmission() !== null): ?>
                                     <div>
-                                        <dt>Transmission</dt>
+                                        <dt>Transmission :</dt>
                                         <dd><?= $escape($vehicle->getTransmission()) ?></dd>
                                     </div>
                                 <?php endif; ?>
 
                                 <?php if ($vehicle->getPowerHp() !== null): ?>
                                     <div>
-                                        <dt>Puissance</dt>
+                                        <dt>Puissance :</dt>
                                         <dd><?= $vehicle->getPowerHp() ?> ch</dd>
                                     </div>
                                 <?php endif; ?>
 
                                 <?php if ($vehicle->getExteriorColor() !== null): ?>
                                     <div>
-                                        <dt>Couleur</dt>
+                                        <dt>Couleur :</dt>
                                         <dd><?= $escape($vehicle->getExteriorColor()) ?></dd>
                                     </div>
                                 <?php endif; ?>

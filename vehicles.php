@@ -286,42 +286,42 @@ $formatMileage = static function (int $mileage): string {
                                         <dl class="catalog-card__specifications">
                                             <?php if ($vehicle->getRegistrationYear() !== null): ?>
                                                 <div>
-                                                    <dt>Année</dt>
+                                                    <dt>Année :</dt>
                                                     <dd><?= $vehicle->getRegistrationYear() ?></dd>
                                                 </div>
                                             <?php endif; ?>
 
                                             <?php if ($vehicle->getMileageKm() !== null): ?>
                                                 <div>
-                                                    <dt>Kilométrage</dt>
+                                                    <dt>Kilométrage :</dt>
                                                     <dd><?= $escape($formatMileage($vehicle->getMileageKm())) ?></dd>
                                                 </div>
                                             <?php endif; ?>
 
                                             <?php if ($vehicle->getFuelType() !== null): ?>
                                                 <div>
-                                                    <dt>Énergie</dt>
+                                                    <dt>Énergie :</dt>
                                                     <dd><?= $escape($vehicle->getFuelType()) ?></dd>
                                                 </div>
                                             <?php endif; ?>
 
                                             <?php if ($vehicle->getTransmission() !== null): ?>
                                                 <div>
-                                                    <dt>Transmission</dt>
+                                                    <dt>Transmission :</dt>
                                                     <dd><?= $escape($vehicle->getTransmission()) ?></dd>
                                                 </div>
                                             <?php endif; ?>
 
                                             <?php if ($vehicle->getPowerHp() !== null): ?>
                                                 <div>
-                                                    <dt>Puissance</dt>
+                                                    <dt>Puissance :</dt>
                                                     <dd><?= $vehicle->getPowerHp() ?> ch</dd>
                                                 </div>
                                             <?php endif; ?>
 
                                             <?php if ($vehicle->getExteriorColor() !== null): ?>
                                                 <div>
-                                                    <dt>Couleur</dt>
+                                                    <dt>Couleur :</dt>
                                                     <dd><?= $escape($vehicle->getExteriorColor()) ?></dd>
                                                 </div>
                                             <?php endif; ?>

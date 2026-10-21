@@ -141,6 +141,7 @@
     display: grid;
     grid-template-columns: 1.5rem minmax(0, 1fr) auto;
     gap: 0.7rem;
+    border-radius: 1.25rem;
     align-items: center;
     min-height: 3.5rem;
     padding-inline: 1rem;
@@ -171,6 +172,7 @@
     width: 100%;
     min-width: 0;
     padding-block: 0.95rem;
+    padding-left: 0.725rem;
     color: var(--blanc);
     background: transparent;
     border: 0;
