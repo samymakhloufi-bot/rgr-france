@@ -152,6 +152,9 @@ CREATE TABLE users (
     INDEX idx_users_role_active (role, is_active)
 ) ENGINE=InnoDB;
 
+INSERT INTO users (id, first_name, last_name, email, username, password_hash, role, is_active, last_login_at, created_at, updated_at)
+    VALUES (1, 'first name', 'last name', 'rcr@france.fr', 'admin', '$2y$10$VY9/W4cV8hqr7igkTBp6AOVhBLyBvGTdWjHXM3VIGT4kzbibFuh5i' , 'ADMIN', 1, NOW(), NOW(), NOW());
+
 -- ------------------------------------------------------------
 -- STATUTS DES VÉHICULES
 -- Les statuts sont dans une table séparée afin de pouvoir en

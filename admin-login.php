@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Repository\UserRepository;
-//use App\Repository\LoginAttemptRepository;
+use App\Repository\LoginAttemptRepository;
 
 require_once __DIR__ . '/config/bootstrap.php';
 require_once __DIR__ . '/config/session.php';
@@ -38,9 +38,9 @@ if (
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim((string) ($_POST['username'] ?? ''));
     $password = (string) ($_POST['password'] ?? '');
-    /*$normalizedUsername = strtolower($username);
+    $normalizedUsername = strtolower($username);
     $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-    $identifierHash = hash('sha256',$normalizedUsername . '|' . $clientIp);*/
+    $identifierHash = hash('sha256',$normalizedUsername . '|' . $clientIp);
     $csrfToken = (string) ($_POST['csrf_token'] ?? '');
     $rememberMe = ($_POST['remember_me'] ?? '') === '1';
     $website = trim((string) ($_POST['website'] ?? ''));
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['admin_login_locked_at'] = null;
                 $_SESSION['admin_login_csrf'] = bin2hex(random_bytes(32));
 
-                //$loginAttemptRepository->clearAttempts($identifierHash);
+                $loginAttemptRepository->clearAttempts($identifierHash);
 
                 header('Location: ' . $dashboardUrl);
                 exit;
